@@ -1,32 +1,10 @@
 from pico2d import *
 import random
 
-class warrior:
-    def __init__(self):
-        self.x, self.y = 100, 200
-        self.frame = 0
-        self.image = load_image('warrior idle.png')
-    def update(self):
-        self.frame += 1
-        self.frame = (self.frame + 1) % 3
+from boss import boss
+from warrior import warrior
 
-    def draw(self):
-        self.image.clip_draw(self.frame * 100 ,0, 100, 100, self.x, self.y)
-        #파일 안에 이미지 불러오기
-class boss:
-    def __init__(self):
-        self.x, self.y = 600, 200
-        self.frame = 0
-        self.image = load_image('boss idle.png')
-    def update(self):
-        self.frame += 1
-        self.frame = self.frame% 4
 
-    def draw(self):
-        frame_x = (self.frame % 2) * 113
-        frame_y = (self.frame // 2) * 113
-        self.image.clip_draw(frame_x,frame_y, 113, 113, self.x, self.y, 300, 300)
-        #파일 안에 이미지 불러오기
 def handle_events():
     global running
     events = get_events()
