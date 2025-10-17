@@ -1,4 +1,5 @@
 from pico2d import load_image
+from sdl2 import SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT
 
 
 class warrior:
