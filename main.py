@@ -5,12 +5,15 @@ class warrior:
     def __init__(self):
         self.x, self.y = 400, 300
         self.frame = 0
-        self.image = load_image('51545.png')
+        self.image = load_image('24848.png')
     def update(self):
-
+        self.frame += 1
+        self.frame = self.frame % 4
         pass
     def draw(self):
-        self.image.clip_draw(self.frame * 100, 0, 100, 100, self.x, self.y)
+        frame_x = (self.frame % 2) * 113
+        frame_y = (self.frame // 2) * 113
+        self.image.clip_draw(frame_x,frame_y , 113, 113, self.x, self.y)
         #파일 안에 이미지 불러오기
 
 def handle_events():
@@ -22,7 +25,8 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
 
-    open_canvas()
+
+open_canvas()
 
 def reset_world():
 
@@ -52,5 +56,6 @@ while running:
 
     update_world()  # 객체들의 상호작용을 시뮬레이션 , 계산
     render_world()  # 객체들의 모습을 그린다.
+    delay(0.1)
 
 close_canvas()
