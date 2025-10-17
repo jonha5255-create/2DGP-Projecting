@@ -8,7 +8,9 @@ def event_to_string(state_event):
         SDL_KEYUP: 'KEYUP',
         SDL_MOUSEMOTION: 'MOUSEMOTION',
         SDL_MOUSEBUTTONDOWN: 'MOUSEBUTTONDOWN',
-        SDL_MOUSEBUTTONUP: 'MOUSEBUTTONUP'
+        SDL_MOUSEBUTTONUP: 'MOUSEBUTTONUP',
+        SDL_BUTTON_LEFT: 'BUTTONLEFT',
+        SDL_BUTTON_RIGHT: 'BUTTONRIGHT'
     }
 
     state_event_type = state_event[0]  # state_event is ('INPUT', event)
