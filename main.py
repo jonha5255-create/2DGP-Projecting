@@ -3,6 +3,7 @@ import random
 
 from boss import boss
 from warrior import warrior
+from enemy import enemy
 
 
 def handle_events():
@@ -30,6 +31,9 @@ def reset_world():
 
     Boss = boss()
     world.append(Boss)
+
+    Enemy = enemy()
+    world.append(Enemy)
 
 reset_world()
 
