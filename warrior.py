@@ -14,25 +14,36 @@ class IDLE:
         self.warrior = warrior
         self.image = load_image('warrior idle.png')
 
+    def enter(self,e):
+        self.warrior.frame = 0
+
+    def exit(self,e):
+        pass
+
+    def do(self):
+        pass
+
     def update(self):
         self.warrior.frame = (self.warrior.frame + 1) % 3
-
     def draw(self):
         self.image.clip_draw(self.warrior.frame * 100 ,0, 100, 100, self.warrior.x, self.warrior.y)
 
-    def handle_state_event(self, param):
-        pass
-
-
 class ATTACK:
     def __init__(self,warrior):
-
         self.warrior = warrior
         self.image = load_image('warrior attack.png')
 
+    def enter(self,e):
+        self.warrior.frame = 0
+
+    def exit(self,e):
+        pass
+
+    def do(self):
+        pass
+
     def update(self):
         self.warrior.frame = (self.warrior.frame + 1) % 4
-
     def draw(self):
         self.image.clip_draw(self.warrior.frame * 100 ,0, 100, 100, self.warrior.x, self.warrior.y)
     pass
@@ -44,8 +55,13 @@ class warrior:
 
         self.warrior_idle = IDLE(self)
         self.warrior_attack = ATTACK(self)
-        self.state_machine = self.warrior_idle
-
+        self.state_machine = StateMachine (
+            self.warrior_idle,
+            {
+                self.warrior_idle : {left_down: self.warrior_attack},
+                self.warrior_attack : {left_click: self.warrior_idle}
+            }
+        )
 
     def update(self):
         self.state_machine.update()
