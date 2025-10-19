@@ -1,4 +1,5 @@
 from pico2d import load_image
+from sdl2 import SDL_KEYDOWN, SDLK_SPACE
 
 from state_machine import StateMachine
 

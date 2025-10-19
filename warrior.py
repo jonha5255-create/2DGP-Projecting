@@ -1,12 +1,12 @@
 from pico2d import load_image
-from sdl2 import SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT, SDL_MOUSEBUTTONDOWN, SDL_KEYDOWN, SDLK_LEFT
+from sdl2 import SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT, SDL_MOUSEBUTTONDOWN, SDL_KEYDOWN, SDLK_SPACE, SDL_KEYUP
 
 from state_machine import StateMachine
 
-def left_down(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_LEFT
-def left_click(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_MOUSEBUTTONDOWN and e[1].button == SDL_BUTTON_LEFT
+def space_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
+
+
 
 
 class IDLE:
@@ -21,15 +21,13 @@ class IDLE:
         pass
 
     def do(self):
-        pass
+       self.warrior.frame = (self.warrior.frame + 1) % 3
 
-    def update(self):
-        self.warrior.frame = (self.warrior.frame + 1) % 3
     def draw(self):
         self.image.clip_draw(self.warrior.frame * 100 ,0, 100, 100, self.warrior.x, self.warrior.y)
 
 class ATTACK:
-    def __init__(self,warrior):
+    def __init__(self, warrior):
         self.warrior = warrior
         self.image = load_image('warrior attack.png')
 
@@ -40,10 +38,8 @@ class ATTACK:
         pass
 
     def do(self):
-        pass
-
-    def update(self):
         self.warrior.frame = (self.warrior.frame + 1) % 4
+
     def draw(self):
         self.image.clip_draw(self.warrior.frame * 100 ,0, 100, 100, self.warrior.x, self.warrior.y)
     pass
@@ -56,10 +52,10 @@ class warrior:
         self.warrior_idle = IDLE(self)
         self.warrior_attack = ATTACK(self)
         self.state_machine = StateMachine (
-            self.warrior_idle,
+            self.warrior_attack,
             {
-                self.warrior_idle : {left_down: self.warrior_attack},
-                self.warrior_attack : {left_click: self.warrior_idle}
+                self.warrior_idle: {space_down : self.warrior_attack},
+                self.warrior_attack: {space_down : self.warrior_idle}
             }
         )
 
