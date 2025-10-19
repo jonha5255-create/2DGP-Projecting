@@ -40,13 +40,13 @@ class boss:
 
         self.boss_idle = IDLE(self)
         self.boss_attack = ATTACK(self)
-        self.current_state = self.boss_idle #초기 상태 설정
+        self.state_machine = self.boss_idle #초기 상태 설정
 
     def update(self):
-        self.current_state.update()
+        self.state_machine.update()
 
     def draw(self):
-        self.current_state.draw()
+        self.state_machine.draw()
 
     def handle_event(self, event):
-        self.handle_state_event(('INPUT',event))
+        self.state_machine.handle_state_event(('INPUT',event))

@@ -3,27 +3,36 @@ from sdl2 import SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT, SDL_MOUSEBUTTONDOWN, SDL_KEY
 
 from state_machine import StateMachine
 
+def left_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_LEFT
+def left_click(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_MOUSEBUTTONDOWN and e[1].button == SDL_BUTTON_LEFT
+
 
 class IDLE:
     def __init__(self,warrior):
         self.warrior = warrior
-        self.frame = 0
         self.image = load_image('warrior idle.png')
+
     def update(self):
-        self.warrior.frame += 1
         self.warrior.frame = (self.warrior.frame + 1) % 3
+
     def draw(self):
         self.image.clip_draw(self.warrior.frame * 100 ,0, 100, 100, self.warrior.x, self.warrior.y)
+
+    def handle_state_event(self, param):
+        pass
+
 
 class ATTACK:
     def __init__(self,warrior):
 
         self.warrior = warrior
-        self.warrior.frame = 0
-        self.warrior.image = load_image('warrior attack.png')
+        self.image = load_image('warrior attack.png')
+
     def update(self):
-        self.warrior.frame += 1
         self.warrior.frame = (self.warrior.frame + 1) % 4
+
     def draw(self):
         self.image.clip_draw(self.warrior.frame * 100 ,0, 100, 100, self.warrior.x, self.warrior.y)
     pass
@@ -33,18 +42,16 @@ class warrior:
         self.x, self.y = 100, 200
         self.frame = 0
 
-        self.IDLE = IDLE(self)
-        self.ATTACK = ATTACK(self)
-        self.state_machine = StateMachine (
-            self.IDLE,
-            {
-                self.IDLE : {('INPUT',): self.ATTACK},
-                self.ATTACK : {('INPUT',): self.IDLE,}
-            }
-        )
+        self.warrior_idle = IDLE(self)
+        self.warrior_attack = ATTACK(self)
+        self.state_machine = self.warrior_idle
+
 
     def update(self):
         self.state_machine.update()
 
     def draw(self):
         self.state_machine.draw()
+
+    def handle_event(self, event):
+        self.state_machine.handle_state_event(('INPUT',event))
