@@ -4,6 +4,29 @@ import game_world
 
 from state_machine import StateMachine
 
+class HEAL:
+    def __init__(self, boss):
+        self.boss = boss
+        self.image = load_image('boss heal.png')
+
+    def enter(self):
+        self.boss.frame = 0
+
+    def exit(self):
+        pass
+
+    def do(self):
+        pass
+
+    def update(self):
+        self.boss.frame = (self.boss.frame + 1) % 6
+
+    def draw(self):
+        frame_x = (self.boss.frame % 3) * 113
+        frame_y = (2-(self.boss.frame // 3)) * 113
+        self.image.clip_composite_draw(frame_x,frame_y, 113, 113,0,'h', self.boss.x, self.boss.y, 300, 300)
+        #파일 안에 이미지 불러오기
+
 class ATTACK:
     def __init__(self, boss):
         self.boss = boss
@@ -24,7 +47,7 @@ class ATTACK:
     def draw(self):
         frame_x = (self.boss.frame % 3) * 113
         frame_y = (2-(self.boss.frame // 3)) * 113
-        self.image.clip_draw(frame_x,frame_y, 113, 113, self.boss.x, self.boss.y, 300, 300)
+        self.image.clip_composite_draw(frame_x,frame_y, 113, 113,0,'h', self.boss.x, self.boss.y, 300, 300)
         #파일 안에 이미지 불러오기
 
 
