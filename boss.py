@@ -54,7 +54,7 @@ class IDLE:
 
 class boss:
     def __init__(self):
-        self.x, self.y = 1300, 200
+        self.x, self.y = 1300, 270
         self.frame = 0
 
         self.boss_idle = IDLE(self)
