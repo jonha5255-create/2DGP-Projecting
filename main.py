@@ -10,45 +10,45 @@ from enemy import enemy
 
 def handle_events():
     global running
+
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
             running = False
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
-        elif event.type == SDL_KEYDOWN and event.type == SDLK_SPACE:
-            for game_object in world:
-                game_object.state_machine.handle_event(('INPUT', event))
+        else:
+            warrior.handle_event(event)
 
-
-open_canvas()
 
 def reset_world():
-
-    global running
-    running = True
+    global warrior
 
 
     Warrior = warrior()
-    world.append(Warrior)
+    game_world.add_object(Warrior)
 
     Boss = boss()
-    world.append(Boss)
+    game_world.add_object(Boss)
 
     Enemy = enemy()
-    world.append(Enemy)
+    game_world.add_object(Enemy)
 
-reset_world()
+
+
 
 def update_world():
-    for game_object in world:
-        game_object.update()
+    game_world.update()
 
 def render_world():
     clear_canvas()
-    for game_object in world:
-        game_object.draw()
+    game_world.render()
     update_canvas()
+
+running = True
+
+open_canvas()
+reset_world()
 
 while running:
     handle_events()
