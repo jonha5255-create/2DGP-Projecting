@@ -50,11 +50,5 @@ running = True
 open_canvas()
 reset_world()
 
-while running:
-    handle_events()
-
-    update_world()  # 객체들의 상호작용을 시뮬레이션 , 계산
-    render_world()  # 객체들의 모습을 그린다.
-    delay(0.1)
 
 close_canvas()
