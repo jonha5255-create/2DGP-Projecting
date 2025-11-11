@@ -7,3 +7,5 @@ def change_mode(mode):
 def push_mode(mode):
     pass
 
+def pop_mode():
+    pass
