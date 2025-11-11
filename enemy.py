@@ -4,7 +4,7 @@ import game_world
 
 class enemy:
     def __init__(self):
-        self.x, self.y = 450, 180
+        self.x, self.y = 1200, 180
         self.frame = 0
         self.image = load_image('enemy1.png')
     def update(self):

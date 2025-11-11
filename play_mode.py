@@ -1,5 +1,6 @@
 from pico2d import *
 
+from healer import healer
 from warrior import warrior
 from boss import boss
 from enemy import enemy
@@ -24,11 +25,14 @@ def handle_events():
 
 
 def init():
-    global Warrior, Boss, Enemy
+    global Warrior, Boss, Enemy, Healer
 
 
     Warrior = warrior()
     game_world.add_object(Warrior, 1)
+
+    Healer = healer()
+    game_world.add_object(Healer, 1)
 
     Boss = boss()
     game_world.add_object(Boss, 1)

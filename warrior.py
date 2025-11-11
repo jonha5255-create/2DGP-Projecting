@@ -46,7 +46,7 @@ class ATTACK:
 
 class warrior:
     def __init__(self):
-        self.x, self.y = 100, 200
+        self.x, self.y = 400, 200
         self.frame = 0
 
         self.warrior_idle = IDLE(self)

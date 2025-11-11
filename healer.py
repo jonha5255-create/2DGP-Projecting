@@ -46,7 +46,7 @@ class HEAL:
 
 class healer:
     def __init__(self):
-        self.x, self.y = 100, 200
+        self.x, self.y = 200, 200
         self.frame = 0
 
         self.healer_idle = IDLE(self)
