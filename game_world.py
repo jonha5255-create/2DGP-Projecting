@@ -7,10 +7,19 @@ def add_object(o, depth = 0):
     world[depth].append(o)
 
 def update():
-    pass
+    for layer in world:
+        for o in layer:
+            o.update()
 
 def render():
-    pass
+    for layer in world:
+        for o in layer:
+            o.draw()
 
 def remove_object(o):
-    pass
+    for layer in world:
+        if o in layer:
+            layer.remove(o)
+            return
+
+    print('삭제하려는 객체가 없어요')
