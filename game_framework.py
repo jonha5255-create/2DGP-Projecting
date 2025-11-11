@@ -22,9 +22,12 @@ def run(start_mode):
     stack = [start_mode]
     start_mode.init()
 
+    global frame_time
+    current_time = time.time()
     while running:
-        handle_events()
-
-        update_world()  # 객체들의 상호작용을 시뮬레이션 , 계산
-        render_world()  # 객체들의 모습을 그린다.
-        delay(0.1)
+        stack[-1].handle_events()
+        stack[-1].update()  # 객체들의 상호작용을 시뮬레이션 , 계산
+        stack[-1].draw()  # 객체들의 모습을 그린다.
+        frame_time = time.time() - current_time
+        frame_time = 1.0/frame_time
+        current_time += frame_time
