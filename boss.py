@@ -1,24 +1,26 @@
 from pico2d import load_image
-from sdl2 import SDL_KEYDOWN, SDLK_SPACE
+from sdl2 import SDL_KEYDOWN, SDLK_SPACE, SDLK_a, SDLK_h
 import game_world
 
 from state_machine import StateMachine
+
+def a_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a
+def h_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_h
 
 class HEAL:
     def __init__(self, boss):
         self.boss = boss
         self.image = load_image('boss heal.png')
 
-    def enter(self):
+    def enter(self,e):
         self.boss.frame = 0
 
     def exit(self):
         pass
 
     def do(self):
-        pass
-
-    def update(self):
         self.boss.frame = (self.boss.frame + 1) % 6
 
     def draw(self):
@@ -32,17 +34,15 @@ class ATTACK:
         self.boss = boss
         self.image = load_image('boss attack.png')
 
-    def enter(self):
+    def enter(self,e):
         self.boss.frame = 0
 
     def exit(self):
         pass
 
     def do(self):
-        pass
-
-    def update(self):
         self.boss.frame = (self.boss.frame + 1) % 8
+
 
     def draw(self):
         frame_x = (self.boss.frame % 3) * 113
@@ -56,17 +56,15 @@ class IDLE:
         self.boss = boss
         self.image = load_image('boss idle.png')
 
-    def enter(self):
+    def enter(self,e):
         self.boss.frame = 0
 
     def exit(self):
         pass
 
     def do(self):
-        pass
-
-    def update(self):
         self.boss.frame = (self.boss.frame + 1) % 4
+
 
     def draw(self):
         frame_x = (self.boss.frame % 2) * 113
@@ -82,8 +80,15 @@ class boss:
 
         self.boss_idle = IDLE(self)
         self.boss_attack = ATTACK(self)
-        self.state_machine = self.boss_idle #초기 상태 설정
-
+        self.boss_heal = HEAL(self)
+        self.state_machine = StateMachine(
+            self.boss_idle, #초기 상태 설정
+            {
+                self.boss_idle : {a_down : self.boss_attack, h_down : self.boss_heal},
+                self.boss_attack : {a_down : self.boss_idle, h_down : self.boss_heal},
+                self.boss_heal : {h_down : self.boss_idle,a_down : self.boss_attack}
+            }
+        )
     def update(self):
         self.state_machine.update()
 
