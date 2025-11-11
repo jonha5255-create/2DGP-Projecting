@@ -17,7 +17,7 @@ class HEAL:
     def enter(self,e):
         self.boss.frame = 0
 
-    def exit(self):
+    def exit(self,e):
         pass
 
     def do(self):
@@ -37,7 +37,7 @@ class ATTACK:
     def enter(self,e):
         self.boss.frame = 0
 
-    def exit(self):
+    def exit(self,e):
         pass
 
     def do(self):
@@ -59,7 +59,7 @@ class IDLE:
     def enter(self,e):
         self.boss.frame = 0
 
-    def exit(self):
+    def exit(self,e):
         pass
 
     def do(self):
