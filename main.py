@@ -6,6 +6,7 @@ from warrior import warrior
 from enemy import enemy
 
 
+
 def handle_events():
     global running
     events = get_events()
@@ -14,6 +15,9 @@ def handle_events():
             running = False
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
+        elif event.type == SDL_KEYDOWN and event.type == SDLK_SPACE:
+            for game_object in world:
+                game_object.state_machine.handle_event(('INPUT', event))
 
 
 open_canvas()

@@ -4,6 +4,7 @@ from sdl2 import SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT, SDL_MOUSEBUTTONDOWN, SDL_KEY
 from state_machine import StateMachine
 
 def space_down(e):
+    print(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE)
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
 
 
@@ -52,7 +53,7 @@ class warrior:
         self.warrior_idle = IDLE(self)
         self.warrior_attack = ATTACK(self)
         self.state_machine = StateMachine (
-            self.warrior_attack,
+            self.warrior_idle,
             {
                 self.warrior_idle: {space_down : self.warrior_attack},
                 self.warrior_attack: {space_down : self.warrior_idle}

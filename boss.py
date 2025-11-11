@@ -22,7 +22,7 @@ class ATTACK:
 
     def draw(self):
         frame_x = (self.boss.frame % 3) * 113
-        frame_y = (self.boss.frame // 3) * 113
+        frame_y = (2-(self.boss.frame // 3)) * 113
         self.image.clip_draw(frame_x,frame_y, 113, 113, self.boss.x, self.boss.y, 300, 300)
         #파일 안에 이미지 불러오기
 
@@ -58,7 +58,7 @@ class boss:
 
         self.boss_idle = IDLE(self)
         self.boss_attack = ATTACK(self)
-        self.state_machine = self.boss_idle #초기 상태 설정
+        self.state_machine = self.boss_attack #초기 상태 설정
 
     def update(self):
         self.state_machine.update()
