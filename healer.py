@@ -21,7 +21,7 @@ class IDLE:
         pass
 
     def do(self):
-       self.healer.frame = (self.healer.frame + 1) % 3
+       self.healer.frame = (self.healer.frame + 1) % 2
 
     def draw(self):
         self.image.clip_draw(self.healer.frame * 100 ,0, 100, 100, self.healer.x, self.healer.y)
@@ -38,7 +38,7 @@ class HEAL:
         pass
 
     def do(self):
-        self.healer.frame = (self.healer.frame + 1) % 4
+        self.healer.frame = (self.healer.frame + 1) % 3
 
     def draw(self):
         self.image.clip_draw(self.healer.frame * 100 ,0, 100, 100, self.healer.x, self.healer.y)
