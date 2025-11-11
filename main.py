@@ -1,6 +1,7 @@
 from pico2d import *
 import random
 
+import game_world
 from boss import boss
 from warrior import warrior
 from enemy import enemy
@@ -27,8 +28,6 @@ def reset_world():
     global running
     running = True
 
-    global world  # 모든 게임객체를 담을 수 있는 리스트
-    world = []
 
     Warrior = warrior()
     world.append(Warrior)

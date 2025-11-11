@@ -58,7 +58,7 @@ class boss:
 
         self.boss_idle = IDLE(self)
         self.boss_attack = ATTACK(self)
-        self.state_machine = self.boss_attack #초기 상태 설정
+        self.state_machine = self.boss_idle #초기 상태 설정
 
     def update(self):
         self.state_machine.update()
