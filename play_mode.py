@@ -1,17 +1,25 @@
+from pico2d import *
 
+from warrior import warrior
+from boss import boss
+from enemy import enemy
+import game_world
 
+import game_framework
+
+warrior = None
 
 def handle_events():
-    global running, Warrior
+    global running
 
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
-            running = False
+            game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
-            running = False
+            game_framework.quit()
         else:
-            Warrior.handle_event(event)
+            warrior.handle_event(event)
 
 
 def reset_world():
