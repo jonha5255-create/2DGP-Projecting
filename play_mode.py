@@ -22,6 +22,7 @@ def handle_events():
             game_framework.quit()
         else:
             Warrior.handle_event(event)
+            Healer.handle_event(event)
 
 
 def init():
