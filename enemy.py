@@ -1,4 +1,6 @@
 from pico2d import *
+import game_world
+
 
 class enemy:
     def __init__(self):

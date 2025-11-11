@@ -9,7 +9,7 @@ from enemy import enemy
 
 
 def handle_events():
-    global running
+    global running, warrior
 
     events = get_events()
     for event in events:
@@ -22,7 +22,7 @@ def handle_events():
 
 
 def reset_world():
-    global warrior
+    global Warrior
 
 
     Warrior = warrior()
