@@ -42,7 +42,6 @@ class ATTACK:
 
     def draw(self):
         self.image.clip_draw(self.warrior.frame * 100 ,0, 100, 100, self.warrior.x, self.warrior.y)
-    pass
 
 class warrior:
     def __init__(self):
