@@ -22,26 +22,34 @@ def handle_events():
             warrior.handle_event(event)
 
 
-def reset_world():
+def init():
     global Warrior
+    global running
 
+    running = True
 
     Warrior = warrior()
-    game_world.add_object(Warrior)
+    game_world.add_object(Warrior, 1)
 
     Boss = boss()
-    game_world.add_object(Boss)
+    game_world.add_object(Boss, 1)
 
     Enemy = enemy()
-    game_world.add_object(Enemy)
+    game_world.add_object(Enemy, 1)
 
 
 
 
-def update_world():
+def update():
     game_world.update()
 
-def render_world():
+def draw():
     clear_canvas()
     game_world.render()
     update_canvas()
+
+def finish():
+    game_world.clear()
+
+def pause(): pass
+def resume(): pass
