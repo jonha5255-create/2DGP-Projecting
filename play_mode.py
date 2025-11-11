@@ -23,6 +23,7 @@ def handle_events():
         else:
             Warrior.handle_event(event)
             Healer.handle_event(event)
+            Boss.handle_event(event)
 
 
 def init():
