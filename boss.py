@@ -48,7 +48,7 @@ class IDLE:
     def draw(self):
         frame_x = (self.boss.frame % 2) * 113
         frame_y = (self.boss.frame // 2) * 113
-        self.image.clip_draw(frame_x,frame_y, 113, 113, self.boss.x, self.boss.y, 300, 300)
+        self.image.clip_composite_draw(frame_x,frame_y, 113, 113,0,'h', self.boss.x, self.boss.y, 300, 300)
         #파일 안에 이미지 불러오기
 
 
