@@ -7,7 +7,9 @@ import game_world
 
 import game_framework
 
-warrior = None
+Warrior = None
+Boss = None
+Enemy = None
 
 def handle_events():
     global running
@@ -19,11 +21,11 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
         else:
-            warrior.handle_event(event)
+            Warrior.handle_event(event)
 
 
 def init():
-    global Warrior
+    global Warrior, Boss, Enemy
     global running
 
     running = True
@@ -46,6 +48,7 @@ def update():
 def draw():
     clear_canvas()
     game_world.render()
+    delay(0.1)
     update_canvas()
 
 def finish():
