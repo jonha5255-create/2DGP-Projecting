@@ -21,7 +21,7 @@ class HEAL:
         pass
 
     def do(self):
-        self.boss.frame = (self.boss.frame + 1) % 6
+        self.boss.frame = (self.boss.frame + 1) % 8
 
     def draw(self):
         frame_x = (self.boss.frame % 3) * 113
