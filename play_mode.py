@@ -1,6 +1,7 @@
 from pico2d import *
 
 from healer import healer
+from stage1 import stage1
 from warrior import warrior
 from boss import boss
 from enemy import enemy
@@ -42,6 +43,8 @@ def init():
     Enemy = enemy()
     game_world.add_object(Enemy, 1)
 
+    Stage1 = stage1()
+    game_world.add_object(Stage1, 0)
 
 
 
