@@ -18,7 +18,7 @@ def update():
 
 def draw():
     clear_canvas()
-    image.draw(400,300)
+    image.draw(800,300)
     update_canvas()
     pass
 

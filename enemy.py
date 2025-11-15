@@ -55,7 +55,7 @@ class enemy:
 
         self.enemy_idle = IDLE(self)
         self.enemy_attack = ATTACK(self)
-        self.state_machine = self.enemy_attack
+        self.state_machine = self.enemy_idle
 
     def update(self):
         self.state_machine.update()
