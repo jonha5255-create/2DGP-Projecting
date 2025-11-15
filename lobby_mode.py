@@ -2,6 +2,13 @@ from pico2d import *
 import game_framework
 import play_mode
 
+from sdl2 import SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT, SDL_QUIT, SDL_KEYDOWN, SDLK_ESCAPE, SDLK_SPACE
+
+def button_down(x, y, e):
+    return e[0] == 'INPUT' and e[1].type == SDL_MOUSEBUTTONDOWN and e[1].button == SDL_BUTTON_LEFT
+def quit_game(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_QUIT or (e[1].type == SDL_KEYDOWN and e[1].key == SDLK_ESCAPE)
+
 image = None
 button = None
 
@@ -33,8 +40,10 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
-            game_framework.change_mode(play_mode)
+        elif event.type == SDL_MOUSEBUTTONDOWN and event.key == SDL_BUTTON_LEFT:
+            x, y = event.x, 800 - event.y
+            if 650 <= x <= 950 and 0 <= y <= 200:
+                game_framework.change_mode(play_mode)
 
 
 def pause(): pass
