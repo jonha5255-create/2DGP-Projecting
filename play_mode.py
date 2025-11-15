@@ -22,8 +22,6 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
-            game_framework.change_mode(lobby_mode)
         else:
             Warrior.handle_event(event)
             Healer.handle_event(event)
