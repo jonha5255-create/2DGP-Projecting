@@ -18,7 +18,8 @@ def update():
 
 def draw():
     clear_canvas()
-    image.draw(800,300)
+    draw_rectangle(0,0,1600,800,0,0,0,255,1)
+    image.draw(800,400,800,400)
     update_canvas()
     pass
 
