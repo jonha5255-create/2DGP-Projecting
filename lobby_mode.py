@@ -3,10 +3,12 @@ import game_framework
 import play_mode
 
 image = None
+button = None
 
 def init():
-    global image
+    global image, button
     image = load_image('lobby.png')
+    button = load_image('start_button.png')
 
 def finish():
     global image
@@ -20,6 +22,7 @@ def draw():
     clear_canvas()
     draw_rectangle(0,0,1600,800,0,10,0,150,1)
     image.draw(800,400,800,500)
+    button.draw(800, 100, 300, 200)
     update_canvas()
     pass
 
