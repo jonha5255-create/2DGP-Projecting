@@ -48,6 +48,8 @@ class healer:
     def __init__(self):
         self.x, self.y = 200, 200
         self.frame = 0
+        self.hp = 110
+        self.str = 20
 
         self.healer_idle = IDLE(self)
         self.warrior_heal = HEAL(self)

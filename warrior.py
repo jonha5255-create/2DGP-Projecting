@@ -47,6 +47,8 @@ class warrior:
     def __init__(self):
         self.x, self.y = 400, 200
         self.frame = 0
+        self.hp = 230
+        self.str = 35
 
         self.warrior_idle = IDLE(self)
         self.warrior_attack = ATTACK(self)

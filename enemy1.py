@@ -54,6 +54,8 @@ class enemy:
     def __init__(self):
         self.x, self.y = 1200, 180
         self.frame = 0
+        self.hp = 150
+        self.str = 20
 
         self.enemy_idle = IDLE(self)
         self.enemy_attack = ATTACK(self)

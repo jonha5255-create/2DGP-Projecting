@@ -77,6 +77,8 @@ class boss:
     def __init__(self):
         self.x, self.y = 1300, 270
         self.frame = 0
+        self.hp = 1000
+        self.str = 60
 
         self.boss_idle = IDLE(self)
         self.boss_attack = ATTACK(self)
