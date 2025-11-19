@@ -23,9 +23,9 @@ def update():
 
 def draw():
     clear_canvas()
-    draw_rectangle(0,0,1600,800,0,10,0,150,1)
-    image.draw(800, 400, 800, 500)
-    button.draw(800, 100, 300, 200)
+    draw_rectangle(0,0,1300,800,0,10,0,150,1)
+    image.draw(650, 400, 800, 500)
+    button.draw(650, 100, 300, 200)
     update_canvas()
     pass
 
