@@ -2,7 +2,7 @@ from pico2d import *
 
 
 
-class Skill_Pan:
+class skill_pan:
     def __init__(self):
         self.image = load_image('Skill_Pan.png')
 
@@ -10,4 +10,4 @@ class Skill_Pan:
         pass
 
     def draw(self):
-        self.image.draw(400, 200)
+        self.image.draw(800, 100)

@@ -7,16 +7,16 @@ from stage1 import stage1
 from warrior import warrior
 from boss import boss
 from enemy1 import enemy
-from skill_pan import Skill_Pan
+from skill_pan import skill_pan
 import game_world
-
-
-
 import game_framework
+
 
 Warrior = None
 Boss = None
 Enemy1 = None
+Healer = None
+Stage1 = None
 Skill_pan = None
 
 
@@ -32,7 +32,6 @@ def handle_events():
             Warrior.handle_event(event)
             Healer.handle_event(event)
             Boss.handle_event(event)
-
 
 
 
@@ -55,7 +54,7 @@ def init():
         Enemy1.x = random.randint(1000, 1200)
         game_world.add_object(Enemy1, 1)
 
-    Skill_pan = Skill_Pan()
+    Skill_pan = skill_pan()
     game_world.add_object(Skill_pan, 1)
 
     Stage1 = stage1()
