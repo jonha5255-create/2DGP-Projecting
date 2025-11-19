@@ -1,4 +1,4 @@
-from pico2d import load_image
+from pico2d import *
 from sdl2 import SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT, SDL_MOUSEBUTTONDOWN, SDL_KEYDOWN, SDLK_SPACE, SDL_KEYUP
 import game_world
 from state_machine import StateMachine
