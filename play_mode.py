@@ -51,7 +51,7 @@ def init():
 
     for _ in range(random.randint(1, 5)):
         Enemy1 = enemy()
-        Enemy1.x = random.randint(1000, 1200)
+        Enemy1.x = random.randint(800, 1000)
         game_world.add_object(Enemy1, 1)
 
     Skill_pan = skill_pan()

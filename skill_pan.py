@@ -10,4 +10,4 @@ class skill_pan:
         pass
 
     def draw(self):
-        self.image.draw(800, 100)
+        self.image.draw(650, 50)

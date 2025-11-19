@@ -45,7 +45,7 @@ class ATTACK:
 
 class warrior:
     def __init__(self):
-        self.x, self.y = 400, 200
+        self.x, self.y = 300, 200
         self.frame = 0
         self.hp = 230
         self.str = 35
