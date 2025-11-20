@@ -7,6 +7,24 @@ def space_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
 
 
+class RUN:
+    def __init__(self, warrior):
+        self.warrior = warrior
+        self.image = load_image('warrior_run.png')
+
+    def enter(self,e):
+        self.warrior.frame = 0
+
+    def exit(self,e):
+        pass
+
+    def do(self):
+       self.warrior.frame = (self.warrior.frame + 1) % 2
+
+    def draw(self):
+        self.image.clip_draw(self.warrior.frame * 128 ,0, 128, 100, self.warrior.x, self.warrior.y)
+
+
 
 
 class IDLE:
@@ -52,11 +70,13 @@ class warrior:
 
         self.warrior_idle = IDLE(self)
         self.warrior_attack = ATTACK(self)
+        self.warrior_run = RUN(self)
         self.state_machine = StateMachine (
-            self.warrior_idle,
+            self.warrior_run,
             {
                 self.warrior_idle: {space_down : self.warrior_attack},
-                self.warrior_attack: {space_down : self.warrior_idle}
+                self.warrior_attack: {space_down : self.warrior_idle},
+                self.warrior_run : {}
             }
         )
 
