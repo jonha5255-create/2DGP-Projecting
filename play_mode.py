@@ -24,7 +24,8 @@ Stage1 = None
 Skill_pan = None
 
 skill_block_count = 0
-MAX_SKILL_BLOCK = 8
+MAX_SKILL_BLOCK = 9
+current_skill_block = None
 
 
 def handle_events():
@@ -49,14 +50,16 @@ def add_skill_block():
         skill_block = SKILLBLOCK(skill_block_count)
         game_world.add_object(skill_block, 1)
         skill_block_count += 1
-        return True
+        return skill_block
     return False
 
 
 def init():
-    global Warrior, Boss, Archer, Enemy1, Healer, Stage1, Skill_pan, skill_block_count
+    global Warrior, Boss, Archer, Enemy1, Healer, Stage1,\
+        Skill_pan, skill_block_count, current_skill_block
 
     skill_block_count = 0
+    current_skill_block = None
 
     Warrior = warrior()
     game_world.add_object(Warrior, 1)
@@ -87,7 +90,14 @@ def init():
 
 
 def update():
+    global current_skill_block
+
     game_world.update()
+
+    if current_skill_block is None or current_skill_block.has_arrived():
+        new_block = add_skill_block()  # 수정
+        if new_block:  # 생성 성공 시에만 업데이트
+            current_skill_block = new_block
 
 def draw():
     clear_canvas()

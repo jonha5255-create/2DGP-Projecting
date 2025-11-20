@@ -55,7 +55,7 @@ class SKILLBLOCK:
         # 이동 중
         if self.is_moving:
             if self.x > self.target_x:
-                self.x -= self.SPEED * game_framework.frame_time
+                self.x -= self.SPEED
                 if self.x <= self.target_x:
                     self.x = self.target_x
                     self.is_moving = False
