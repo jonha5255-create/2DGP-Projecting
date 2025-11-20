@@ -1,3 +1,5 @@
+import random
+
 from pico2d import *
 
 class SKILLBLOCK:
@@ -13,7 +15,8 @@ class SKILLBLOCK:
         random_job = random.choice(['warrior', 'archer', 'healer'])
         self.skill_type = random_job
 
-        image_file = self.JOB_SKILL.get(skill_type, '.png')
+        image_file = self.JOB_SKILL.get(random_job, 'warrior_skill.png')
+        self.image = load_image(image_file)
         self.x, self.y = 700, 90
 
     def draw(self):
