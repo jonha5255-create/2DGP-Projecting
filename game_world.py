@@ -16,6 +16,12 @@ def render():
         for o in layer:
             o.draw()
 
+def clear():
+    global world
+
+    for layer in world:
+        layer.clear()
+
 def remove_object(o):
     for layer in world:
         if o in layer:
