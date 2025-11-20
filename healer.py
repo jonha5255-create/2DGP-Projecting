@@ -63,7 +63,7 @@ class HEAL:
 
 class healer:
     def __init__(self):
-        self.x, self.y = 100, 200
+        self.x, self.y = 100, 210
         self.frame = 0
         self.hp = 110
         self.str = 20

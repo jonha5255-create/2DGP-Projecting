@@ -2,7 +2,9 @@ from pico2d import *
 import random
 
 import lobby_mode
+from archer import archer
 from healer import healer
+from archer import archer
 from stage1 import stage1
 from warrior import warrior
 from boss import boss
@@ -14,6 +16,7 @@ import game_framework
 
 Warrior = None
 Boss = None
+Archer = None
 Enemy1 = None
 Healer = None
 Stage1 = None
@@ -31,12 +34,14 @@ def handle_events():
         else:
             Warrior.handle_event(event)
             Healer.handle_event(event)
+            Archer.handle_event(event)
             Boss.handle_event(event)
 
 
 
+
 def init():
-    global Warrior, Boss, Enemy1, Healer, Stage1, Skill_pan
+    global Warrior, Boss, Archer, Enemy1, Healer, Stage1, Skill_pan
 
 
     Warrior = warrior()
@@ -44,6 +49,9 @@ def init():
 
     Healer = healer()
     game_world.add_object(Healer, 1)
+
+    Archer = archer()
+    game_world.add_object(Archer, 1)
 
     Boss = boss()
     game_world.add_object(Boss, 1)

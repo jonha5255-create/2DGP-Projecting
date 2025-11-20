@@ -6,6 +6,22 @@ from state_machine import StateMachine
 def space_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
 
+class RUN:
+    def __init__(self, archer):
+        self.archer = archer
+        self.image = load_image('archer_run.png')
+
+    def enter(self, e):
+        self.archer.frame = 0
+
+    def exit(self, e):
+        pass
+
+    def do(self):
+       self.archer.frame = (self.archer.frame + 1) % 2
+
+    def draw(self):
+        self.image.clip_draw(self.archer.frame * 120 ,0, 120, 100, self.archer.x, self.archer.y)
 
 class IDLE:
     def __init__(self, archer):
@@ -19,10 +35,10 @@ class IDLE:
         pass
 
     def do(self):
-        self.archer.frame = (self.archer.frame + 1) % 3
+        self.archer.frame = (self.archer.frame + 1) % 2
 
     def draw(self):
-        self.image.clip_draw(self.archer.frame * 100, 0, 100, 100, self.archer.x, self.archer.y)
+        self.image.clip_draw(self.archer.frame * 120, 0, 120, 100, self.archer.x, self.archer.y)
 
 
 class ATTACK:
@@ -37,10 +53,10 @@ class ATTACK:
         pass
 
     def do(self):
-        self.archer.frame = (self.archer.frame + 1) % 4
+        self.archer.frame = (self.archer.frame + 1) % 3
 
     def draw(self):
-        self.image.clip_draw(self.archer.frame * 100, 0, 100, 100, self.archer.x, self.archer.y)
+        self.image.clip_draw(self.archer.frame * 120, 0, 120, 100, self.archer.x, self.archer.y)
 
 
 class archer:
@@ -52,11 +68,13 @@ class archer:
 
         self.archer_idle = IDLE(self)
         self.archer_attack = ATTACK(self)
+        self.archer_run = RUN(self)
         self.state_machine = StateMachine(
-            self.archer_idle,
+            self.archer_run,
             {
                 self.archer_idle: {space_down: self.archer_attack},
-                self.archer_attack: {space_down: self.archer_idle}
+                self.archer_attack: {space_down: self.archer_idle},
+                self.archer_run : {}
             }
         )
 
