@@ -8,6 +8,23 @@ def space_down(e):
 
 
 
+class RUN:
+    def __init__(self, healer):
+        self.healer = healer
+        self.image = load_image('healer run.png')
+
+    def enter(self,e):
+        self.healer.frame = 0
+
+    def exit(self,e):
+        pass
+
+    def do(self):
+       self.healer.frame = (self.healer.frame + 1) % 2
+
+    def draw(self):
+        self.image.clip_draw(self.healer.frame * 100 ,0, 100, 100, self.healer.x, self.healer.y)
+
 
 class IDLE:
     def __init__(self,healer):
@@ -52,12 +69,15 @@ class healer:
         self.str = 20
 
         self.healer_idle = IDLE(self)
-        self.warrior_heal = HEAL(self)
+        self.healer_heal = HEAL(self)
+        self.healer_run = RUN(self)
+
         self.state_machine = StateMachine (
-            self.healer_idle,
+            self.healer_run,
             {
-                self.healer_idle: {space_down : self.warrior_heal},
-                self.warrior_heal: {space_down : self.healer_idle}
+                self.healer_idle: {space_down : self.healer_heal},
+                self.healer_heal: {space_down : self.healer_idle},
+                self.healer_run : {}
             }
         )
 
