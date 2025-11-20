@@ -10,6 +10,7 @@ from warrior import warrior
 from boss import boss
 from enemy1 import enemy
 from skill_pan import skill_pan
+from skill_block import SKILLBLOCK
 import game_world
 import game_framework
 
@@ -21,6 +22,9 @@ Enemy1 = None
 Healer = None
 Stage1 = None
 Skill_pan = None
+
+skill_block_count = 0
+MAX_SKILL_BLOCK = 8
 
 
 def handle_events():
@@ -38,11 +42,21 @@ def handle_events():
             Boss.handle_event(event)
 
 
+def add_skill_block():
+    global skill_block_count
+
+    if skill_block_count < MAX_SKILL_BLOCK:
+        skill_block = SKILLBLOCK(skill_block_count)
+        game_world.add_object(skill_block, 1)
+        skill_block_count += 1
+        return True
+    return False
 
 
 def init():
-    global Warrior, Boss, Archer, Enemy1, Healer, Stage1, Skill_pan
+    global Warrior, Boss, Archer, Enemy1, Healer, Stage1, Skill_pan, skill_block_count
 
+    skill_block_count = 0
 
     Warrior = warrior()
     game_world.add_object(Warrior, 1)
@@ -64,6 +78,8 @@ def init():
 
     Skill_pan = skill_pan()
     game_world.add_object(Skill_pan, 1)
+
+    add_skill_block()
 
     Stage1 = stage1()
     game_world.add_object(Stage1, 0)
