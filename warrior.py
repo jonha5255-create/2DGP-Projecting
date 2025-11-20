@@ -12,7 +12,7 @@ def space_down(e):
 class IDLE:
     def __init__(self,warrior):
         self.warrior = warrior
-        self.image = load_image('warrior idle.png')
+        self.image = load_image('warrior_idle.png')
 
     def enter(self,e):
         self.warrior.frame = 0
@@ -21,15 +21,15 @@ class IDLE:
         pass
 
     def do(self):
-       self.warrior.frame = (self.warrior.frame + 1) % 3
+       self.warrior.frame = (self.warrior.frame + 1) % 2
 
     def draw(self):
-        self.image.clip_draw(self.warrior.frame * 100 ,0, 100, 100, self.warrior.x, self.warrior.y)
+        self.image.clip_draw(self.warrior.frame * 128 ,0, 128, 100, self.warrior.x, self.warrior.y)
 
 class ATTACK:
     def __init__(self, warrior):
         self.warrior = warrior
-        self.image = load_image('warrior attack.png')
+        self.image = load_image('warrior_attack.png')
 
     def enter(self,e):
         self.warrior.frame = 0
@@ -38,10 +38,10 @@ class ATTACK:
         pass
 
     def do(self):
-        self.warrior.frame = (self.warrior.frame + 1) % 4
+        self.warrior.frame = (self.warrior.frame + 1) % 3
 
     def draw(self):
-        self.image.clip_draw(self.warrior.frame * 100 ,0, 100, 100, self.warrior.x, self.warrior.y)
+        self.image.clip_draw(self.warrior.frame * 128 ,0, 128, 100, self.warrior.x, self.warrior.y)
 
 class warrior:
     def __init__(self):

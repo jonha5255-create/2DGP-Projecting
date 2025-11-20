@@ -10,7 +10,7 @@ def space_down(e):
 class IDLE:
     def __init__(self, archer):
         self.archer = archer
-        self.image = load_image('archer idle.png')
+        self.image = load_image('archer_idle.png')
 
     def enter(self, e):
         self.archer.frame = 0
@@ -28,7 +28,7 @@ class IDLE:
 class ATTACK:
     def __init__(self, archer):
         self.archer = archer
-        self.image = load_image('archer attack.png')
+        self.image = load_image('archer_attack.png')
 
     def enter(self, e):
         self.archer.frame = 0

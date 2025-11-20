@@ -41,7 +41,7 @@ def handle_events():
         elif event.type == SDL_MOUSEBUTTONDOWN and event.button == SDL_BUTTON_LEFT:
             x, y = event.x, 800 - event.y
             print(f"Mouse clicked at: ({x}, {y})")  # 디버깅용
-            if 650 <= x <= 950 and 270 <= y <= 330:
+            if 500 <= x <= 800 and 280 <= y <= 325:
                 game_framework.change_mode(play_mode)
 
 
