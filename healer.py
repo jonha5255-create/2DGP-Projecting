@@ -47,15 +47,21 @@ class HEAL:
     def __init__(self, healer):
         self.healer = healer
         self.image = load_image('healer heal.png')
+        self.skill_heal = 0
 
     def enter(self,e):
         self.healer.frame = 0
+        # 힐 시전시 프레임
+        self.skill_heal = 0
 
     def exit(self,e):
-        pass
+        self.skill_heal = 0
 
     def do(self):
         self.healer.frame = (self.healer.frame + 1) % 3
+        if self.skill_heal >= 3 * 10:
+            self.healer.state_machine.cur_state = self.healer_idle
+            self.healer_idle.enter(None)
 
     def draw(self):
         self.image.clip_draw(self.healer.frame * 100 ,0, 100, 100, self.healer.x, self.healer.y)
@@ -86,6 +92,11 @@ class healer:
 
     def draw(self):
         self.state_machine.draw()
+
+    def use_skill(self):
+        self.state_machine.cur_state.exit(None)
+        self.state_machine.cur_state = self.healer_heal
+        self.healer_heal.enter(None)
 
     def handle_event(self, event):
         self.state_machine.handle_state_event(('INPUT',event))
