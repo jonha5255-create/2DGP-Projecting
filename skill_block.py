@@ -86,3 +86,10 @@ class SKILLBLOCK:
 
     def has_arrived(self):
         return self.arrived and self.is_activated
+
+    def reset_target(self, index):
+        self.target_x = 1170 - index * (self.BLOCK_WIDTH + self.SPACING)
+        self.is_moving = True
+        self.arrived = False
+        self.activation_timer = 0.0
+        self.is_activated = False
