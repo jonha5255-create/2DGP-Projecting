@@ -59,9 +59,10 @@ class HEAL:
 
     def do(self):
         self.healer.frame = (self.healer.frame + 1) % 3
-        if self.skill_heal >= 3 * 10:
-            self.healer.state_machine.cur_state = self.healer_idle
-            self.healer_idle.enter(None)
+        # 스킬 애니메이션이 끝나면 RUN으로 복귀
+        if self.skill_heal >= 3 * 10:  # 3프레임 * 10프레임/초
+            self.healer.state_machine.cur_state = self.healer.healer_run
+            self.healer.healer_run.enter(None)
 
     def draw(self):
         self.image.clip_draw(self.healer.frame * 100 ,0, 100, 100, self.healer.x, self.healer.y)
