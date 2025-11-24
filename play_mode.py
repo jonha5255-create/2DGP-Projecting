@@ -23,9 +23,8 @@ Healer = None
 Stage1 = None
 Skill_pan = None
 
-skill_block_count = 0
+skill_blocks = []
 MAX_SKILL_BLOCK = 9
-current_skill_block = None
 
 
 def handle_events():
@@ -42,24 +41,25 @@ def handle_events():
             Archer.handle_event(event)
             Boss.handle_event(event)
 
-
 def add_skill_block():
-    global skill_block_count
+    if len(skill_blocks) < MAX_SKILL_BLOCK:
+        new_block = SKILLBLOCK(len(skill_blocks))
+        skill_blocks.append(new_block)
+        game_world.add_object(new_block, 1)
+        print(f"블록 추가: index={len(skill_blocks) - 1}, target_x={new_block.target_x}")  # 디버깅
+        return new_block
+    return None
 
-    if skill_block_count < MAX_SKILL_BLOCK:
-        skill_block = SKILLBLOCK(skill_block_count)
-        game_world.add_object(skill_block, 1)
-        skill_block_count += 1
-        return skill_block
-    return False
 
 
 def init():
     global Warrior, Boss, Archer, Enemy1, Healer, Stage1,\
-        Skill_pan, skill_block_count, current_skill_block
+        Skill_pan, skill_blocks
 
-    skill_block_count = 0
-    current_skill_block = None
+    skill_blocks = []
+
+    Stage1 = stage1()
+    game_world.add_object(Stage1, 0)
 
     Warrior = warrior()
     game_world.add_object(Warrior, 1)
@@ -80,24 +80,19 @@ def init():
         game_world.add_object(Enemy1, 1)
 
     Skill_pan = skill_pan()
-    game_world.add_object(Skill_pan, 1)
+    game_world.add_object(Skill_pan, 0)
+
 
     add_skill_block()
 
-    Stage1 = stage1()
-    game_world.add_object(Stage1, 0)
-
-
 
 def update():
-    global current_skill_block
-
     game_world.update()
 
-    if current_skill_block is None or current_skill_block.has_arrived():
-        new_block = add_skill_block()  # 수정
-        if new_block:  # 생성 성공 시에만 업데이트
-            current_skill_block = new_block
+    if skill_blocks and skill_blocks[-1].has_arrived():
+        if len(skill_blocks) < MAX_SKILL_BLOCK:
+            add_skill_block()
+
 
 def draw():
     clear_canvas()
@@ -106,6 +101,8 @@ def draw():
     update_canvas()
 
 def finish():
+    global skill_blocks
+    skill_blocks = []
     game_world.clear()
 
 def pause(): pass
