@@ -86,5 +86,10 @@ class warrior:
     def draw(self):
         self.state_machine.draw()
 
+    def use_skill(self):
+        self.state_machine.cur_state.exit(None)
+        self.state_machine.cur_state = self.warrior_attack
+        self.warrior_attack.enter(None)
+
     def handle_event(self, event):
         self.state_machine.handle_state_event(('INPUT',event))
