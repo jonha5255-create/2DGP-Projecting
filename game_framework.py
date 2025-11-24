@@ -47,9 +47,9 @@ def run(start_mode):
         stack[-1].update()  # 객체들의 상호작용을 시뮬레이션 , 계산
         stack[-1].draw()  # 객체들의 모습을 그린다.
 
-        frame_time = time.time() - current_time
-        frame_time = 1.0/frame_time
-        current_time += frame_time
+        new_time = time.time()
+        frame_time = new_time - current_time
+        current_time = new_time
 
     while len(stack) > 0:
         stack[-1].finish()
