@@ -45,15 +45,23 @@ class ATTACK:
     def __init__(self, archer):
         self.archer = archer
         self.image = load_image('archer_attack.png')
+        self.archer_arrow = 0
 
     def enter(self, e):
         self.archer.frame = 0
+        self.archer_arrow = 0
 
     def exit(self, e):
-        pass
+        self.archer_arrow = 0
 
     def do(self):
         self.archer.frame = (self.archer.frame + 1) % 3
+        self.archer_arrow += 1
+
+        if self.skill_arrow == 3:
+            self.archer.state_machine.cur_state = self.archer.archer_idle
+            self.archer.archer_idle.enter(None)
+
 
     def draw(self):
         self.image.clip_draw(self.archer.frame * 120, 0, 120, 100, self.archer.x, self.archer.y)
@@ -83,6 +91,12 @@ class archer:
 
     def draw(self):
         self.state_machine.draw()
+
+    def use_skill(self):
+        self.state_machine.cur_state.exit(None)
+        self.state_machine.cur_state = self.archer_idle
+        self.archer_idle.enter(None)
+
 
     def handle_event(self, event):
         self.state_machine.handle_state_event(('INPUT', event))
