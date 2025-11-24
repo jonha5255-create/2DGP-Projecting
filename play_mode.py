@@ -36,6 +36,18 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
         else:
+            for block in skill_blocks:
+                skill_type = block.handle_event(event)
+                if skill_type:
+                    if skill_type == 'warrior':
+                        Warrior.use_skill()
+                    elif skill_type == 'archer':
+                        Archer.use_skill()
+                    elif skill_type == 'healer':
+                        Healer.use_skill()
+                    break
+
+            # 캐릭터 및 보스 이벤트 처리
             Warrior.handle_event(event)
             Healer.handle_event(event)
             Archer.handle_event(event)

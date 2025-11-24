@@ -1,5 +1,6 @@
 import random
 from pico2d import *
+from sdl2 import SDL_MOUSEMOTION, SDL_MOUSEBUTTONDOWN, SDL_BUTTON_LEFT
 
 import game_framework
 
@@ -59,6 +60,29 @@ class SKILLBLOCK:
             self.activation_timer += game_framework.frame_time
             if self.activation_timer >= self.ACTIVATION_DELAY:
                 self.is_activated = True
+
+    def handle_event(self, event):
+        if event.type == SDL_MOUSEBUTTONDOWN:
+            if event.button == SDL_BUTTON_LEFT:
+                if not self.is_spawned or not self.is_activated:
+                    return None
+
+                # 마우스 좌표 변환
+                mouse_x = event.x
+                mouse_y = get_canvas_height() - event.y
+
+                # 블록 영역 계산
+                left = self.x - self.BLOCK_WIDTH / 2
+                right = self.x + self.BLOCK_WIDTH / 2
+                bottom = self.y - self.BLOCK_HEIGHT / 2
+                top = self.y + self.BLOCK_HEIGHT / 2
+
+                # 클릭 영역 확인
+                if left <= mouse_x <= right and bottom <= mouse_y <= top:
+                    self.is_spawned = False
+                    return self.skill_type
+
+        return None
 
     def has_arrived(self):
         return self.arrived and self.is_activated
