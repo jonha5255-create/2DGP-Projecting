@@ -46,17 +46,25 @@ class IDLE:
 
 class ATTACK:
     def __init__(self, warrior):
+        self.attack_finished = None
         self.warrior = warrior
         self.image = load_image('warrior_attack.png')
 
     def enter(self,e):
         self.warrior.frame = 0
+        self.attack_finished = False
 
     def exit(self,e):
         pass
 
     def do(self):
-        self.warrior.frame = (self.warrior.frame + 1) % 3
+        if not self.attack_finished:
+            self.warrior.frame = (self.warrior.frame + 1) % 3
+            if self.warrior.frame == 2:
+                self.attack_finished = True
+                # 공격 끝나고 idle 상태로 복귀
+                self.warrior.state_machine.cur_state = self.warrior.warrior_idle
+                self.warrior.warrior_idle.enter(None)
 
     def draw(self):
         self.image.clip_draw(self.warrior.frame * 128 ,0, 128, 100, self.warrior.x, self.warrior.y)
