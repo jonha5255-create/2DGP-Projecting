@@ -1,4 +1,4 @@
-from pico2d import load_image
+from pico2d import *
 from sdl2 import SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT, SDL_MOUSEBUTTONDOWN, SDL_KEYDOWN, SDLK_SPACE, SDL_KEYUP
 
 import game_framework
@@ -106,16 +106,28 @@ class warrior:
             }
         )
 
+    def get_bb(self):
+        left = self.x - 64
+        right = self.x + 64
+        bottom = self.y - 50
+        top = self.y + 50
+        return left, bottom, right, top
+
     def update(self):
         self.state_machine.update()
 
     def draw(self):
         self.state_machine.draw()
 
+        left, bottom, right, top = self.get_bb()
+        draw_rectangle(left, bottom, right, top)
+
     def use_skill(self):
         self.state_machine.cur_state.exit(None)
         self.state_machine.cur_state = self.warrior_attack
         self.warrior_attack.enter(None)
+
+
 
     def handle_event(self, event):
         self.state_machine.handle_state_event(('INPUT',event))
