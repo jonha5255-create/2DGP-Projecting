@@ -39,20 +39,23 @@ def handle_events():
             for i, block in enumerate(skill_blocks):
                 skill_type = block.handle_event(event)
                 if skill_type:
-                    if skill_type == 'warrior':
-                        Warrior.use_skill()
-                    elif skill_type == 'archer':
-                        Archer.use_skill()
-                    elif skill_type == 'healer':
-                        Healer.use_skill()
-
-                    # 블록 제거
-                    removed_block = skill_blocks.pop(i)
-                    game_world.remove_object(removed_block)
-
-                    for j, block in enumerate(skill_blocks):
-                        block.reset_target(j)
-
+                    # 연결된 블록 인덱스와 개수 구하기
+                    connected_indices, count = SKILLBLOCK.find_connected_skill(skill_blocks, i)
+                    if count >= 1:
+                        # 연결된 블록들에 효과 적용 및 제거
+                        for idx in sorted(connected_indices, reverse=True):
+                            removed_block = skill_blocks.pop(idx)
+                            game_world.remove_object(removed_block)
+                        # 스킬 효과 적용 (예시)
+                        if skill_type == 'warrior':
+                            Warrior.use_skill()
+                        elif skill_type == 'archer':
+                            Archer.use_skill()
+                        elif skill_type == 'healer':
+                            Healer.use_skill()
+                        # 인덱스 재정렬
+                        for j, block in enumerate(skill_blocks):
+                            block.reset_target(j)
                     break
 
             # 캐릭터 및 보스 이벤트 처리

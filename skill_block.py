@@ -93,3 +93,30 @@ class SKILLBLOCK:
         self.arrived = False
         self.activation_timer = 0.0
         self.is_activated = False
+
+    def find_connected_skill(skill_block_list, clicked_index):
+        if not (0 <= clicked_index < len(skill_block_list)):
+            return [], 0
+
+        base_type = skill_block_list[clicked_index].skill_type
+        connected_indices = [clicked_index]
+
+        # 왼쪽 탐색
+        i = clicked_index - 1
+        while i >= 0 and len(connected_indices) < 3:
+            if skill_block_list[i].skill_type == base_type:
+                connected_indices.insert(0, i)
+                i -= 1
+            else:
+                break
+
+        # 오른쪽 탐색
+        i = clicked_index + 1
+        while i < len(skill_block_list) and len(connected_indices) < 3:
+            if skill_block_list[i].skill_type == base_type:
+                connected_indices.append(i)
+                i += 1
+            else:
+                break
+
+        return connected_indices, len(connected_indices)
