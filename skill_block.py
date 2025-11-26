@@ -48,7 +48,7 @@ class SKILLBLOCK:
         if self.is_moving:
             if self.x < self.target_x:
                 move_distance = self.SPEED * game_framework.frame_time
-                self.x += move_distance
+                self.x += move_distance * 2
 
             if self.x >= self.target_x:
                 self.x = self.target_x
