@@ -26,6 +26,7 @@ class RUN:
     def __init__(self, warrior):
         self.warrior = warrior
         self.image = load_image('warrior_run.png')
+        self.timer = 0.0
 
     def enter(self,e):
         self.warrior.frame = 0
@@ -34,7 +35,10 @@ class RUN:
         pass
 
     def do(self):
-        self.warrior.frame = (self.warrior.frame + 1) % 2
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.1:
+            self.warrior.frame = (self.warrior.frame + 1) % 2
+            self.timer = 0.0
 
         self.warrior.x += RUN_SPEED_PPS * game_framework.frame_time
 
@@ -48,6 +52,7 @@ class IDLE:
     def __init__(self,warrior):
         self.warrior = warrior
         self.image = load_image('warrior_idle.png')
+        self.timer = 0.0
 
     def enter(self,e):
         self.warrior.frame = 0
@@ -56,7 +61,10 @@ class IDLE:
         pass
 
     def do(self):
-       self.warrior.frame = (self.warrior.frame + 1) % 2
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.2:
+            self.warrior.frame = (self.warrior.frame + 1) % 2
+            self.timer = 0.0
 
     def draw(self):
         self.image.clip_draw(self.warrior.frame * 128 ,0, 128, 100, self.warrior.x, self.warrior.y)
@@ -66,6 +74,7 @@ class ATTACK:
         self.attack_finished = None
         self.warrior = warrior
         self.image = load_image('warrior_attack.png')
+        self.timer = 0.0
 
     def enter(self,e):
         self.warrior.frame = 0
@@ -76,7 +85,10 @@ class ATTACK:
 
     def do(self):
         if not self.attack_finished:
-            self.warrior.frame = (self.warrior.frame + 1) % 3
+            self.timer += game_framework.frame_time
+            if self.timer >= 0.2:
+                self.warrior.frame = (self.warrior.frame + 1) % 3
+                self.timer = 0.0
             if self.warrior.frame == 2:
                 self.attack_finished = True
                 # 공격 끝나고 idle 상태로 복귀
