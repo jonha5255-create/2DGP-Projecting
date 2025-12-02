@@ -1,5 +1,8 @@
 from pico2d import *
 
+import game_framework
+
+
 class stage1:
     def __init__(self):
         self.ground = load_image('stage1_background.png')
@@ -29,15 +32,15 @@ class stage1:
             self.ground.draw(self.ground_x + i * self.ground_width, 200)
 
     def update(self):
-        self.water_x -= self.water_speed
+        self.water_x -= self.water_speed * game_framework.frame_time * 50
         if self.water_x <= -self.water_width:
             self.water_x = 0
 
-        self.cloud_x -= self.cloud_speed
+        self.cloud_x -= self.cloud_speed * game_framework.frame_time * 50
         if self.cloud_x <= -self.cloud_width:
             self.cloud_x = 0
 
-        self.ground_x -= self.ground_speed
+        self.ground_x -= self.ground_speed * game_framework.frame_time * 50
         if self.ground_x <= -self.ground_width:
             self.ground_x = 0
         pass
