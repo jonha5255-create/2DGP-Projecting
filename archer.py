@@ -1,5 +1,7 @@
 from pico2d import load_image
 from sdl2 import SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT, SDL_MOUSEBUTTONDOWN, SDL_KEYDOWN, SDLK_SPACE, SDL_KEYUP
+
+import game_framework
 import game_world
 from state_machine import StateMachine
 
@@ -21,6 +23,7 @@ class RUN:
     def __init__(self, archer):
         self.archer = archer
         self.image = load_image('archer_run.png')
+        self.timer = 0.0
 
     def enter(self, e):
         self.archer.frame = 0
@@ -29,7 +32,10 @@ class RUN:
         pass
 
     def do(self):
-       self.archer.frame = (self.archer.frame + 1) % 2
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.1:
+            self.archer.frame = (self.archer.frame + 1) % 2
+            self.timer = 0.0
 
     def draw(self):
         self.image.clip_draw(self.archer.frame * 120 ,0, 120, 100, self.archer.x, self.archer.y)
@@ -38,6 +44,7 @@ class IDLE:
     def __init__(self, archer):
         self.archer = archer
         self.image = load_image('archer_idle.png')
+        self.timer = 0.0
 
     def enter(self, e):
         self.archer.frame = 0
@@ -46,7 +53,10 @@ class IDLE:
         pass
 
     def do(self):
-        self.archer.frame = (self.archer.frame + 1) % 2
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.1:
+            self.archer.frame = (self.archer.frame + 1) % 2
+            self.timer = 0.0
 
     def draw(self):
         self.image.clip_draw(self.archer.frame * 120, 0, 120, 100, self.archer.x, self.archer.y)
@@ -57,6 +67,7 @@ class ATTACK:
         self.archer = archer
         self.image = load_image('archer_attack.png')
         self.archer_arrow = 0
+        self.timer = 0.0
 
     def enter(self, e):
         self.archer.frame = 0
@@ -66,7 +77,11 @@ class ATTACK:
         self.archer_arrow = 0
 
     def do(self):
-        self.archer.frame = (self.archer.frame + 1) % 3
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.1:
+            self.archer.frame = (self.archer.frame + 1) % 3
+            self.timer = 0.0
+
         self.archer_arrow += 1
 
         if self.skill_arrow == 3:
