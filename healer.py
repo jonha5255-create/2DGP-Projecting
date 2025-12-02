@@ -65,18 +65,16 @@ class IDLE:
 
 class HEAL:
     def __init__(self, healer):
+        self.healer_frame = None
         self.healer = healer
         self.image = load_image('healer heal.png')
-        self.skill_heal = 0
         self.timer = 0.0
 
     def enter(self,e):
         self.healer.frame = 0
-        # 힐 시전시 프레임
-        self.skill_heal = 0
 
     def exit(self,e):
-        self.skill_heal = 0
+        pass
 
     def do(self):
         self.timer += game_framework.frame_time
@@ -84,8 +82,8 @@ class HEAL:
             self.healer.frame = (self.healer.frame + 1) % 3
             self.timer = 0.0
         # 스킬 애니메이션이 끝나면 RUN으로 복귀
-        if self.skill_heal >= 3 * 10:  # 3프레임 * 10프레임/초
-            self.healer.state_machine.cur_state = self.healer.healer_run
+        if self.healer_frame == 2:
+            self.healer.state_machine.cur_state = self.healer.healer_idle
             self.healer.healer_run.enter(None)
 
     def draw(self):
