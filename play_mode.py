@@ -6,6 +6,7 @@ from archer import archer
 from healer import healer
 from archer import archer
 from stage1 import stage1
+from stage2 import stage2
 from warrior import warrior
 from boss import boss
 from enemy1 import enemy
@@ -76,13 +77,13 @@ def add_skill_block():
 
 
 def init():
-    global Warrior, Boss, Archer, Enemy1, Healer, Stage1,\
-        Skill_pan, skill_blocks
+    global Stage1, Warrior, Healer, Archer, Boss, Enemy1, Skill_pan
+    global skill_blocks
 
     skill_blocks = []
 
-    Stage1 = stage1()
-    game_world.add_object(Stage1, 0)
+    Stage2 = stage2()
+    game_world.add_object(Stage2, 0)
 
     Warrior = warrior()
     game_world.add_object(Warrior, 1)
