@@ -1,5 +1,7 @@
 from pico2d import *
 from sdl2 import SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT, SDL_MOUSEBUTTONDOWN, SDL_KEYDOWN, SDLK_SPACE, SDL_KEYUP
+
+import game_framework
 import game_world
 from state_machine import StateMachine
 
@@ -21,6 +23,7 @@ class RUN:
     def __init__(self, healer):
         self.healer = healer
         self.image = load_image('healer run.png')
+        self.timer = 0.0
 
     def enter(self,e):
         self.healer.frame = 0
@@ -29,7 +32,11 @@ class RUN:
         pass
 
     def do(self):
-       self.healer.frame = (self.healer.frame + 1) % 2
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.1:
+            self.healer.frame = (self.healer.frame + 1) % 2
+            self.timer = 0.0
+
 
     def draw(self):
         self.image.clip_draw(self.healer.frame * 100 ,0, 100, 100, self.healer.x, self.healer.y)
@@ -39,6 +46,7 @@ class IDLE:
     def __init__(self,healer):
         self.healer = healer
         self.image = load_image('healer idle.png')
+        self.timer = 0.0
 
     def enter(self,e):
         self.healer.frame = 0
@@ -47,7 +55,10 @@ class IDLE:
         pass
 
     def do(self):
-       self.healer.frame = (self.healer.frame + 1) % 2
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.1:
+            self.healer.frame = (self.healer.frame + 1) % 2
+            self.timer = 0.0
 
     def draw(self):
         self.image.clip_draw(self.healer.frame * 100 ,0, 100, 100, self.healer.x, self.healer.y)
@@ -57,6 +68,7 @@ class HEAL:
         self.healer = healer
         self.image = load_image('healer heal.png')
         self.skill_heal = 0
+        self.timer = 0.0
 
     def enter(self,e):
         self.healer.frame = 0
@@ -67,7 +79,10 @@ class HEAL:
         self.skill_heal = 0
 
     def do(self):
-        self.healer.frame = (self.healer.frame + 1) % 3
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.1:
+            self.healer.frame = (self.healer.frame + 1) % 3
+            self.timer = 0.0
         # 스킬 애니메이션이 끝나면 RUN으로 복귀
         if self.skill_heal >= 3 * 10:  # 3프레임 * 10프레임/초
             self.healer.state_machine.cur_state = self.healer.healer_run
