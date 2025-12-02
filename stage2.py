@@ -22,7 +22,7 @@ class stage2:
             self.background.draw(self.background_x + i * self.background_width, 350)
 
         for i in range(3):
-            self.ground.draw(self.ground_x + i * self.ground_width, 350)
+            self.ground.draw(self.ground_x + i * self.ground_width,350)
 
     def update(self):
         self.background_x -= self.background_speed * game_framework.frame_time * 50
@@ -32,4 +32,3 @@ class stage2:
         self.ground_x -= self.ground_speed * game_framework.frame_time * 50
         if self.ground_x <= -self.ground_width:
             self.ground_x = 0
-        pass
