@@ -1,4 +1,4 @@
-from pico2d import load_image
+from pico2d import load_image, draw_rectangle
 from sdl2 import SDL_KEYDOWN, SDLK_SPACE, SDLK_a, SDLK_h
 
 import game_framework
@@ -105,11 +105,22 @@ class boss:
                 self.boss_heal : {h_down : self.boss_idle,a_down : self.boss_attack}
             }
         )
+
+    def get_bb(self):
+        left = self.x - 170
+        right = self.x + 170
+        bottom = self.y - 200
+        top = self.y + 200
+        return left, bottom, right, top
+
     def update(self):
         self.state_machine.update()
 
     def draw(self):
         self.state_machine.draw()
+
+        left, bottom, right, top = self.get_bb()
+        draw_rectangle(left, bottom, right, top)
 
     def handle_event(self, event):
         self.state_machine.handle_state_event(('INPUT',event))
