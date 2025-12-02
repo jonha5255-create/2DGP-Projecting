@@ -7,6 +7,7 @@ from healer import healer
 from archer import archer
 from stage1 import stage1
 from stage2 import stage2
+from stage3 import stage3
 from warrior import warrior
 from boss import boss
 from enemy1 import enemy
@@ -15,14 +16,6 @@ from skill_block import SKILLBLOCK
 import game_world
 import game_framework
 
-
-Warrior = None
-Boss = None
-Archer = None
-Enemy1 = None
-Healer = None
-Stage1 = None
-Skill_pan = None
 
 skill_blocks = []
 MAX_SKILL_BLOCK = 9
@@ -76,14 +69,16 @@ def add_skill_block():
 
 
 
+
+
 def init():
-    global Stage1, Warrior, Healer, Archer, Boss, Enemy1, Skill_pan
+    global Warrior, Healer, Archer, Boss
     global skill_blocks
 
     skill_blocks = []
 
-    Stage2 = stage2()
-    game_world.add_object(Stage2, 0)
+    Stage1= stage1()
+    game_world.add_object(Stage1, 0)
 
     Warrior = warrior()
     game_world.add_object(Warrior, 1)
