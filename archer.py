@@ -82,12 +82,10 @@ class ATTACK:
             self.archer.frame = (self.archer.frame + 1) % 3
             self.timer = 0.0
 
-        self.archer_arrow += 1
-
-        if self.skill_arrow == 3:
+        if self.archer.frame == 3:
+            # 공격 끝나고 idle 상태로 복귀
             self.archer.state_machine.cur_state = self.archer.archer_idle
             self.archer.archer_idle.enter(None)
-
 
     def draw(self):
         self.image.clip_draw(self.archer.frame * 120, 0, 120, 100, self.archer.x, self.archer.y)
