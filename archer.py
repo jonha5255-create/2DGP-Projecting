@@ -1,4 +1,4 @@
-from pico2d import load_image
+from pico2d import load_image, draw_rectangle
 from sdl2 import SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT, SDL_MOUSEBUTTONDOWN, SDL_KEYDOWN, SDLK_SPACE, SDL_KEYUP
 
 import game_framework
@@ -110,11 +110,20 @@ class archer:
             }
         )
 
+    def get_bb(self):
+        left = self.x - 50
+        right = self.x + 40
+        bottom = self.y - 50
+        top = self.y + 30
+        return left, bottom, right, top
+
     def update(self):
         self.state_machine.update()
 
     def draw(self):
         self.state_machine.draw()
+        left, bottom, right, top = self.get_bb()
+        draw_rectangle(left, bottom, right, top)
 
     def use_skill(self):
         self.state_machine.cur_state.exit(None)

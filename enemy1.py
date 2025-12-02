@@ -6,9 +6,11 @@ import game_world
 from state_machine import StateMachine
 
 class ATTACK:
+    enemy = None
     def __init__(self, enemy):
         self.enemy = enemy
-        self.image = load_image('enemy1 attack.png')
+        if enemy is None:
+            self.image = load_image('enemy1 attack.png')
         self.timer = 0.0
 
     def enter(self,e):
@@ -29,6 +31,7 @@ class ATTACK:
 
     def draw(self):
         self.image.clip_draw(self.enemy.frame * 37 ,0, 37, 100, self.enemy.x, self.enemy.y, 60, 60)
+        draw_rectangle(*self.enemy.get_bb())
 
 
 class IDLE:
@@ -52,6 +55,7 @@ class IDLE:
 
     def draw(self):
         self.image.clip_draw(self.enemy.frame * 37 ,0, 37, 100, self.enemy.x, self.enemy.y, 60, 60)
+        draw_rectangle(*self.enemy.get_bb())
 
     def update(self):
         pass
@@ -76,6 +80,9 @@ class enemy:
                 self.enemy_idle : { 'INPUT': self.enemy_attack }
             }
         )
+
+    def get_bb(self):
+        return self.x - 20, self.y - 30, self.x + 20, self.y + 30
 
     def update(self):
         self.state_machine.update()

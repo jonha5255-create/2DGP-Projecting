@@ -119,7 +119,7 @@ class warrior:
         )
 
     def get_bb(self):
-        left = self.x - 64
+        left = self.x - 50
         right = self.x + 64
         bottom = self.y - 50
         top = self.y + 50
