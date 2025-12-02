@@ -39,8 +39,8 @@ class RUN:
         if self.timer >= 0.1:
             self.warrior.frame = (self.warrior.frame + 1) % 2
             self.timer = 0.0
-
-        self.warrior.x += RUN_SPEED_PPS * game_framework.frame_time
+        sx = RUN_SPEED_KMPH * game_framework.frame_time * 2.0
+        self.warrior.x += sx
 
     def draw(self):
         self.image.clip_draw(self.warrior.frame * 128 ,0, 128, 100, self.warrior.x, self.warrior.y)
