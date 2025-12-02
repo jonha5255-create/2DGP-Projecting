@@ -1,5 +1,7 @@
 from pico2d import load_image
 from sdl2 import SDL_KEYDOWN, SDLK_SPACE, SDLK_a, SDLK_h
+
+import game_framework
 import game_world
 
 from state_machine import StateMachine
@@ -13,6 +15,7 @@ class HEAL:
     def __init__(self, boss):
         self.boss = boss
         self.image = load_image('boss heal.png')
+        self.timer = 0.0
 
     def enter(self,e):
         self.boss.frame = 0
@@ -21,18 +24,22 @@ class HEAL:
         pass
 
     def do(self):
-        self.boss.frame = (self.boss.frame + 1) % 8
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.1:
+            self.boss.frame = (self.boss.frame + 1) % 8
+            self.timer = 0.0
 
     def draw(self):
         frame_x = (self.boss.frame % 3) * 113
         frame_y = (2-(self.boss.frame // 3)) * 113
-        self.image.clip_composite_draw(frame_x,frame_y, 113, 113,0,'h', self.boss.x, self.boss.y, 300, 300)
+        self.image.clip_composite_draw(frame_x,frame_y, 113, 113,0,'h', self.boss.x, self.boss.y, 500, 500)
         #파일 안에 이미지 불러오기
 
 class ATTACK:
     def __init__(self, boss):
         self.boss = boss
         self.image = load_image('boss attack.png')
+        self.timer = 0.0
 
     def enter(self,e):
         self.boss.frame = 0
@@ -41,13 +48,16 @@ class ATTACK:
         pass
 
     def do(self):
-        self.boss.frame = (self.boss.frame + 1) % 8
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.1:
+            self.boss.frame = (self.boss.frame + 1) % 8
+            self.timer = 0.0
 
 
     def draw(self):
         frame_x = (self.boss.frame % 3) * 113
         frame_y = (2-(self.boss.frame // 3)) * 113
-        self.image.clip_composite_draw(frame_x,frame_y, 113, 113,0,'h', self.boss.x, self.boss.y, 300, 300)
+        self.image.clip_composite_draw(frame_x,frame_y, 113, 113,0,'h', self.boss.x, self.boss.y, 500, 500)
         #파일 안에 이미지 불러오기
 
 
@@ -55,6 +65,7 @@ class IDLE:
     def __init__(self, boss):
         self.boss = boss
         self.image = load_image('boss idle.png')
+        self.timer = 0.0
 
     def enter(self,e):
         self.boss.frame = 0
@@ -63,19 +74,22 @@ class IDLE:
         pass
 
     def do(self):
-        self.boss.frame = (self.boss.frame + 1) % 4
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.1:
+            self.boss.frame = (self.boss.frame + 1) % 4
+            self.timer = 0.0
 
 
     def draw(self):
         frame_x = (self.boss.frame % 2) * 113
         frame_y = (self.boss.frame // 2) * 113
-        self.image.clip_composite_draw(frame_x,frame_y, 113, 113,0,'h', self.boss.x, self.boss.y, 300, 300)
+        self.image.clip_composite_draw(frame_x,frame_y, 113, 113,0,'h', self.boss.x, self.boss.y, 500, 500)
         #파일 안에 이미지 불러오기
 
 
 class boss:
     def __init__(self):
-        self.x, self.y = 1100, 270
+        self.x, self.y = 1100, 320
         self.frame = 0
         self.hp = 1000
         self.str = 60
