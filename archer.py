@@ -27,6 +27,11 @@ class SKILL:
     def enter(self, e):
         self.archer.frame = 0
         self.timer = 0.0
+        if isinstance(e, tuple) and len(e) > 2:
+            self.chain_count = e[2]
+        else:
+            self.chain_count = 1
+        print(f"Skill activated with chain count: {self.chain_count}")
 
     def exit(self, e):
         pass
