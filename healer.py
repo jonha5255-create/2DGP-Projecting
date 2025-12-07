@@ -3,6 +3,7 @@ from sdl2 import SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT, SDL_MOUSEBUTTONDOWN, SDL_KEY
 
 import game_framework
 import game_world
+from effect import EFFECT
 from state_machine import StateMachine
 
 def space_down(e):
@@ -72,7 +73,15 @@ class HEAL:
 
     def enter(self,count):
         self.healer.frame = 0
+        self.timer = 0.0
         self.chain_count = count if isinstance(count, int) else 1
+
+        scale = 1.0 + (count - 1) * 0.3
+
+        heal_effect = EFFECT(self.healer.x, self.healer.y,'healer_heal', scale)
+        game_world.add_object(heal_effect, 1)
+
+        print(f"힐러 {count}체인 힐 이펙트 발동!")
 
     def exit(self,e):
         pass

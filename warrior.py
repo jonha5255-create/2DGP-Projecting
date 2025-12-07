@@ -81,6 +81,7 @@ class ATTACK:
         self.timer = 0.0
         self.attack_finished = False
         self.chain_count = count if isinstance(count, int) else 1
+
         scale = 1.0 + (count - 1) * 0.5
 
         effect_x = self.warrior.x + 80
@@ -88,6 +89,8 @@ class ATTACK:
 
         skill_effect = EFFECT(effect_x, effect_y, 'warrior_attack', scale)
         game_world.add_object(skill_effect, 2)
+
+        print(f"워리어 {count}체인 공격 이펙트 발동!")
 
 
     def exit(self,e):
