@@ -16,8 +16,11 @@ RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
 ATTACK_RANGE_PIXEL = 3.0 * PIXEL_PER_METER
 
-def block_clicked(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_MOUSEBUTTONDOWN and e[1].button == SDL_BUTTON_LEFT
+def space_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
+
+def skill_trigger(e):
+    return e[0] == 'SKILL_TRIGGER'
 
 class RUN:
     def __init__(self, archer):
@@ -146,9 +149,9 @@ class archer:
         self.state_machine = StateMachine(
             self.archer_run,
             {
-                self.archer_idle: {block_clicked : self.archer_attack},
-                self.archer_attack: {block_clicked : self.archer_idle},
-                self.archer_run : {}
+                self.archer_idle: { skill_trigger : self.archer_attack},
+                self.archer_attack: {skill_trigger : self.archer_attack , space_down : self.archer_idle},
+                self.archer_run : {skill_trigger : self.archer_attack}
             }
         )
 
@@ -164,7 +167,7 @@ class archer:
         nearest_enemy = None
         min_dist = 99999
 
-        for obj in game_world.world[3]:
+        for obj in game_world.world[1]:
             if hasattr(obj, 'hp') and obj.__class__.__name__ == 'enemy':
                 dist = obj.x - self.x
                 if dist > 0 and dist < min_dist:
