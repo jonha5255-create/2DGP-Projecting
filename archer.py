@@ -22,6 +22,7 @@ class SKILL:
     def __init__(self, archer):
         self.archer = archer
         self.image = load_image('archer_attack.png')
+        self.effect_image = load_image('.png')
         self.timer = 0.0
 
     def enter(self, e):
@@ -42,8 +43,18 @@ class SKILL:
             self.archer.frame = (self.archer.frame + 1) % 4
             self.timer = 0.0
 
+        if self.archer.frame == 2:
+            # 스킬 종료 후 RUN으로 복귀
+            self.archer.state_machine.cur_state = self.archer.archer_run
+            self.archer.archer_run.enter(None)
+
     def draw(self):
         self.image.clip_draw(self.archer.frame * 120, 0, 120, 100, self.archer.x, self.archer.y)
+
+        # 체인 이펙트
+        scale = 1.0 + (self.chain_count - 1) * 0.5
+        self.effect_image.draw(self.archer.x + 80, self.archer.y, 100 * scale, 100 * scale)
+
 class RUN:
     def __init__(self, archer):
         self.archer = archer
