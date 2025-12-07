@@ -65,7 +65,6 @@ class IDLE:
 
 class HEAL:
     def __init__(self, healer):
-        self.healer_frame = None
         self.healer = healer
         self.image = load_image('healer heal.png')
         self.timer = 0.0
@@ -85,7 +84,7 @@ class HEAL:
             self.timer = 0.0
 
         # 스킬 애니메이션이 끝나면 RUN으로 복귀
-        if self.healer_frame == 2:
+        if self.healer.frameframe == 2:
             self.healer.state_machine.cur_state = self.healer.healer_run
             self.healer.healer_run.enter(None)
 
