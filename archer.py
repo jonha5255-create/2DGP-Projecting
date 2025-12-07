@@ -154,8 +154,8 @@ class archer:
         self.state_machine = StateMachine(
             self.archer_run,
             {
-                self.archer_idle: {space_down: self.archer_attack},
-                self.archer_attack: {space_down: self.archer_idle},
+                self.archer_idle: {block_clicked : self.archer_attack},
+                self.archer_attack: {block_clicked : self.archer_idle},
                 self.archer_run : {}
             }
         )
@@ -175,10 +175,10 @@ class archer:
         left, bottom, right, top = self.get_bb()
         draw_rectangle(left, bottom, right, top)
 
-    def use_skill(self):
+    def use_skill(self,count):
         self.state_machine.cur_state.exit(None)
         self.state_machine.cur_state = self.archer_idle
-        self.archer_idle.enter(None)
+        self.archer_idle.enter(count)
 
 
     def handle_event(self, event):

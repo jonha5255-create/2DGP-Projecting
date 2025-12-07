@@ -69,9 +69,11 @@ class HEAL:
         self.healer = healer
         self.image = load_image('healer heal.png')
         self.timer = 0.0
+        self.chain_count = 1
 
-    def enter(self,e):
+    def enter(self,count):
         self.healer.frame = 0
+        self.chain_count = count if isinstance(count, int) else 1
 
     def exit(self,e):
         pass
@@ -81,14 +83,14 @@ class HEAL:
         if self.timer >= 0.1:
             self.healer.frame = (self.healer.frame + 1) % 3
             self.timer = 0.0
+
         # 스킬 애니메이션이 끝나면 RUN으로 복귀
         if self.healer_frame == 2:
-            self.healer.state_machine.cur_state = self.healer.healer_idle
+            self.healer.state_machine.cur_state = self.healer.healer_run
             self.healer.healer_run.enter(None)
 
     def draw(self):
         self.image.clip_draw(self.healer.frame * 100 ,0, 100, 100, self.healer.x, self.healer.y)
-    pass
 
 class healer:
     def __init__(self):
@@ -125,10 +127,10 @@ class healer:
         left, bottom, right, top = self.get_bb()
         draw_rectangle(left, bottom, right, top)
 
-    def use_skill(self):
+    def use_skill(self, count):
         self.state_machine.cur_state.exit(None)
         self.state_machine.cur_state = self.healer_heal
-        self.healer_heal.enter(None)
+        self.healer_heal.enter(count)
 
     def handle_event(self, event):
         self.state_machine.handle_state_event(('INPUT',event))

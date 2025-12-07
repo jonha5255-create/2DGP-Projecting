@@ -76,9 +76,10 @@ class ATTACK:
         self.image = load_image('warrior_attack.png')
         self.timer = 0.0
 
-    def enter(self,e):
+    def enter(self,count):
         self.warrior.frame = 0
         self.attack_finished = False
+        self.chain_count = count if isinstance(count, int) else 1
 
     def exit(self,e):
         pass
@@ -134,10 +135,10 @@ class warrior:
         left, bottom, right, top = self.get_bb()
         draw_rectangle(left, bottom, right, top)
 
-    def use_skill(self):
+    def use_skill(self, count):
         self.state_machine.cur_state.exit(None)
         self.state_machine.cur_state = self.warrior_attack
-        self.warrior_attack.enter(None)
+        self.warrior_attack.enter(count)
 
 
 
