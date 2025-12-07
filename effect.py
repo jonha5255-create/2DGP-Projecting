@@ -9,8 +9,7 @@ class EFFECT:
         'archer_attack': 'archer_effect.png'
     }
 
-    def __init__(self, effect_type, x, y, scale=1.0):
-        self.image = load_image(self.IMAGE_FILE[effect_type])
+    def __init__(self,x, y,effect_type, scale=1.0):
         self.x = x
         self.y = y
         self.scale = scale
@@ -36,6 +35,7 @@ class EFFECT:
             self.is_animated = True
 
         self.current_frame = 0
+        self.image = load_image(self.IMAGE_FILE[effect_type])
 
     def update(self):
         self.timer += game_framework.frame_time

@@ -105,8 +105,8 @@ class ATTACK:
             if self.warrior.frame == 2:
                 self.attack_finished = True
                 # 공격 끝나고 idle 상태로 복귀
-                self.warrior.state_machine.cur_state = self.warrior.warrior_idle
-                self.warrior.warrior_idle.enter(None)
+                self.warrior.state_machine.cur_state = self.warrior.warrior_run
+                self.warrior.warrior_run.enter(None)
 
     def draw(self):
         self.image.clip_draw(self.warrior.frame * 128 ,0, 128, 100, self.warrior.x, self.warrior.y)

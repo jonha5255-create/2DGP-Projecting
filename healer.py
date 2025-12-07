@@ -93,7 +93,7 @@ class HEAL:
             self.timer = 0.0
 
         # 스킬 애니메이션이 끝나면 RUN으로 복귀
-        if self.healer.frameframe == 2:
+        if self.healer.frame == 2:
             self.healer.state_machine.cur_state = self.healer.healer_run
             self.healer.healer_run.enter(None)
 

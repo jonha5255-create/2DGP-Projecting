@@ -3,7 +3,9 @@ from sdl2 import SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT, SDL_MOUSEBUTTONDOWN, SDL_KEY
 
 import game_framework
 import game_world
+import play_mode
 from state_machine import StateMachine
+from effect import EFFECT
 import random
 
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
@@ -16,44 +18,6 @@ ATTACK_RANGE_PIXEL = 3.0 * PIXEL_PER_METER
 
 def block_clicked(e):
     return e[0] == 'INPUT' and e[1].type == SDL_MOUSEBUTTONDOWN and e[1].button == SDL_BUTTON_LEFT
-
-
-class SKILL:
-    def __init__(self, archer):
-        self.archer = archer
-        self.image = load_image('archer_attack.png')
-        self.effect_image = load_image('.png')
-        self.timer = 0.0
-
-    def enter(self, e):
-        self.archer.frame = 0
-        self.timer = 0.0
-        if isinstance(e, tuple) and len(e) > 2:
-            self.chain_count = e[2]
-        else:
-            self.chain_count = 1
-        print(f"Skill activated with chain count: {self.chain_count}")
-
-    def exit(self, e):
-        pass
-
-    def do(self):
-        self.timer += game_framework.frame_time
-        if self.timer >= 0.1:
-            self.archer.frame = (self.archer.frame + 1) % 4
-            self.timer = 0.0
-
-        if self.archer.frame == 2:
-            # 스킬 종료 후 RUN으로 복귀
-            self.archer.state_machine.cur_state = self.archer.archer_run
-            self.archer.archer_run.enter(None)
-
-    def draw(self):
-        self.image.clip_draw(self.archer.frame * 120, 0, 120, 100, self.archer.x, self.archer.y)
-
-        # 체인 이펙트
-        scale = 1.0 + (self.chain_count - 1) * 0.5
-        self.effect_image.draw(self.archer.x + 80, self.archer.y, 100 * scale, 100 * scale)
 
 class RUN:
     def __init__(self, archer):
@@ -110,14 +74,37 @@ class IDLE:
         self.image.clip_draw(self.archer.frame * 120, 0, 120, 100, self.archer.x, self.archer.y)
 
 
+
 class ATTACK:
     def __init__(self, archer):
         self.archer = archer
         self.image = load_image('archer_attack.png')
         self.timer = 0.0
+        self.is_skill = False  # 스킬인지 일반 평타인지 구분하는 플래그
 
     def enter(self, e):
         self.archer.frame = 0
+        self.timer = 0.0
+
+        # [중요] e가 정수(int)면 스킬 발동, 아니면 일반 공격
+        if isinstance(e, int):
+            self.is_skill = True
+            chain_count = e
+            print(f"아쳐 스킬 발동! (체인: {chain_count})")
+
+            # --- 스킬 이펙트 생성 ---
+            effect_x = self.archer.x + 50
+            effect_y = self.archer.y
+            scale = 1.0 + (chain_count - 1) * 0.25
+
+            # effect.py에 'archer_arrow'가 등록되어 있어야 함
+            arrow = EFFECT(effect_x, effect_y, 'archer_attack', scale)
+            game_world.add_object(arrow, 2)
+
+        else:
+            self.is_skill = False
+            # 일반 공격은 이펙트 없이 화살만 나가거나, 약한 이펙트 추가 가능
+            print("아쳐 일반 공격")
 
     def exit(self, e):
         pass
@@ -125,21 +112,26 @@ class ATTACK:
     def do(self):
         self.timer += game_framework.frame_time
         if self.timer >= 0.1:
-            self.archer.frame = (self.archer.frame + 1) % 3
+            self.archer.frame = (self.archer.frame + 1) % 3  # 프레임 수 확인 필요
             self.timer = 0.0
 
-        if self.archer.frame == 2:
-            target = self.archer.get_nearest_enemy()
-            if target and (0 < (target.x - self.archer.x) <= ATTACK_RANGE_PIXEL):
-                self.archer.frame = 0  # 계속 공격
-            else:
-                # 적이 없으면 바로 RUN 상태로 복귀
+        if self.archer.frame == 3:
+
+            if self.is_skill:
                 self.archer.state_machine.cur_state = self.archer.archer_run
                 self.archer.archer_run.enter(None)
 
+            else:
+                target = self.archer.get_nearest_enemy()
+                if target and (0 < (target.x - self.archer.x) <= ATTACK_RANGE_PIXEL):
+                    self.archer.frame = 0  # 계속 공격 (루프)
+                else:
+                    # 적이 없으면 RUN으로 복귀
+                    self.archer.state_machine.cur_state = self.archer.archer_run
+                    self.archer.archer_run.enter(None)
+
     def draw(self):
         self.image.clip_draw(self.archer.frame * 120, 0, 120, 100, self.archer.x, self.archer.y)
-
 
 class archer:
     def __init__(self):
@@ -167,6 +159,19 @@ class archer:
         top = self.y + 30
         return left, bottom, right, top
 
+    # 적 찾기 함수
+    def get_nearest_enemy(self):
+        nearest_enemy = None
+        min_dist = 99999
+
+        for obj in game_world.world[3]:
+            if hasattr(obj, 'hp') and obj.__class__.__name__ == 'enemy':
+                dist = obj.x - self.x
+                if dist > 0 and dist < min_dist:
+                    min_dist = dist
+                    nearest_enemy = obj
+        return nearest_enemy
+
     def update(self):
         self.state_machine.update()
 
@@ -177,8 +182,8 @@ class archer:
 
     def use_skill(self,count):
         self.state_machine.cur_state.exit(None)
-        self.state_machine.cur_state = self.archer_idle
-        self.archer_idle.enter(count)
+        self.state_machine.cur_state = self.archer_attack
+        self.archer_attack.enter(count)
 
 
     def handle_event(self, event):
