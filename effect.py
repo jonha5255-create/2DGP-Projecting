@@ -38,9 +38,28 @@ class EFFECT:
         self.current_frame = 0
 
     def update(self):
+        self.timer += game_framework.frame_time
+
+        if self.timer >= self.duration:
+            game_world.remove_object(self)
+            return
+
+        if self.is_animated:
+            rate = self.timer / self.duration
+            self.current_frame = int(rate * self.frame_count)
+            if self.current_frame >= self.frame_count:
+                self.current_frame = self.frame_count - 1
+        else:
+            self.scale = game_framework.frame_time * 0.5
         pass
     def draw(self):
-        pass
+        sx = self.current_frame * self.frame_width
+        self.image.clip_draw(
+            sx, 0, self.frame_width, self.frame_height,
+            self.x, self.y,
+            self.frame_width * self.scale,
+            self.frame_height * self.scale
+        )
     def handle_event(self, event):
         pass
 
