@@ -1,6 +1,6 @@
 
 
-world = [[],[]]
+world = [[] for _ in range(4)]
 
 
 def add_object(o, depth = 0):
