@@ -42,11 +42,11 @@ def handle_events():
                             game_world.remove_object(removed_block)
                         # 스킬 효과 적용 (예시)
                         if skill_type == 'warrior':
-                            Warrior.use_skill()
+                            Warrior.use_skill(count)
                         elif skill_type == 'archer':
-                            Archer.use_skill()
+                            Archer.use_skill(count)
                         elif skill_type == 'healer':
-                            Healer.use_skill()
+                            Healer.use_skill(count)
                         # 인덱스 재정렬
                         for j, block in enumerate(skill_blocks):
                             block.reset_target(j)
