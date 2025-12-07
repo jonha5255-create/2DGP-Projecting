@@ -3,6 +3,7 @@ from sdl2 import SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT, SDL_MOUSEBUTTONDOWN, SDL_KEY
 
 import game_framework
 import game_world
+from effect import EFFECT
 from state_machine import StateMachine
 
 
@@ -71,15 +72,23 @@ class IDLE:
 
 class ATTACK:
     def __init__(self, warrior):
-        self.attack_finished = None
         self.warrior = warrior
         self.image = load_image('warrior_attack.png')
         self.timer = 0.0
 
     def enter(self,count):
         self.warrior.frame = 0
+        self.timer = 0.0
         self.attack_finished = False
         self.chain_count = count if isinstance(count, int) else 1
+        scale = 1.0 + (count - 1) * 0.5
+
+        effect_x = self.warrior.x + 80
+        effect_y = self.warrior.y
+
+        skill_effect = EFFECT(effect_x, effect_y, 'warrior_attack', scale)
+        game_world.add_object(skill_effect, 2)
+
 
     def exit(self,e):
         pass
