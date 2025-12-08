@@ -11,7 +11,7 @@ class SKILLBLOCK:
     START_Y = 50
     SPACING = 5  # 블록 간 간격
     SPEED = 800.0
-    ACTIVATION_DELAY = 0.5
+    ACTIVATION_DELAY = 0.1
 
     JOB_SKILL = {
         'warrior': 'warrior_skill.png',
