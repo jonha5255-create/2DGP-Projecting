@@ -37,8 +37,9 @@ class RUN:
     def do(self):
         self.timer += game_framework.frame_time
 
-        self.archer.x += RUN_SPEED_PPS * game_framework.frame_time
-        self.archer.x += clamp(0, self.archer.x,800)
+        self.archer.x += RUN_SPEED_KMPH * game_framework.frame_time * 2.0
+        if self.archer.x > 800:
+            self.archer.x = 800
 
         if self.timer >= 0.1:
             self.archer.frame = (self.archer.frame + 1) % 2
