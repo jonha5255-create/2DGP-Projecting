@@ -26,41 +26,48 @@ level_mgr = None
 
 
 def handle_events():
-
+    global skill_blocks
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
-        else:
+
+        elif event.type == SDL_MOUSEBUTTONDOWN:
+            clicked_index = -1
+            skill_type = None
+
             for i, block in enumerate(skill_blocks):
                 skill_type = block.handle_event(event)
                 if skill_type:
-                    # 연결된 블록 인덱스와 개수 구하기
-                    connected_indices, count = SKILLBLOCK.find_connected_skill(skill_blocks, i)
+                    clicked_index = i
+                    break
+
+                if clicked_index != -1 and skill_type:
+                    connected_indices, count = SKILLBLOCK.find_connected_skill(skill_blocks, clicked_index)
+
                     if count >= 1:
-                        # 연결된 블록들에 효과 적용 및 제거
+                        # heroes.py의 객체를 사용하여 스킬 발동
+                        if skill_type == 'warrior' and heroes.warrior:
+                            heroes.warrior.use_skill(count)
+                        elif skill_type == 'archer' and heroes.archer:
+                            heroes.archer.use_skill(count)
+                        elif skill_type == 'healer' and heroes.healer:
+                            heroes.healer.use_skill(count)
+
+                        # 블록 제거
                         for idx in sorted(connected_indices, reverse=True):
                             removed_block = skill_blocks.pop(idx)
                             game_world.remove_object(removed_block)
-                        # 스킬 효과 적용 (예시)
-                        if skill_type == 'warrior':
-                            Warrior.use_skill(count)
-                        elif skill_type == 'archer':
-                            Archer.use_skill(count)
-                        elif skill_type == 'healer':
-                            Healer.use_skill(count)
-                        # 인덱스 재정렬
+
+                        # 남은 블록 재정렬
                         for j, block in enumerate(skill_blocks):
                             block.reset_target(j)
-                    break
-
-            # 캐릭터 및 보스 이벤트 처리
-            Warrior.handle_event(event)
-            Healer.handle_event(event)
-            Archer.handle_event(event)
-            Boss.handle_event(event)
+            # 캐릭터 이벤트 처리
+            heroes.warrior.handle_event(event)
+            heroes.healer.handle_event(event)
+            heroes.archer.handle_event(event)
 
 def add_skill_block():
     if len(skill_blocks) < MAX_SKILL_BLOCK:
@@ -83,22 +90,23 @@ def init():
 
     level_mgr = level_manager.LEVEL_MANAGER()
     stage = level_mgr.get_current_stage()
-    game_world.add_object(stage, 1)
+    game_world.add_object(stage, 0)
 
-    Warrior = warrior()
-    game_world.add_object(Warrior, 1)
+    Skill_pan = skill_pan()
+    game_world.add_object(Skill_pan, 2)
 
-    Healer = healer()
-    game_world.add_object(Healer, 1)
 
-    Archer = archer()
-    game_world.add_object(Archer, 1)
+    heroes.warrior = warrior()
+    game_world.add_object(heroes.warrior, 1)
+
+    heroes.healer = healer()
+    game_world.add_object(heroes.healer, 1)
+
+    heroes.archer = archer()
+    game_world.add_object(heroes.archer, 1)
 
 
     level_mgr.spawn_wave()
-
-    Skill_pan = skill_pan()
-    game_world.add_object(Skill_pan, 0)
 
 
     add_skill_block()
