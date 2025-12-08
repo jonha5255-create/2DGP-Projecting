@@ -56,4 +56,16 @@ class LEVEL_MANAGER:
         pass
 
     def next_wave(self):
-        pass
+        self.wave += 1
+        self.wave_cleared = False
+
+        if self.wave > 3:
+            self.stage += 1
+            self.wave = 1
+            print(f"Stage {self.stage} 시작!")
+            if self.stage > 3:
+                print("모든 스테이지 클리어!")
+            return "stage_cleared"
+
+        self.spawn_wave()
+        return "Wave started"
