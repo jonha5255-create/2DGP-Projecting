@@ -43,7 +43,17 @@ class LEVEL_MANAGER:
         return enemies
 
     def check_wave_status(self, dt):
+        live_enemis = [o for o in game_world.world[1] if isinstance(o, (enemy, boss))]
+
+        if len(live_enemis) == 0:
+            self.wave_cleared = True
+            self.clear_timer = 0.0
+
+        self.clear_timer += dt
+        if self.clear_timer > 1.5:
+            self.next_wave()
+            return True
         pass
 
-    def next_stage(self):
+    def next_wave(self):
         pass
