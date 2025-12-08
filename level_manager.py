@@ -23,6 +23,21 @@ class LEVEL_MANAGER:
         return stage1()
 
     def spawn_wave(self):
+        enemies = []
+        if self.wave < 3:
+            count = random.randint(2,3) + (self.stage -1)
+            for i in range(count):
+                mob = enemy()
+                mob.x = 1000 + i * 50
+                mob.hp = enemy.hp + (self.stage * 20)
+                game_world.add_object(mob, 1)
+                enemies.append(mob)
+        else:
+            boss_mob = boss()
+            boss_mob.x = 1100
+            boss_mob.hp = boss.hp + (self.stage * 100)
+            game_world.add_object(boss_mob, 1)
+            enemies.append(boss_mob)
         pass
 
     def check_wave_status(self, dt):
