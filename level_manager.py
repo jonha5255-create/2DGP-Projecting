@@ -66,6 +66,7 @@ class LEVEL_MANAGER:
             print(f"Stage {self.stage} 시작!")
             if self.stage > 3:
                 print("모든 스테이지 클리어!")
+                quit(0)
             return "stage_cleared"
 
         self.spawn_wave()

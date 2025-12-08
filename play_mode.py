@@ -2,20 +2,17 @@ from pico2d import *
 import random
 
 import lobby_mode
-import level_manager
+from level_manager import LEVEL_MANAGER
 import heroes
 
-from archer import archer
 from healer import healer
 from archer import archer
-from stage1 import stage1
-from stage2 import stage2
-from stage3 import stage3
 from warrior import warrior
 from boss import boss
 from enemy1 import enemy
 from skill_pan import skill_pan
 from skill_block import SKILLBLOCK
+
 import game_world
 import game_framework
 
@@ -84,11 +81,11 @@ def add_skill_block():
 
 def init():
     global Warrior, Healer, Archer, Boss
-    global skill_blocks
+    global skill_blocks, level_mgr
 
     skill_blocks = []
 
-    level_mgr = level_manager.LEVEL_MANAGER()
+    level_mgr = LEVEL_MANAGER()
     stage = level_mgr.get_current_stage()
     game_world.add_object(stage, 0)
 
@@ -115,7 +112,7 @@ def init():
 def update():
     game_world.update()
 
-    staatus = level_mgr.update()
+    status = LEVEL_MANAGER.update(level_mgr)
 
     if skill_blocks and skill_blocks[-1].has_arrived():
         if len(skill_blocks) < MAX_SKILL_BLOCK:
