@@ -38,7 +38,9 @@ class LEVEL_MANAGER:
             boss_mob.hp = boss.hp + (self.stage * 100)
             game_world.add_object(boss_mob, 1)
             enemies.append(boss_mob)
-        pass
+
+        self.wave_cleared = False
+        return enemies
 
     def check_wave_status(self, dt):
         pass
