@@ -26,7 +26,7 @@ class LEVEL_MANAGER:
     def spawn_wave(self):
         enemies = []
         if self.wave < 3:
-            count = random.randint(2,3) + (self.stage -1)
+            count = random.randint(2,5) + (self.stage -1)
             for i in range(count):
                 mob = enemy()
                 mob.x = 1000 + i * 50
@@ -50,7 +50,7 @@ class LEVEL_MANAGER:
             self.clear_timer = 0.0
 
         self.clear_timer += game_framework.frame_time
-        if self.clear_timer > 1.5:
+        if self.clear_timer > 2.0 and self.wave_cleared:
             self.next_wave()
             return True
 
