@@ -1,6 +1,7 @@
 from pico2d import *
 import random
 
+from effect import EFFECT
 import lobby_mode
 from level_manager import LEVEL_MANAGER
 import heroes
@@ -73,6 +74,10 @@ def add_skill_block():
 
 
 def collide(a, b):
+    # a나 b가 충돌 박스가 없으면 False
+    if not hasattr(a, 'get_bb') or not hasattr(b, 'get_bb'):
+        return False
+
     left_a, bottom_a, right_a, top_a = a.get_bb()
     left_b, bottom_b, right_b, top_b = b.get_bb()
 
@@ -115,9 +120,64 @@ def init():
 
 
 def update():
+    global level_mgr
     game_world.update()
 
-    status = LEVEL_MANAGER.update(level_mgr)
+    status = level_mgr.update()
+
+    enemies = [o for o in game_world.world[1] if isinstance(o, (enemy, boss))]
+
+    # (2) 아쳐 화살(이펙트) vs 적 충돌
+    # 이펙트는 Layer 2(혹은 1)에 있습니다. archer.py에서 add_object(arrow, 2) 확인
+    effects = [o for o in game_world.world[2] if isinstance(o, EFFECT)]
+
+    for eff in effects:
+        if eff.effect_type == 'archer_attack':  # 화살인 경우만
+            for e in enemies:
+                if collide(eff, e):
+                    print("아쳐 화살 명중!")
+                    e.hp -= heroes.archer.str  # 아쳐 공격력만큼 데미지
+                    game_world.remove_object(eff)  # 화살 사라짐
+                    if e.hp <= 0:
+                        game_world.remove_object(e)
+                    break  # 화살 하나당 적 하나만 맞춤 (관통 원하면 break 제거)
+
+    # (3) 워리어 공격 vs 적 충돌
+    if heroes.warrior:
+        # 워리어 상태가 ATTACK이고, 특정 프레임(예: 베는 순간)일 때만 판정
+        # warrior.py의 ATTACK 클래스를 확인하여 frame 범위를 조정하세요.
+        # 예: frame이 1일 때 타격
+        if heroes.warrior.state_machine.cur_state == heroes.warrior.warrior_attack:
+            if heroes.warrior.frame == 1:  # 공격 모션 중 타격 프레임
+                for e in enemies:
+                    if collide(heroes.warrior, e):
+                        print("워리어 베기 명중!")
+                        e.hp -= heroes.warrior.str * game_framework.frame_time * 5
+                        # * 프레임타임 등을 곱해 너무 빨리 피가 다는 것을 방지하거나
+                        # 워리어 클래스 내부에 'attack_checked' 플래그를 두어 한 번만 때리게 해야 함.
+                        # 간단하게는 데미지를 조금 낮게 설정해서 '지속 데미지'처럼 보이게 처리
+
+                        if e.hp <= 0:
+                            game_world.remove_object(e)
+
+    # (4) 적 vs 영웅 충돌 (적이 공격할 때)
+    current_heroes = [h for h in [heroes.warrior, heroes.healer, heroes.archer] if h]
+
+    for e in enemies:
+        # 적의 state_machine에 접근하여 현재 상태 확인 (enemy.py 구조에 따라 다름)
+        # 여기서는 적이 영웅과 닿으면 데미지를 주는 간단한 방식 적용
+        for h in current_heroes:
+            if collide(e, h):
+                # 적의 공격 상태일 때만 데미지 줄 수도 있고, 닿으면 줄 수도 있음
+                h.hp -= e.str * game_framework.frame_time
+                if h.hp <= 0:
+                    game_world.remove_object(h)
+                    if h == heroes.warrior:
+                        heroes.warrior = None
+                    elif h == heroes.archer:
+                        heroes.archer = None
+                    elif h == heroes.healer:
+                        heroes.healer = None
 
     if skill_blocks and skill_blocks[-1].has_arrived():
         if len(skill_blocks) < MAX_SKILL_BLOCK:
