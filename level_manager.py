@@ -10,7 +10,11 @@ from stage3 import stage3
 
 class LEVEL_MANAGER:
     def __init__(self):
-        pass
+        self.stage = 1
+        self.wave = 1
+        self.wave_cleared = False
+        self.clear_timer = 0.0
+        self.bg = None
 
     def get_current_stage(self, level):
         pass
