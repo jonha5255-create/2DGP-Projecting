@@ -3,6 +3,7 @@ import random
 
 import lobby_mode
 import level_manager
+import heroes
 
 from archer import archer
 from healer import healer
@@ -106,6 +107,8 @@ def init():
 def update():
     game_world.update()
 
+    staatus = level_mgr.update()
+
     if skill_blocks and skill_blocks[-1].has_arrived():
         if len(skill_blocks) < MAX_SKILL_BLOCK:
             add_skill_block()
@@ -119,6 +122,9 @@ def draw():
 def finish():
     global skill_blocks
     skill_blocks = []
+    heroes.warrior = None
+    heroes.healer = None
+    heroes.archer = None
     game_world.clear()
 
 def pause(): pass

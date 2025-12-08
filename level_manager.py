@@ -1,6 +1,7 @@
 import random
 from pico2d import *
 import game_world
+import game_framework
 
 from enemy1 import enemy
 from boss import boss
@@ -40,20 +41,20 @@ class LEVEL_MANAGER:
             enemies.append(boss_mob)
 
         self.wave_cleared = False
-        return enemies
 
-    def check_wave_status(self, dt):
+    def update(self):
         live_enemis = [o for o in game_world.world[1] if isinstance(o, (enemy, boss))]
 
         if len(live_enemis) == 0:
             self.wave_cleared = True
             self.clear_timer = 0.0
 
-        self.clear_timer += dt
+        self.clear_timer += game_framework.frame_time
         if self.clear_timer > 1.5:
             self.next_wave()
             return True
-        pass
+
+        return False
 
     def next_wave(self):
         self.wave += 1
