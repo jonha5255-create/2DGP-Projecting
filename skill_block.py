@@ -64,7 +64,7 @@ class SKILLBLOCK:
     def handle_event(self, event):
         if event.type == SDL_MOUSEBUTTONDOWN:
             if event.button == SDL_BUTTON_LEFT:
-                if not self.is_spawned or not self.is_activated:
+                if not self.is_spawned or not self.arrived or not self.is_activated:
                     return None
 
                 # 마우스 좌표 변환
