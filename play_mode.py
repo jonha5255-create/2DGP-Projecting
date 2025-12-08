@@ -2,6 +2,8 @@ from pico2d import *
 import random
 
 import lobby_mode
+import level_manager
+
 from archer import archer
 from healer import healer
 from archer import archer
@@ -19,6 +21,7 @@ import game_framework
 
 skill_blocks = []
 MAX_SKILL_BLOCK = 9
+level_mgr = None
 
 
 def handle_events():
@@ -77,8 +80,9 @@ def init():
 
     skill_blocks = []
 
-    Stage1= stage1()
-    game_world.add_object(Stage1, 0)
+    level_mgr = level_manager.LEVEL_MANAGER()
+    stage = level_mgr.get_current_stage()
+    game_world.add_object(stage, 1)
 
     Warrior = warrior()
     game_world.add_object(Warrior, 1)
@@ -89,14 +93,8 @@ def init():
     Archer = archer()
     game_world.add_object(Archer, 1)
 
-    Boss = boss()
-    game_world.add_object(Boss, 1)
 
-
-    for _ in range(random.randint(1, 5)):
-        Enemy1 = enemy()
-        Enemy1.x = random.randint(800, 1000)
-        game_world.add_object(Enemy1, 1)
+    level_mgr.spawn_wave()
 
     Skill_pan = skill_pan()
     game_world.add_object(Skill_pan, 0)
