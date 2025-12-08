@@ -13,7 +13,10 @@ class EFFECT:
         self.x = x
         self.y = y
         self.scale = scale
+        self.effect_type = effect_type # 이펙트 종류 저장
         self.timer = 0.0
+
+        self.velocity = 0.0 # 이동 속도
 
         if effect_type == 'healer_heal':
             self.frame_count = 3
@@ -29,26 +32,39 @@ class EFFECT:
             self.is_animated = True
         elif effect_type == 'archer_attack':
             self.frame_count = 3
-            self.duration = 0.4
+            self.duration = 2.0
             self.frame_width = 120
             self.frame_height = 100
             self.is_animated = True
+            self.velocity = 600  # 화살 이동 속도 설정
 
         self.current_frame = 0
         self.image = load_image(self.IMAGE_FILE[effect_type])
+    def get_bb(self):
+        if self.effect_type == 'archer_attack':
+            return self.x -30, self.y -10, self.x +30, self.y +10
+        return 0,0,0,0
 
     def update(self):
         self.timer += game_framework.frame_time
+
+        # 이동 로직 (아쳐 화살)
+        if self.velocity > 0:
+            self.x += self.velocity * game_framework.frame_time
 
         if self.timer >= self.duration:
             game_world.remove_object(self)
             return
 
         if self.is_animated:
-            rate = self.timer / self.duration
-            self.current_frame = int(rate * self.frame_count)
-            if self.current_frame >= self.frame_count:
-                self.current_frame = self.frame_count - 1
+            rate = self.timer / 0.5  # 0.5초마다 루프 혹은 duration 기준
+            if self.effect_type == 'archer_attack':
+                self.current_frame = int(self.timer * 10) % self.frame_count
+            else:
+                rate = self.timer / self.duration
+                self.current_frame = int(rate * self.frame_count)
+                if self.current_frame >= self.frame_count:
+                    self.current_frame = self.frame_count - 1
         else:
             self.scale = game_framework.frame_time * 0.5
         pass
