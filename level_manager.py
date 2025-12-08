@@ -16,8 +16,11 @@ class LEVEL_MANAGER:
         self.clear_timer = 0.0
         self.bg = None
 
-    def get_current_stage(self, level):
-        pass
+    def get_current_stage(self):
+        if self.stage == 1: return stage1()
+        elif self.stage == 2: return stage2()
+        elif self.stage == 3: return stage3()
+        return stage1()
 
     def spawn_wave(self):
         pass
