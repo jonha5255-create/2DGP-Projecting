@@ -68,8 +68,22 @@ class boss:
         return BehaviorTree.FAIL
 
     def do_attack(self):
+        self.is_attacking = True
+        self.current_image = self.image_attack
 
-        pass
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.1:
+            self.frame = (self.frame + 1) % 8
+            self.timer = 0.0
+
+        if self.frame >= 8:
+            self.frame = 0
+            self.is_attacking = False
+            return BehaviorTree.SUCCESS
+
+        return BehaviorTree.RUNNING
+
+
 
     def move(self):
         pass
