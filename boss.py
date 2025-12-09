@@ -42,9 +42,9 @@ class boss:
         frame_y = (2 - (self.frame // 3)) * 113
         idle_frame_y = (self.frame // 2) * 113
 
-        if self.image_idle:
+        if self.current_image == self.image_idle:
             self.image_idle.clip_composite_draw(frame_x,idle_frame_y, 113, 113,0,'h', self.x, self.y, 500, 500)
-        else:
+        elif self.current_image == self.image_attack or self.current_image == self.image_heal:
             self.image_attack.clip_composite_draw(frame_x,frame_y, 113, 113,0,'h', self.x, self.y, 500, 500)
 
         draw_rectangle(*self.get_bb())
@@ -121,9 +121,11 @@ class boss:
         return BehaviorTree.RUNNING
 
     def build_behavior_tree(self):
-        heal_node = Sequence(Condition("피가 30퍼 미만인가", self.hp_row),
-                             Action("힐 하기", self.do_heal))
-        attack_node = Sequence(Condition("사거리 내에 영웅들이 있나", self.is_hero_in_range, 80),
+        heal_node = Sequence("힐",
+                            Condition("피가 30퍼 미만인가", self.hp_row),
+                                Action("힐 하기", self.do_heal))
+        attack_node = Sequence("공격",
+                        Condition("사거리 내에 영웅들이 있나", self.is_hero_in_range, 80),
                                Action("공격해라", self.do_attack))
 
         heal_or_attack = Selector("힐 또는 공격", heal_node, attack_node)
@@ -131,7 +133,7 @@ class boss:
 
         move_node = Action("이동", self.move)
 
-        root = Selector(heal_or_attack, move_node)
+        root = Selector("힐이나 공격을 안하면 이동",heal_or_attack, move_node)
 
         self.bt = BehaviorTree(root)
         pass
