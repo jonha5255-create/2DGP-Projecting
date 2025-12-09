@@ -18,39 +18,29 @@ class warrior:
         self.str = 35
         self.dir = 1
         self.speed = 100
-        
-        self.skill_queue = 0  # 스킬 사용 대기열
-        self.timer = 0.0
-        
-        self.build_behavior_tree()
 
         self.warrior_idle = load_image('warrior_idle.png')
         self.warrior_attack = load_image('warrior_attack.png')
         self.warrior_run = load_image('warrior_run.png')
-        self.state_machine = StateMachine (
-            self.warrior_run,
-            {
-                self.warrior_idle: {},
-                self.warrior_attack: {},
-                self.warrior_run : {}
-            }
-        )
+        self.current_image = self.warrior_run
+
+        self.skill_queue = 0  # 스킬 사용 대기열
+        self.timer = 0.0
+
+        self.build_behavior_tree()
 
     def get_bb(self):
-        left = self.x - 50
-        right = self.x + 20
-        bottom = self.y - 50
-        top = self.y + 50
-        return left, bottom, right, top
+        if self.current_image == self.image_attack:
+            return self.x - 50, self.y - 50, self.x + 80, self.y + 50
+        return self.x - 50, self.y - 50, self.x + 20, self.y + 50
 
     def update(self):
-        self.state_machine.update()
+        self.bt.run()
 
     def draw(self):
-        self.state_machine.draw()
 
-        left, bottom, right, top = self.get_bb()
-        draw_rectangle(left, bottom, right, top)
+
+        draw_rectangle(*self.get_bb())
 
     def use_skill(self, count):
         self.skill_queue = count
@@ -63,10 +53,22 @@ class warrior:
         if not enemies: return None
         return min(enemies, key=lambda e: abs(e.x - self.x))
 
-    def  check_skill_available(self):
+    def check_skill_available(self):
         if self.skill_queue > 0:
             return BehaviorTree.SUCCESS
         return BehaviorTree.FAIL
+
+    def do_skill(self):
+        pass
+
+    def is_enemy_in_range(self, r):
+        pass
+
+    def do_attack(self):
+        pass
+
+    def move(self):
+        pass
 
     def build_behavior_tree(self):
         pass
