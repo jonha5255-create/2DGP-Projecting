@@ -84,13 +84,20 @@ class enemy:
         self.bt.run()
 
     def draw(self):
+        flip = ''
+        if self.dir == -1:
+            if self.face:flip = 'h'
+            else: flip = ''
+        elif self.dir == 1:
+            if self.face:flip = ''
+            else:flip = 'h'
 
         if self.current_image == self.image_attack:
             self.current_image.clip_composite_draw(int(self.frame) * self.at_w, 0,
-                                                   self.at_w, self.at_h,0,'h',self.x, self.y, 80, 80)
+                                                   self.at_w, self.at_h,0,flip,self.x, self.y, 80, 80)
         else:
             self.current_image.clip_composite_draw(int(self.frame) * self.w, 0,
-                                                   self.w, self.h,0,'h',self.x, self.y, 80, 80)
+                                                   self.w, self.h,0,flip,self.x, self.y, 80, 80)
 
         draw_rectangle(*self.get_bb())
 
