@@ -2,25 +2,27 @@ from pico2d import *
 
 import game_framework
 import game_world
+import heroes
 from effect import EFFECT
 from enemy1 import enemy
 from boss import boss
 
 from behavior_tree import BehaviorTree, Action, Sequence, Condition, Selector
 
-class archer:
+class healer:
     def __init__(self):
-        self.x, self.y = 200, 200
+        self.x, self.y = 100, 205
         self.frame = 0
-        self.hp = 200
-        self.str = 45
+        self.hp = 250
+        self.str = 25
         self.speed = 80
 
-        # archer 에셋으로 변경
-        self.archer_idle = load_image('archer_idle.png')
-        self.archer_attack = load_image('archer_attack.png')
-        self.archer_run = load_image('archer_run.png')
-        self.current_image = self.archer_run
+        # healer 에셋으로 변경
+        self.healer_idle = load_image('healer idle.png')
+        self.healer_attack = load_image('healer heal.png')
+        self.healer_heal = load_image('healer_skill.png')
+        self.healer_run = load_image('healer run.png')
+        self.current_image = self.healer_run
 
         self.skill_queue = 0  # 스킬 사용 대기열
         self.timer = 0.0
@@ -30,18 +32,18 @@ class archer:
         self.build_behavior_tree()
 
     def get_bb(self):
-        return self.x - 30, self.y - 50, self.x + 30, self.y + 30
+        return self.x - 30, self.y - 60, self.x + 30, self.y + 20
 
     def update(self):
         self.bt.run()
 
     def draw(self):
-        if self.current_image == self.archer_run:
-            self.current_image.clip_draw(int(self.frame) * 120, 0 , 120, 100, self.x,self.y)
-        elif self.current_image == self.archer_attack:
-            self.current_image.clip_draw(int(self.frame) * 120, 0 , 120, 100, self.x,self.y)
+        if self.current_image == self.healer_run:
+            self.current_image.clip_draw(int(self.frame) * 100, 0 , 100, 100, self.x,self.y)
+        elif self.current_image == self.healer_attack:
+            self.current_image.clip_draw(int(self.frame) * 100, 0 , 100, 100, self.x,self.y)
         else:
-            self.current_image.clip_draw(int(self.frame) * 120, 0 , 120, 100, self.x,self.y)
+            self.current_image.clip_draw(int(self.frame) * 100, 0 , 100, 100, self.x,self.y)
 
         # 바운딩 박스
         draw_rectangle(*self.get_bb())
@@ -67,17 +69,17 @@ class archer:
     # 스킬 사용
     def do_skill(self):
         self.is_attacking = True
-        self.current_image = self.archer_attack
+        self.current_image = self.healer_attack
         if not self.is_use_skill:
             self.frame = 0
             self.timer = 0.0
             self.is_use_skill = True
 
             scale = 1.0 + (self.skill_queue - 1) * 0.25
-            # EFFECT에 올바른 아처 에셋 이름 사용
-            skill_effect = EFFECT(self.x + 100, self.y, 'archer_skill', scale)
+            # EFFECT에 올바른 힐러 에셋 이름 사용
+            skill_effect = EFFECT(self.x, self.y, 'healer_heal', scale)
             game_world.add_object(skill_effect, 2)
-            print (f"아처 스킬 사용! (체인: {self.skill_queue})")
+            print (f"힐러 스킬 사용! (체인: {self.skill_queue})")
 
         self.timer += game_framework.frame_time
         if self.timer >= 0.1:
@@ -103,10 +105,10 @@ class archer:
     # 일반 공격
     def do_attack(self):
         self.is_attacking = True
-        self.current_image = self.archer_attack
+        self.current_image = self.healer_attack
         if int(self.frame) == 0 and self.timer == 0.0:
-            arrow = EFFECT(self.x , self.y, 'archer_attack', 0.5)
-            game_world.add_object(arrow, 2)
+            ball = EFFECT(self.x + 10 , self.y, 'healer_attack', 0.5)
+            game_world.add_object(ball, 2)
 
         self.timer += game_framework.frame_time
         if self.timer >= 0.2:
@@ -121,16 +123,16 @@ class archer:
 
     def move(self):
         self.is_attacking = False
-        self.current_image = self.archer_run
+        self.current_image = self.healer_run
         self.timer += game_framework.frame_time
         if self.timer >= 0.1:
             self.frame = (self.frame + 1) % 2
             self.timer = 0.0
 
-        if self.x < 700:
+        if self.x < 600:
             self.x += self.speed * game_framework.frame_time
-        elif self.x >= 700:
-            self.x = 700
+        elif self.x >= 600:
+            self.x = 600
         return BehaviorTree.SUCCESS
 
     def build_behavior_tree(self):
