@@ -1,15 +1,9 @@
 from pico2d import load_image, draw_rectangle
-from sdl2 import SDL_KEYDOWN, SDLK_SPACE, SDLK_a, SDLK_h
 
 import game_framework
 import game_world
+from behavior_tree import BehaviorTree, Action, Sequence, Condition, Selector
 
-from state_machine import StateMachine
-
-def a_down(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a
-def h_down(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_h
 
 class HEAL:
     def __init__(self, boss):
