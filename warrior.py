@@ -49,6 +49,8 @@ class warrior:
     def use_skill(self, count):
         self.skill_queue = count
 
+    def handle_event(self, event):
+        pass
 
     # BT
 
@@ -63,6 +65,18 @@ class warrior:
         return BehaviorTree.FAIL
 
     def do_skill(self):
+        self.current_image = self.warrior_attack
+
+        if self.frame == 0 and self.timer == 0.0:
+            scale = 1.0 + (self.skill_queue - 1) * 0.5
+            skill_effect = EFFECT(self.x + 80, self.y, 'warrior_attack', scale)
+            game_world.add_object(skill_effect, 2)
+            print (f"워리어 스킬 사용! (체인: {self.skill_queue})")
+
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.2:
+            self.frame += 1
+            self.timer = 0.0
         pass
 
     def is_enemy_in_range(self, r):
