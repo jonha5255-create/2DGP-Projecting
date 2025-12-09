@@ -61,8 +61,11 @@ class boss:
         return min(target, key=lambda h: abs(h.x - self.x))
 
     def is_hero_in_range(self, r):
-
-        pass
+        target = self.get_nearest_hero()
+        if target:
+            if abs(target.x - self.x) <= r:
+                return BehaviorTree.SUCCESS
+        return BehaviorTree.FAIL
 
     def do_attack(self):
 
