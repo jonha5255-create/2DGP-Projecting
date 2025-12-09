@@ -58,12 +58,12 @@ class boss:
     def get_nearest_hero(self):
         target = [h for h in [heroes.warrior, heroes.healer, heroes.archer] if h]
         if not target: return None
-        return min(target, key=lambda h: abs(h.x - self.x))
+        return min(target, key=lambda h: abs(h.x - self.x - 100))
 
     def is_hero_in_range(self, r):
         target = self.get_nearest_hero()
         if target:
-            if abs(target.x - self.x) <= r:
+            if abs(target.x - (self.x - 100)) <= r:
                 return BehaviorTree.SUCCESS
         return BehaviorTree.FAIL
 
