@@ -31,7 +31,7 @@ class warrior:
         self.build_behavior_tree()
 
     def get_bb(self):
-        if self.current_image == self.image_attack:
+        if self.current_image == self.warrior_attack:
             return self.x - 50, self.y - 50, self.x + 80, self.y + 50
         return self.x - 50, self.y - 50, self.x + 20, self.y + 50
 
@@ -41,8 +41,10 @@ class warrior:
     def draw(self):
         if self.current_image == self.warrior_run:
             self.current_image.clip_draw(int(self.frame) * 128, 0 , 128, 100, self.x,self.y)
+        elif self.current_image == self.warrior_attack:
+            self.current_image.clip_draw(int(self.frame) * 128, 0 , 128, 100, self.x,self.y)
         else:
-            self.current_image.draw(int(self.frame) * 128, 0 , 128, 100, self.x,self.y)
+            self.current_image.clip_draw(int(self.frame) * 128, 0 , 128, 100, self.x,self.y)
 
         # 바운딩 박스
         draw_rectangle(*self.get_bb())
@@ -91,7 +93,7 @@ class warrior:
     # 적이 사정거리 내에 있는지 확인
     def is_enemy_in_range(self, r):
         target = self.get_nearest_enemy()
-        if target and target.x - self.x <= r:
+        if target and abs(target.x - self.x) <= r:
             return BehaviorTree.SUCCESS
         return BehaviorTree.FAIL
 

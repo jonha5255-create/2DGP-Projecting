@@ -52,7 +52,7 @@ class enemy:
     def is_hero_nearby(self, r):
         target = self.get_nearest_hero()
         if target:
-            distance = target.x - self.x
+            distance = abs(target.x - self.x)
             if distance <= r:
                 return BehaviorTree.SUCCESS
         return BehaviorTree.FAIL
