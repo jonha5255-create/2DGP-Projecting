@@ -2,6 +2,7 @@ from pico2d import load_image, draw_rectangle
 
 import game_framework
 import game_world
+import heroes
 from behavior_tree import BehaviorTree, Action, Sequence, Condition, Selector
 
 class boss:
@@ -54,13 +55,23 @@ class boss:
 
     # BT
 
+    def get_nearest_hero(self):
+        target = [h for h in [heroes.warrior, heroes.healer, heroes.archer] if h]
+        if not target: return None
+        return min(target, key=lambda h: abs(h.x - self.x))
+
     def is_hero_in_range(self, r):
+
         pass
 
     def do_attack(self):
+
         pass
 
     def move(self):
+        pass
+
+    def hp_row(self):
         pass
 
     def do_heal(self):
