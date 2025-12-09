@@ -14,9 +14,15 @@ class warrior:
     def __init__(self):
         self.x, self.y = 300, 200
         self.frame = 0
-        self.hp = 230
+        self.hp = 350
         self.str = 35
         self.dir = 1
+        self.speed = 100
+        
+        self.skill_queue = 0  # 스킬 사용 대기열
+        self.timer = 0.0
+        
+        self.build_behavior_tree()
 
         self.warrior_idle = load_image('warrior_idle.png')
         self.warrior_attack = load_image('warrior_attack.png')
@@ -61,3 +67,6 @@ class warrior:
         if self.skill_queue > 0:
             return BehaviorTree.SUCCESS
         return BehaviorTree.FAIL
+
+    def build_behavior_tree(self):
+        pass
