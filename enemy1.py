@@ -5,21 +5,52 @@ import game_world
 import heroes
 from behavior_tree import BehaviorTree, Action, Sequence, Condition, Selector
 
+MOB_DATA = {
+    # === 스테이지 1 (숲) ===
+    1: {'idle': 'enemy2.png', 'attack': 'enemy2 attack.png',
+        'hp': 100, 'speed': 80,'str': 10, 'w': 37, 'h': 37},
+    2: {'idle': 'enemy3.png', 'attack': 'enemy3 attack.png',
+        'hp': 150, 'speed': 70,'str': 5, 'w': 38, 'h': 38},
+    3: {'idle': 'enemy_magic.png', 'attack': 'enemy_magic_attack.png',
+        'hp': 90, 'speed': 90,'str': 15, 'w': 40, 'h': 42},
+
+    # === 스테이지 2 (화산) ===
+    4: {'idle': 'stage2_mob.png', 'attack': 'stage2_mob_att.png',
+        'hp': 200, 'speed': 60,'str': 15, 'w': 900, 'h': 900},
+    5: {'idle': 'stage2_mob2.png', 'attack': 'stage2_mob2_att.png',
+        'hp': 220, 'speed': 80, 'str': 15, 'w': 60, 'h': 40},
+
+    # === 스테이지 3 (성) ===
+    6: {'idle': 'stage3_mob.png', 'attack': 'stage3_mob_att.png',
+        'hp': 300, 'speed': 90, 'str': 15, 'w': 50, 'h': 70},
+    7: {'idle': 'stage3_mob2.png', 'attack': 'stage3_mob2_att.png',
+        'hp': 250, 'speed': 130, 'str': 15, 'w': 50, 'h': 60},
+    8: {'idle': 'stage3_mob2.png', 'attack': 'stage3_mob2_att.png',
+        'hp': 250, 'speed': 130, 'str': 15, 'w': 50, 'h': 60}
+}
+
 class enemy:
-    def __init__(self):
-        self.x, self.y = 1000, 180
+    def __init__(self, type_id=1):
+        self.x, self.y = 1200, 180
         self.frame = 0
-        self.hp = 150
-        self.str = 10
-        self.speed = 100
+        self.timer = 0.0
+        self.dir = -1
+        self.is_attacking = False
+
+        data = MOB_DATA.get(type_id, MOB_DATA[1])
+
+        self.hp = data['hp']
+        self.max_hp = self.hp
+        self.str = data['str']
+        self.speed = data['speed']
+        self.w = data['w']
+        self.h = data['h']
 
         self.image_run = load_image('enemy1.png')
         self.image_attack = load_image('enemy1 attack.png')
         self.current_image = self.image_run
 
-        self.timer = 0.0
-        self.dir = -1
-        self.is_attacking = False
+
 
         self.build_behavior_tree()
 
