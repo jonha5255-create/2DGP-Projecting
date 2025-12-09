@@ -34,13 +34,13 @@ class LEVEL_MANAGER:
             for i in range(count):
                 mob = enemy()
                 mob.x = 1100 + i * 30
-                mob.hp = 100 + (self.stage * 20)
+                mob.hp = 150 + (self.stage * 20)
                 game_world.add_object(mob, 1)
                 enemies.append(mob)
-        else:
+        elif self.wave == 3:
             boss_mob = boss()
             boss_mob.x = 1300
-            boss_mob.hp = 900 + (self.stage * 100)
+            boss_mob.hp = 1000 + (self.stage * 100)
             game_world.add_object(boss_mob, 1)
             enemies.append(boss_mob)
 
