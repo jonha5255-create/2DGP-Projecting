@@ -5,22 +5,10 @@ import game_framework
 import game_world
 from effect import EFFECT
 from state_machine import StateMachine
+from enemy1 import enemy
+from boss import boss
 
-
-def space_down(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
-
-
-PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
-RUN_SPEED_KMPH = 10.0  # Km / Hour
-RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
-RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
-RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
-
-
-TIME_PER_ACTION = 0.5
-ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
-FRAMES_PER_ACTION = 2
+from behavior_tree import BehaviorTree, Action, Sequence, Condition, Selector
 
 
 class RUN:
@@ -125,8 +113,8 @@ class warrior:
         self.state_machine = StateMachine (
             self.warrior_run,
             {
-                self.warrior_idle: {space_down : self.warrior_attack},
-                self.warrior_attack: {space_down : self.warrior_idle},
+                self.warrior_idle: {},
+                self.warrior_attack: {},
                 self.warrior_run : {}
             }
         )
@@ -153,6 +141,9 @@ class warrior:
         self.warrior_attack.enter(count)
 
 
+    # BT
 
-    def handle_event(self, event):
-        self.state_machine.handle_state_event(('INPUT',event))
+    def get_nearest_enemy(self):
+        enemies = [o for o in game_world.world[1] if isinstance(o, (enemy, boss))]
+        if not enemies: return None
+        return min(enemies, key=lambda e: abs(e.x - self.x))
