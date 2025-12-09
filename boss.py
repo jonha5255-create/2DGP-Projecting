@@ -15,7 +15,7 @@ BOSS_DATA = {
         'w': 49, 'h': 60,'at_w': 55, 'at_h': 70,
         'idle_frame': 4, 'attack_frame': 6},
     3: {'idle': 'boss idle.png', 'attack': 'boss attack.png', 'heal': 'boss heal.png',
-        'hp': 2000, 'speed': 100, 'str': 90,
+        'hp': 2000, 'speed': 100, 'str': 80,
         'w': 113, 'h': 113,'at_w': 113, 'at_h': 113,
         'idle_frame': 4, 'attack_frame': 8, 'heal_frame': 8
         }
