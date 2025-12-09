@@ -100,6 +100,7 @@ class archer:
             return BehaviorTree.SUCCESS
         return BehaviorTree.FAIL
 
+
     # 일반 공격
     def do_attack(self):
         self.is_attacking = True
@@ -131,6 +132,21 @@ class archer:
             self.x += self.speed * game_framework.frame_time
         elif self.x >= 700:
             self.x = 700
+        return BehaviorTree.SUCCESS
+
+    def move_back(self):
+        self.is_attacking = False
+        self.current_image = self.archer_run
+
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.1:
+            self.frame = (self.frame + 1) % 2
+            self.timer = 0.0
+
+        if self.x > 0:
+            self.x -= self.speed * game_framework.frame_time
+        elif self.x <= 0:
+            self.x = 0
         return BehaviorTree.SUCCESS
 
     def build_behavior_tree(self):
