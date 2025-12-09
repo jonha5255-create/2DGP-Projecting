@@ -23,7 +23,7 @@ MOB_DATA = {
     # === 스테이지 2 (화산) ===
     4: {'idle': 'stage2_mob.png', 'attack': 'stage2_mob_att.png',
         'hp': 200, 'speed': 60,'str': 15,
-        'w': 900, 'h': 900,'at_w': 900, 'at_h': 900,
+        'w': 90, 'h': 90,'at_w': 90, 'at_h': 90,
         'idle_frame': 12, 'attack_frame': 12},
     5: {'idle': 'stage2_mob2.png', 'attack': 'stage2_mob2_att.png',
         'hp': 220, 'speed': 80, 'str': 15,
