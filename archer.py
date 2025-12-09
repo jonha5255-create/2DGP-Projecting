@@ -12,7 +12,7 @@ class archer:
     def __init__(self):
         self.x, self.y = 200, 200
         self.frame = 0
-        self.hp = 200
+        self.hp = 300
         self.str = 45
         self.speed = 80
 
