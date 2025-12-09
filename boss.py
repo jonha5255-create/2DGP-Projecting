@@ -23,7 +23,7 @@ class boss:
         self.timer = 0.0
         self.is_attacking = False
         self.is_healing = False
-        
+
         self.build_behavior_tree()
 
 
@@ -43,9 +43,9 @@ class boss:
         idle_frame_y = (self.frame // 2) * 113
 
         if self.image_idle:
-            self.image_idle.composite_draw(frame_x,idle_frame_y, 113, 113,0,'h', self.boss.x, self.boss.y, 500, 500)
+            self.image_idle.clip_composite_draw(frame_x,idle_frame_y, 113, 113,0,'h', self.x, self.y, 500, 500)
         else:
-            self.image_attack.composite_draw(frame_x,frame_y, 113, 113,0,'h', self.boss.x, self.boss.y, 500, 500)
+            self.image_attack.clip_composite_draw(frame_x,frame_y, 113, 113,0,'h', self.x, self.y, 500, 500)
 
         draw_rectangle(*self.get_bb())
 
