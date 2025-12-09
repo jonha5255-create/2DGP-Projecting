@@ -40,10 +40,11 @@ class boss:
     def draw(self):
         frame_x = (self.frame % 3) * 113
         frame_y = (2 - (self.frame // 3)) * 113
+        idle_frame_x = (self.frame % 2) * 113
         idle_frame_y = (self.frame // 2) * 113
 
         if self.current_image == self.image_idle:
-            self.image_idle.clip_composite_draw(frame_x,idle_frame_y, 113, 113,0,'h', self.x, self.y, 500, 500)
+            self.image_idle.clip_composite_draw(idle_frame_x,idle_frame_y, 113, 113,0,'h', self.x, self.y, 500, 500)
         elif self.current_image == self.image_attack or self.current_image == self.image_heal:
             self.image_attack.clip_composite_draw(frame_x,frame_y, 113, 113,0,'h', self.x, self.y, 500, 500)
 
