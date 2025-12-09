@@ -23,6 +23,7 @@ class boss:
 
         self.timer = 0.0
         self.is_attacking = False
+        self.is_healing = False
         
         self.build_behavior_tree()
 
@@ -95,10 +96,30 @@ class boss:
         return BehaviorTree.SUCCESS
 
     def hp_row(self):
-        pass
+        if self.hp <= self.max_hp * 0.3:
+            return BehaviorTree.SUCCESS
+        return BehaviorTree.FAIL
 
     def do_heal(self):
-        pass
+        self.is_healing = True
+        self.current_image = self.image_heal
+
+        if self.frame == 0 and self.timer == 0.0:
+            print("자가 치유")
+            self.hp += 10
+            if self.hp > self.max_hp: self.hp = self.max_hp
+
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.2:
+            self.frame = (self.frame + 1) % 8
+            self.timer = 0.0
+
+        if self.frame >= 8:
+            self.frame = 0
+            self.is_healing = False
+            return BehaviorTree.SUCCESS
+
+        return BehaviorTree.RUNNING
 
     def build_behavior_tree(self):
         pass
