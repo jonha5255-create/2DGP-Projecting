@@ -57,25 +57,26 @@ class boss:
 
 
     def get_bb(self):
-        left = self.x - self.w//2
-        right = self.x + self.w//2
-        bottom = self.y - self.h//2
-        top = self.y + self.h//2
+        left = self.x - self.w *2
+        right = self.x + self.w *2
+        bottom = self.y - self.h *2
+        top = self.y + self.h *2
         return left, bottom, right, top
 
     def update(self):
         self.bt.run()
 
     def draw(self):
-        frame_x = (self.frame % 3) * 113
-        frame_y = (2 - (self.frame // 3)) * 113
-        idle_frame_x = (self.frame % 2) * 113
-        idle_frame_y = (self.frame // 2) * 113
 
         if self.current_image == self.image_idle:
-            self.image_idle.clip_composite_draw(idle_frame_x,idle_frame_y, 113, 113,0,'h', self.x, self.y, 500, 500)
-        elif self.current_image == self.image_attack or self.current_image == self.image_heal:
-            self.image_attack.clip_composite_draw(frame_x,frame_y, 113, 113,0,'h', self.x, self.y, 500, 500)
+            self.image_idle.clip_composite_draw(int(self.frame)*self.w,0,self.w,
+                                                self.h,0,'h', self.x, self.y, 400, 400)
+        elif self.current_image == self.image_attack:
+            self.image_idle.clip_composite_draw(int(self.frame)*self.w,0,self.w,
+                                                self.h,0,'h', self.x, self.y, 400, 400)
+        elif self.current_image == self.image_heal:
+            self.image_idle.clip_composite_draw(int(self.frame)*self.w,0,self.w,
+                                                self.h,0,'h', self.x, self.y, 400, 400)
 
         draw_rectangle(*self.get_bb())
 
@@ -103,10 +104,10 @@ class boss:
 
         self.timer += game_framework.frame_time
         if self.timer >= 0.1:
-            self.frame = (self.frame + 1) % 8
+            self.frame = (self.frame + 1) % self.attack_frame_count
             self.timer = 0.0
 
-        if self.frame >= 8:
+        if self.frame >= self.attack_frame_count:
             self.frame = 0
             self.is_attacking = False
             return BehaviorTree.SUCCESS
@@ -118,7 +119,7 @@ class boss:
         self.current_image = self.image_idle
         self.timer += game_framework.frame_time
         if self.timer >= 0.1:
-            self.frame = (self.frame + 1) % 4
+            self.frame = (self.frame + 1) % self.idle_frame_count
             self.timer = 0.0
 
         self.x -= self.speed * game_framework.frame_time
@@ -151,15 +152,16 @@ class boss:
         return BehaviorTree.RUNNING
 
     def build_behavior_tree(self):
-        heal_node = Sequence("힐",
-                            Condition("피가 30퍼 미만인가", self.hp_row),
-                                Action("힐 하기", self.do_heal))
         attack_node = Sequence("공격",
                         Condition("사거리 내에 영웅들이 있나", self.is_hero_in_range, 70),
                                Action("공격해라", self.do_attack))
-
-        heal_or_attack = Selector("힐 또는 공격", heal_node, attack_node)
-
+        if self.image_heal:
+            heal_node = Sequence("힐",
+                                 Condition("피가 30퍼 미만인가", self.hp_row),
+                                 Action("힐 하기", self.do_heal))
+            heal_or_attack = Selector("힐 또는 공격", heal_node, attack_node)
+        else:
+            heal_or_attack = attack_node
 
         move_node = Action("이동", self.move)
 
