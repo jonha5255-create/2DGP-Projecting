@@ -126,10 +126,10 @@ class warrior:
             self.frame = (self.frame + 1) % 2
             self.timer = 0.0
 
-        if self.x < 1100:
+        if self.x < 800:
             self.x += self.dir * self.speed * game_framework.frame_time
-        elif self.x >= 1100:
-            self.x = 1100
+        elif self.x >= 800:
+            self.x = 800
         return BehaviorTree.SUCCESS
 
     def build_behavior_tree(self):
