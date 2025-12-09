@@ -105,7 +105,7 @@ class archer:
         self.is_attacking = True
         self.current_image = self.archer_attack
         if int(self.frame) == 0 and self.timer == 0.0:
-            arrow = EFFECT(self.x + 50, self.y, 'archer_attack', 0.5)
+            arrow = EFFECT(self.x , self.y, 'archer_attack', 0.5)
             game_world.add_object(arrow, 2)
 
         self.timer += game_framework.frame_time
@@ -139,7 +139,7 @@ class archer:
                               Action("Do Skill",self.do_skill))
 
         attack = Sequence("Attack",
-                          Condition("In Range", self.is_enemy_in_range, 80),
+                          Condition("In Range", self.is_enemy_in_range, 300),
                           Action("Do Attack", self.do_attack))
 
         skill_and_attack = Selector("Skill and Attack", skill_node, attack)
