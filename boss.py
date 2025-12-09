@@ -64,7 +64,7 @@ class boss:
     def is_hero_in_range(self, r):
         target = self.get_nearest_hero()
         if target:
-            if abs(target.x - (self.x - 100)) <= r:
+            if abs(target.x - (self.x - 50)) <= r:
                 return BehaviorTree.SUCCESS
         return BehaviorTree.FAIL
 
@@ -126,7 +126,7 @@ class boss:
                             Condition("피가 30퍼 미만인가", self.hp_row),
                                 Action("힐 하기", self.do_heal))
         attack_node = Sequence("공격",
-                        Condition("사거리 내에 영웅들이 있나", self.is_hero_in_range, 80),
+                        Condition("사거리 내에 영웅들이 있나", self.is_hero_in_range, 70),
                                Action("공격해라", self.do_attack))
 
         heal_or_attack = Selector("힐 또는 공격", heal_node, attack_node)
