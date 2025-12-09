@@ -122,4 +122,17 @@ class boss:
         return BehaviorTree.RUNNING
 
     def build_behavior_tree(self):
+        heal_node = Sequence(Condition("피가 30퍼 미만인가", self.hp_row),
+                             Action("힐 하기", self.do_heal))
+        attack_node = Sequence(Condition("사거리 내에 영웅들이 있나", self.is_hero_in_range, 80),
+                               Action("공격해라", self.do_attack))
+
+        heal_or_attack = Selector("힐 또는 공격", heal_node, attack_node)
+
+
+        move_node = Action("이동", self.move)
+
+        root = Selector(heal_or_attack, move_node)
+
+        self.bt = BehaviorTree(root)
         pass
