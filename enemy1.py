@@ -9,7 +9,7 @@ class enemy:
     def __init__(self):
         self.x, self.y = 1000, 180
         self.frame = 0
-        self.hp = 100
+        self.hp = 150
         self.str = 10
         self.speed = 100
 
