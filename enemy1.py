@@ -61,6 +61,10 @@ class enemy:
         self.speed = data['speed']
         self.w = data['w']
         self.h = data['h']
+        self.at_w = data['at_w']
+        self.at_h = data['at_h']
+        self.idle_frame_count = data.get('idle_frame', 4)
+        self.attack_frame_count = data.get('attack_frame', 4)
 
         self.image_run = load_image(data['idle'])
         self.image_attack = load_image(data['attack'])
@@ -72,16 +76,19 @@ class enemy:
 
 
     def get_bb(self):
-        return self.x - 20, self.y - 30, self.x + 20, self.y + 30
+        return (self.x -self.w - 20, self.y - self.h - 30,
+                self.x +self.w + 20, self.y + self.h + 30)
 
     def update(self):
         self.bt.run()
 
     def draw(self):
         if self.current_image == self.image_attack:
-            self.current_image.clip_draw(int(self.frame) * 37, 0, 37, 100, self.x, self.y, 60, 60)
+            self.current_image.clip_draw(int(self.frame) * self.at_w, 0, self.at_w, self.at_h,
+                                         self.x, self.y, 60, 60)
         else:
-            self.current_image.clip_draw(int(self.frame) * 37, 0, 37, 100, self.x, self.y, 60, 60)
+            self.current_image.clip_draw(int(self.frame) * self.w, 0, self.w, self.h,
+                                         self.x, self.y, 60, 60)
 
         draw_rectangle(*self.get_bb())
 
@@ -109,7 +116,7 @@ class enemy:
         self.current_image = self.image_run
         self.timer += game_framework.frame_time
         if self.timer >= 0.1:
-            self.frame = (self.frame + 1) % 4
+            self.frame = (self.frame + 1) % self.idle_frame_count
             self.timer = 0.0
 
         self.x += self.dir * self.speed * game_framework.frame_time
@@ -126,16 +133,16 @@ class enemy:
             self.timer = 0
 
             # 공격 판정 (특정 프레임에서 데미지)
-            if int(self.frame) == 6:  # 예: 3번 프레임에서 타격
+            if int(self.frame) == 5:
                 target = self.get_nearest_hero()
                 if target and abs(target.x - self.x) < 60:
-                    # 간단한 데미지 처리 (play_mode의 update에서 통합 처리해도 되지만 여기서 해도 됨)
-                    # 여기서는 동작만 수행하고 실제 타격은 play_mode 충돌처리 충돌체크에 맡기거나,
-                    # 직접 줄 수도 있음.
+                    target.hp -= self.str
+                    if target.hp < 0:
+                        target.hp = 0
                     pass
 
         # 애니메이션 종료 체크
-        if self.frame >= 7:  # 공격 모션이 7프레임이라고 가정
+        if self.frame >= self.attack_frame_count:  # 공격 모션이 7프레임이라고 가정
             self.frame = 0
             self.is_attacking = False
             return BehaviorTree.SUCCESS  # 공격 완료 -> 다시 판단
