@@ -38,8 +38,12 @@ class warrior:
         self.bt.run()
 
     def draw(self):
+        if self.current_image == self.warrior_run:
+            self.current_image.clip_draw(int(self.frame) * 128, 0 , 128, 100, self.x,self.y)
+        else:
+            self.current_image.draw(int(self.frame) * 128, 0 , 128, 100, self.x,self.y)
 
-
+        # 바운딩 박스
         draw_rectangle(*self.get_bb())
 
     def use_skill(self, count):
