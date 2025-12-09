@@ -124,11 +124,13 @@ def update():
     effects = [o for o in game_world.world[2] if isinstance(o, EFFECT)]
 
     for eff in effects:
-        if eff.effect_type == 'archer_attack':  # 화살인 경우만
+        if eff.effect_type == 'archer_attack' or eff.effect_type == 'healer_attack':  # 화살인 경우만
             for e in enemies:
                 if collide(eff, e):
-                    print("아쳐 화살 명중!")
-                    e.hp -= heroes.archer.str  # 아쳐 공격력만큼 데미지
+                    if heroes.archer:
+                        e.hp -= heroes.archer.str  # 아쳐 공격력만큼 데미지
+                    elif heroes.healer:
+                        e.hp -= heroes.healer.str  # 힐러 공격력만큼 데미지
                     game_world.remove_object(eff)  # 화살 사라짐
                     if e.hp <= 0:
                         game_world.remove_object(e)
