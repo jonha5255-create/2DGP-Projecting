@@ -3,7 +3,7 @@ import random
 
 from effect import EFFECT
 import lobby_mode
-from level_manager import LEVEL_MANAGER
+from level_manager import *
 import heroes
 
 from healer import healer
@@ -115,8 +115,13 @@ def init():
 
 def update():
     game_world.update()
-    level_mgr.update()
+    status = level_mgr.update()
 
+    if status == "Stage Clear":
+        change_stage()
+
+
+    # 충돌 처리
     enemies = [o for o in game_world.world[1] if isinstance(o, (enemy, boss))]
 
     # (2) 아쳐 화살(이펙트) vs 적 충돌
@@ -168,6 +173,14 @@ def update():
         if len(skill_blocks) < MAX_SKILL_BLOCK:
             add_skill_block()
 
+def change_stage():
+    game_world.world[0] = []
+
+    new_stage = level_mgr.get_current_stage()
+
+    game_world.add_object(new_stage, 0)
+
+    print("스테이지 변경됨")
 
 def draw():
     clear_canvas()
