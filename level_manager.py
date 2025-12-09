@@ -55,7 +55,8 @@ class LEVEL_MANAGER:
         if self.wave_cleared:
             self.clear_timer += game_framework.frame_time
             if self.clear_timer > 2.0:
-                self.next_wave()
+                return self.next_wave()
+        return None
 
     def next_wave(self):
         self.wave += 1
@@ -63,11 +64,15 @@ class LEVEL_MANAGER:
         if self.wave > 3:
             self.stage += 1
             self.wave = 1
-            print(f"Stage {self.stage} 시작!")
+
             if self.stage > 3:
                 print("모든 스테이지 클리어!")
-                quit(0)
-            return "stage_cleared"
+                game_framework.quit()
+                return "stage_clear"
+            print(f"Stage {self.stage} 시작!")
+            self.spawn_wave()
+            return "stage_changed"
+
 
         self.spawn_wave()
         return "wave_started"
