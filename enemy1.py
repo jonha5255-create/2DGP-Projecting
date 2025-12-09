@@ -11,7 +11,7 @@ MOB_DATA = {
         'hp': 100, 'speed': 80,'str': 10, 'w': 37, 'h': 37},
     2: {'idle': 'enemy3.png', 'attack': 'enemy3 attack.png',
         'hp': 150, 'speed': 70,'str': 5, 'w': 38, 'h': 38},
-    3: {'idle': 'enemy_magic.png', 'attack': 'enemy_magic_attack.png',
+    3: {'idle': 'enemy_magic.png', 'attack': 'enemy_magic attack.png',
         'hp': 90, 'speed': 90,'str': 15, 'w': 40, 'h': 42},
 
     # === 스테이지 2 (화산) ===

@@ -46,8 +46,6 @@ class boss:
         self.image_heal = load_image(data.get('heal',''))
         self.current_image = self.image_idle
 
-
-
         self.build_behavior_tree()
 
 

@@ -27,22 +27,32 @@ class LEVEL_MANAGER:
         self.wave_cleared = False
         self.clear_timer = 0.0
 
-        enemies = []
-
+        # 일반 웨이브
         if self.wave < 3:
-            count = random.randint(4,6) + (self.stage -1)
+            count = 2 + self.wave
             for i in range(count):
-                mob = enemy()
-                mob.x = 1100 + i * 30
-                mob.hp = 150 + (self.stage * 20)
+                mob_type = 1  # 기본값
+
+                # 스테이지별로 등장할 몹 번호 지정
+                if self.stage == 1:
+                    mob_type = random.choice([1, 2, 3])
+                elif self.stage == 2:
+                    mob_type = random.choice([4, 5])
+                elif self.stage == 3:
+                    mob_type = random.choice([6, 7, 8])
+
+                # 해당 타입의 적 생성
+                mob = enemy(mob_type)
+                mob.x = 1100 + i * 100
                 game_world.add_object(mob, 1)
-                enemies.append(mob)
-        elif self.wave == 3:
-            boss_mob = boss()
-            boss_mob.x = 1300
-            boss_mob.hp = 1000 + (self.stage * 100)
+
+        # 보스 웨이브
+        else:
+            print(f"Stage {self.stage} Boss Appeared!")
+
+            #현재 스테이지 번호를 보스에게 전달
+            boss_mob = boss(self.stage)
             game_world.add_object(boss_mob, 1)
-            enemies.append(boss_mob)
 
 
     def update(self):
