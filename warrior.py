@@ -16,7 +16,6 @@ class warrior:
         self.frame = 0
         self.hp = 350
         self.str = 35
-        self.dir = 1
         self.speed = 100
 
         self.warrior_idle = load_image('warrior_idle.png')
