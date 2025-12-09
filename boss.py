@@ -6,11 +6,11 @@ import heroes
 from behavior_tree import BehaviorTree, Action, Sequence, Condition, Selector
 
 BOSS_DATA = {
-    1: {'idle': 'stage1_boss.png', 'attack': 'stage1_boss_att.png',
+    1: {'idle': 'stage1_boss.png', 'attack': 'stage1_boss_att.png','heal':None,
         'hp': 1000, 'speed': 40, 'str': 50,
         'w': 102, 'h': 106,'at_w':161, 'at_h':196,
         'idle_frame': 4, 'attack_frame': 4},
-    2: {'idle': 'stage2_boss.png', 'attack': 'stage2_boss_att.png',
+    2: {'idle': 'stage2_boss.png', 'attack': 'stage2_boss_att.png','heal':None,
         'hp': 1500, 'speed': 80, 'str': 70,
         'w': 49, 'h': 60,'at_w': 55, 'at_h': 70,
         'idle_frame': 4, 'attack_frame': 6},
@@ -43,7 +43,7 @@ class boss:
 
         self.image_idle = load_image(data['idle'])
         self.image_attack = load_image(data['attack'])
-        self.image_heal = load_image(data.get('heal',''))
+        self.image_heal = load_image(data.get('heal'))
         self.current_image = self.image_idle
 
         self.build_behavior_tree()
