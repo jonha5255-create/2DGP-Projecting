@@ -6,7 +6,8 @@ class EFFECT:
     IMAGE_FILE = {
         'healer_heal': 'heal_effect.png',
         'warrior_attack': 'warrior_skill_effect.png',
-        'archer_attack': 'archer_effect.png'
+        'archer_attack': 'archer_effect.png',
+        'archer_skill' : 'archer_3chain_effect.png'
     }
 
     def __init__(self,x, y,effect_type, scale=1.0):
@@ -37,12 +38,21 @@ class EFFECT:
             self.frame_height = 100
             self.is_animated = True
             self.velocity = 600  # 화살 이동 속도 설정
+        elif effect_type == 'archer_skill':
+            self.frame_count = 5
+            self.duration = 1.0
+            self.frame_width = 130
+            self.frame_height = 120
+            self.is_animated = True
+
 
         self.current_frame = 0
         self.image = load_image(self.IMAGE_FILE[effect_type])
     def get_bb(self):
         if self.effect_type == 'archer_attack':
             return self.x -30, self.y -10, self.x +30, self.y +10
+        if self.effect_type == 'archer_skill':
+            return self.x, self.y, self.x, self.y
         return 0,0,0,0
 
     def update(self):
@@ -70,7 +80,13 @@ class EFFECT:
         pass
     def draw(self):
         sx = self.current_frame * self.frame_width
-        self.image.clip_draw(
+        if self.effect_type == 'archer_skill':
+            self.image.clip_draw(
+                sx, 0, self.frame_width,self.frame_height,
+                self.x ,self.y + 80,
+                130 * 3, 120 * 3)
+        else:
+            self.image.clip_draw(
             sx, 0, self.frame_width, self.frame_height,
             self.x, self.y,
             self.frame_width * self.scale,

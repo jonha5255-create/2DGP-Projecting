@@ -10,12 +10,11 @@ from behavior_tree import BehaviorTree, Action, Sequence, Condition, Selector
 
 class archer:
     def __init__(self):
-        self.x, self.y = 300, 200
+        self.x, self.y = 200, 200
         self.frame = 0
-        self.hp = 350
-        self.str = 35
-        self.dir = 1
-        self.speed = 100
+        self.hp = 200
+        self.str = 45
+        self.speed = 80
 
         # archer 에셋으로 변경
         self.archer_idle = load_image('archer_idle.png')
@@ -31,20 +30,18 @@ class archer:
         self.build_behavior_tree()
 
     def get_bb(self):
-        if self.current_image == self.archer_attack:
-            return self.x - 50, self.y - 50, self.x + 80, self.y + 50
-        return self.x - 50, self.y - 50, self.x + 20, self.y + 50
+        return self.x - 30, self.y - 50, self.x + 30, self.y + 30
 
     def update(self):
         self.bt.run()
 
     def draw(self):
         if self.current_image == self.archer_run:
-            self.current_image.clip_draw(int(self.frame) * 128, 0 , 128, 100, self.x,self.y)
+            self.current_image.clip_draw(int(self.frame) * 120, 0 , 120, 100, self.x,self.y)
         elif self.current_image == self.archer_attack:
-            self.current_image.clip_draw(int(self.frame) * 128, 0 , 128, 100, self.x,self.y)
+            self.current_image.clip_draw(int(self.frame) * 120, 0 , 120, 100, self.x,self.y)
         else:
-            self.current_image.clip_draw(int(self.frame) * 128, 0 , 128, 100, self.x,self.y)
+            self.current_image.clip_draw(int(self.frame) * 120, 0 , 120, 100, self.x,self.y)
 
         # 바운딩 박스
         draw_rectangle(*self.get_bb())
@@ -76,14 +73,14 @@ class archer:
             self.timer = 0.0
             self.is_use_skill = True
 
-            scale = 1.0 + (self.skill_queue - 1) * 0.5
+            scale = 1.0 + (self.skill_queue - 1) * 0.25
             # EFFECT에 올바른 아처 에셋 이름 사용
-            skill_effect = EFFECT(self.x + 80, self.y, 'archer_attack', scale)
+            skill_effect = EFFECT(self.x + 100, self.y, 'archer_skill', scale)
             game_world.add_object(skill_effect, 2)
             print (f"아처 스킬 사용! (체인: {self.skill_queue})")
 
         self.timer += game_framework.frame_time
-        if self.timer >= 0.2:
+        if self.timer >= 0.1:
             self.frame += 1
             self.timer = 0.0
 
@@ -107,6 +104,10 @@ class archer:
     def do_attack(self):
         self.is_attacking = True
         self.current_image = self.archer_attack
+        if int(self.frame) == 0 and self.timer == 0.0:
+            arrow = EFFECT(self.x + 50, self.y, 'archer_attack', 0.5)
+            game_world.add_object(arrow, 2)
+
         self.timer += game_framework.frame_time
         if self.timer >= 0.2:
             self.frame += 1
@@ -126,10 +127,10 @@ class archer:
             self.frame = (self.frame + 1) % 2
             self.timer = 0.0
 
-        if self.x < 1100:
-            self.x += self.dir * self.speed * game_framework.frame_time
-        elif self.x >= 1100:
-            self.x = 1100
+        if self.x < 700:
+            self.x += self.speed * game_framework.frame_time
+        elif self.x >= 700:
+            self.x = 700
         return BehaviorTree.SUCCESS
 
     def build_behavior_tree(self):
