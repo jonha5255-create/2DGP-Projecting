@@ -83,10 +83,16 @@ class boss:
 
         return BehaviorTree.RUNNING
 
-
-
     def move(self):
-        pass
+        self.is_attacking = False
+        self.current_image = self.image_idle
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.1:
+            self.frame = (self.frame + 1) % 4
+            self.timer = 0.0
+
+        self.x -= self.speed * game_framework.frame_time
+        return BehaviorTree.SUCCESS
 
     def hp_row(self):
         pass
