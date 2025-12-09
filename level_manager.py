@@ -15,7 +15,7 @@ class LEVEL_MANAGER:
         self.wave = 1
         self.wave_cleared = False
         self.clear_timer = 0.0
-        self.bg = None
+
 
     def get_current_stage(self):
         if self.stage == 1: return stage1()
@@ -24,28 +24,31 @@ class LEVEL_MANAGER:
         return stage1()
 
     def spawn_wave(self):
+        self.wave_cleared = False
+        self.clear_timer = 0.0
+
         enemies = []
+
         if self.wave < 3:
-            count = random.randint(2,5) + (self.stage -1)
+            count = random.randint(4,6) + (self.stage -1)
             for i in range(count):
                 mob = enemy()
-                mob.x = 1000 + i * 50
+                mob.x = 1100 + i * 30
                 mob.hp = 100 + (self.stage * 20)
                 game_world.add_object(mob, 1)
                 enemies.append(mob)
         else:
             boss_mob = boss()
-            boss_mob.x = 1100
-            boss_mob.hp = 1000 + (self.stage * 100)
+            boss_mob.x = 1300
+            boss_mob.hp = 900 + (self.stage * 100)
             game_world.add_object(boss_mob, 1)
             enemies.append(boss_mob)
 
-        self.wave_cleared = False
 
     def update(self):
-        live_enemis = [o for o in game_world.world[1] if isinstance(o, (enemy, boss))]
+        live_enemies = [o for o in game_world.world[1] if isinstance(o, (enemy, boss))]
 
-        if len(live_enemis) == 0:
+        if len(live_enemies) == 0:
             self.wave_cleared = True
             self.clear_timer = 0.0
 
