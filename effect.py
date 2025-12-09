@@ -6,7 +6,7 @@ class EFFECT:
     IMAGE_FILE = {
         'healer_heal': 'heal_effect.png',
         'healer_attack': 'healer_att_effect.png',
-        'warrior_attack': 'warrior_skill_effect.png',
+        'warrior_attack': 'warrior_skill_eff.png',
         'archer_attack': 'archer_effect.png',
         'archer_skill' : 'archer_3chain_effect.png'
     }
@@ -27,17 +27,17 @@ class EFFECT:
             self.frame_height = 100
             self.is_animated = True
         elif effect_type == 'healer_attack':
-            self.frame_count = 0
+            self.frame_count = 1
             self.duration = 0.5
             self.frame_width = 228
             self.frame_height = 215
             self.is_animated = False
             self.velocity = 600
         elif effect_type == 'warrior_attack':
-            self.frame_count = 4
+            self.frame_count = 1
             self.duration = 0.4
-            self.frame_width = 128
-            self.frame_height = 100
+            self.frame_width = 54
+            self.frame_height = 166
             self.is_animated = True
         elif effect_type == 'archer_attack':
             self.frame_count = 3
@@ -63,6 +63,8 @@ class EFFECT:
             return self.x, self.y, self.x, self.y
         if self.effect_type == 'healer_attack':
             return self.x, self.y, self.x, self.y
+        if self.effect_type == 'warrior_attack':
+            return self.x - 20, self.y - 80, self.x + 20, self.y + 80
 
         return 0,0,0,0
 
