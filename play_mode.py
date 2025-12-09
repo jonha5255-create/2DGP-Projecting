@@ -57,12 +57,6 @@ def handle_events():
                             block.reset_target(j)
 
 
-
-            # 캐릭터 이벤트 처리
-            heroes.warrior.handle_event(event)
-            heroes.healer.handle_event(event)
-            heroes.archer.handle_event(event)
-
 def add_skill_block():
     if len(skill_blocks) < MAX_SKILL_BLOCK:
         new_block = SKILLBLOCK(len(skill_blocks))
