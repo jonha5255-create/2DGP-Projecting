@@ -154,6 +154,10 @@ class archer:
                               Condition("Trigger",self.check_skill_trigger),
                               Action("Do Skill",self.do_skill))
 
+        back_move = Sequence("Move Back",
+                             Condition("Enemy Close", self.is_enemy_in_range, 250),
+                             Action("Move Back",self.move_back))
+
         attack = Sequence("Attack",
                           Condition("In Range", self.is_enemy_in_range, 450),
                           Action("Do Attack", self.do_attack))
@@ -163,6 +167,8 @@ class archer:
 
         move = Action("Move",self.move)
 
-        root = Selector("Root", skill_and_attack, move)
+        move_or_back = Selector("Move or Back", back_move, move)
+
+        root = Selector("Root", skill_and_attack, move_or_back)
 
         self.bt = BehaviorTree(root)
