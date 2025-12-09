@@ -8,25 +8,41 @@ from behavior_tree import BehaviorTree, Action, Sequence, Condition, Selector
 MOB_DATA = {
     # === 스테이지 1 (숲) ===
     1: {'idle': 'enemy2.png', 'attack': 'enemy2 attack.png',
-        'hp': 100, 'speed': 80,'str': 10, 'w': 37, 'h': 37},
+        'hp': 100, 'speed': 80,'str': 10,
+        'w': 37, 'h': 37,'at_w': 37, 'at_h': 37,
+        'idle_frame': 4, 'attack_frame': 7},
     2: {'idle': 'enemy3.png', 'attack': 'enemy3 attack.png',
-        'hp': 150, 'speed': 70,'str': 5, 'w': 38, 'h': 38},
+        'hp': 150, 'speed': 70,'str': 5,
+        'w': 38, 'h': 38, 'at_w': 38, 'at_h': 38,
+        'idle_frame': 4, 'attack_frame': 6},
     3: {'idle': 'enemy_magic.png', 'attack': 'enemy_magic attack.png',
-        'hp': 90, 'speed': 90,'str': 15, 'w': 40, 'h': 42},
+        'hp': 90, 'speed': 90,'str': 15,
+        'w': 40, 'h': 42, 'at_w': 40, 'at_h': 42,
+        'idle_frame': 4, 'attack_frame': 6},
 
     # === 스테이지 2 (화산) ===
     4: {'idle': 'stage2_mob.png', 'attack': 'stage2_mob_att.png',
-        'hp': 200, 'speed': 60,'str': 15, 'w': 900, 'h': 900},
+        'hp': 200, 'speed': 60,'str': 15,
+        'w': 900, 'h': 900,'at_w': 900, 'at_h': 900,
+        'idle_frame': 12, 'attack_frame': 12},
     5: {'idle': 'stage2_mob2.png', 'attack': 'stage2_mob2_att.png',
-        'hp': 220, 'speed': 80, 'str': 15, 'w': 60, 'h': 40},
+        'hp': 220, 'speed': 80, 'str': 15,
+        'w': 64, 'h': 64, 'at_w': 64, 'at_h': 64,
+        'idle_frame': 4, 'attack_frame': 5},
 
     # === 스테이지 3 (성) ===
     6: {'idle': 'stage3_mob.png', 'attack': 'stage3_mob_att.png',
-        'hp': 300, 'speed': 90, 'str': 15, 'w': 50, 'h': 70},
+        'hp': 300, 'speed': 90, 'str': 15,
+        'w': 60, 'h': 60,'at_w': 60, 'at_h': 60,
+        'idle_frame': 4, 'attack_frame': 5},
     7: {'idle': 'stage3_mob2.png', 'attack': 'stage3_mob2_att.png',
-        'hp': 250, 'speed': 130, 'str': 15, 'w': 50, 'h': 60},
-    8: {'idle': 'stage3_mob2.png', 'attack': 'stage3_mob2_att.png',
-        'hp': 250, 'speed': 130, 'str': 15, 'w': 50, 'h': 60}
+        'hp': 250, 'speed': 130, 'str': 15,
+        'w': 60, 'h': 60, 'at_w': 60, 'at_h': 60,
+        'idle_frame': 4, 'attack_frame': 5},
+    8: {'idle': 'stage3_mob2.png', 'attack': 'stage3_mob3_att.png',
+        'hp': 250, 'speed': 130, 'str': 15,
+        'w': 60, 'h': 60, 'at_w': 60, 'at_h': 60,
+        'idle_frame': 4, 'attack_frame': 5}
 }
 
 class enemy:
