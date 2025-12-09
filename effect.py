@@ -84,7 +84,7 @@ class EFFECT:
             self.image.clip_draw(
                 sx, 0, self.frame_width,self.frame_height,
                 self.x ,self.y + 80,
-                130 * 3, 120 * 3)
+                (self.frame_width * 3) * self.scale, (self.frame_height * 3) * self.scale)
         else:
             self.image.clip_draw(
             sx, 0, self.frame_width, self.frame_height,
