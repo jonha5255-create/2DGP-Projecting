@@ -120,10 +120,8 @@ def init():
 
 
 def update():
-    global level_mgr
     game_world.update()
-
-    status = level_mgr.update()
+    level_mgr.update()
 
     enemies = [o for o in game_world.world[1] if isinstance(o, (enemy, boss))]
 
