@@ -34,7 +34,7 @@ class boss:
         return left, bottom, right, top
 
     def update(self):
-        self.state_machine.update()
+        self.bt.run()
 
     def draw(self):
         frame_x = (self.boss.frame % 3) * 113
@@ -49,6 +49,21 @@ class boss:
         draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
+        pass
+
+
+    # BT
+
+    def is_hero_in_range(self, r):
+        pass
+
+    def do_attack(self):
+        pass
+
+    def move(self):
+        pass
+
+    def do_heal(self):
         pass
 
     def build_behavior_tree(self):
