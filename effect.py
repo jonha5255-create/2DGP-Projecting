@@ -5,6 +5,7 @@ import game_world
 class EFFECT:
     IMAGE_FILE = {
         'healer_heal': 'heal_effect.png',
+        'healer_attack': 'healer_att_effect.png',
         'warrior_attack': 'warrior_skill_effect.png',
         'archer_attack': 'archer_effect.png',
         'archer_skill' : 'archer_3chain_effect.png'
@@ -25,6 +26,13 @@ class EFFECT:
             self.frame_width = 100
             self.frame_height = 100
             self.is_animated = True
+        elif effect_type == 'healer_attack':
+            self.frame_count = 0
+            self.duration = 0.5
+            self.frame_width = 228
+            self.frame_height = 215
+            self.is_animated = False
+            self.velocity = 600
         elif effect_type == 'warrior_attack':
             self.frame_count = 4
             self.duration = 0.4
@@ -53,12 +61,15 @@ class EFFECT:
             return self.x -30, self.y -10, self.x +30, self.y +10
         if self.effect_type == 'archer_skill':
             return self.x, self.y, self.x, self.y
+        if self.effect_type == 'healer_attack':
+            return self.x, self.y, self.x, self.y
+
         return 0,0,0,0
 
     def update(self):
         self.timer += game_framework.frame_time
 
-        # 이동 로직 (아쳐 화살)
+        # 이동 로직 (아쳐 화살, 힐러 공격)
         if self.velocity > 0:
             self.x += self.velocity * game_framework.frame_time
 
@@ -85,6 +96,17 @@ class EFFECT:
                 sx, 0, self.frame_width,self.frame_height,
                 self.x ,self.y + 80,
                 (self.frame_width * 3) * self.scale, (self.frame_height * 3) * self.scale)
+        elif self.effect_type == 'healer_attack':
+            self.image.clip_draw(
+                sx, 0, self.frame_width,self.frame_height,
+                self.x ,self.y ,
+                self.frame_width/2, self.frame_height/2)
+        elif self.effect_type == 'healer_heal':
+            self.image.clip_draw(
+                sx, 0, self.frame_width, self.frame_height,
+                self.x, self.y,
+                self.frame_width,self.frame_height
+            )
         else:
             self.image.clip_draw(
             sx, 0, self.frame_width, self.frame_height,
