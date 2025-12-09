@@ -46,8 +46,8 @@ class enemy:
         self.w = data['w']
         self.h = data['h']
 
-        self.image_run = load_image('enemy1.png')
-        self.image_attack = load_image('enemy1 attack.png')
+        self.image_run = load_image(data['idle'])
+        self.image_attack = load_image(data['attack'])
         self.current_image = self.image_run
 
 
