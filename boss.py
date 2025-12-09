@@ -5,24 +5,48 @@ import game_world
 import heroes
 from behavior_tree import BehaviorTree, Action, Sequence, Condition, Selector
 
+BOSS_DATA = {
+    1: {'idle': 'stage1_boss.png', 'attack': 'stage1_boss_att.png',
+        'hp': 1000, 'speed': 40, 'str': 50,
+        'w': 102, 'h': 106,'at_w':161, 'at_h':196,
+        'idle_frame': 4, 'attack_frame': 4},
+    2: {'idle': 'stage2_boss.png', 'attack': 'stage2_boss_att.png',
+        'hp': 1500, 'speed': 80, 'str': 70,
+        'w': 49, 'h': 60,'at_w': 55, 'at_h': 70,
+        'idle_frame': 4, 'attack_frame': 6},
+    3: {'idle': 'boss idle.png', 'attack': 'boss attack.png', 'heal': 'boss heal.png',
+        'hp': 2000, 'speed': 100, 'str': 90,
+        'w': 113, 'h': 113,'at_w': 113, 'at_h': 113,
+        'idle_frame': 4, 'attack_frame': 8, 'heal_frame': 8
+        }
+}
+
 class boss:
-    def __init__(self):
+    def __init__(self,stage_id=1):
         self.x, self.y = 1100, 320
         self.frame = 0
-        self.hp = 1000
-        self.max_hp = self.hp
-        self.str = 60
-        self.speed = 60
-
-
-        self.image_idle = load_image('boss idle.png')
-        self.image_attack = load_image('boss attack.png')
-        self.image_heal = load_image('boss heal.png')
-        self.current_image = self.image_idle
-
         self.timer = 0.0
         self.is_attacking = False
         self.is_healing = False
+
+        data = BOSS_DATA.get(stage_id, BOSS_DATA[1])
+
+        self.hp = data['hp']
+        self.max_hp = self.hp
+        self.str = data['str']
+        self.speed = data['speed']
+        self.w = data['w']
+        self.h = data['h']
+        self.at_w = data['at_w']
+        self.at_h = data['at_h']
+
+
+        self.image_idle = load_image(data['idle'])
+        self.image_attack = load_image(data['attack'])
+        self.image_heal = load_image(data.get('heal',''))
+        self.current_image = self.image_idle
+
+
 
         self.build_behavior_tree()
 
