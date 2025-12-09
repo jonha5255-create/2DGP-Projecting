@@ -92,7 +92,7 @@ class healer:
             self.timer = 0.0
 
         # 스킬 끝나고 나면
-        if self.frame >= 3:
+        if self.frame >= 2:
             self.frame = 0
             self.skill_queue = 0 # 스킬 사용 후 대기열 초기화
             self.is_attacking = False
