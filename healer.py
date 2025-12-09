@@ -1,144 +1,152 @@
 from pico2d import *
-from sdl2 import SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT, SDL_MOUSEBUTTONDOWN, SDL_KEYDOWN, SDLK_SPACE, SDL_KEYUP
 
 import game_framework
 import game_world
 from effect import EFFECT
-from state_machine import StateMachine
+from enemy1 import enemy
+from boss import boss
 
-def space_down(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
+from behavior_tree import BehaviorTree, Action, Sequence, Condition, Selector
 
-PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
-RUN_SPEED_KMPH = 10.0  # Km / Hour
-RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
-RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
-RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
-
-
-TIME_PER_ACTION = 0.5
-ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
-FRAMES_PER_ACTION = 2
-
-class RUN:
-    def __init__(self, healer):
-        self.healer = healer
-        self.image = load_image('healer run.png')
-        self.timer = 0.0
-
-    def enter(self,e):
-        self.healer.frame = 0
-
-    def exit(self,e):
-        pass
-
-    def do(self):
-        self.timer += game_framework.frame_time
-        if self.timer >= 0.1:
-            self.healer.frame = (self.healer.frame + 1) % 2
-            self.timer = 0.0
-
-
-    def draw(self):
-        self.image.clip_draw(self.healer.frame * 100 ,0, 100, 100, self.healer.x, self.healer.y)
-
-
-class IDLE:
-    def __init__(self,healer):
-        self.healer = healer
-        self.image = load_image('healer idle.png')
-        self.timer = 0.0
-
-    def enter(self,e):
-        self.healer.frame = 0
-
-    def exit(self,e):
-        pass
-
-    def do(self):
-        self.timer += game_framework.frame_time
-        if self.timer >= 0.1:
-            self.healer.frame = (self.healer.frame + 1) % 2
-            self.timer = 0.0
-
-    def draw(self):
-        self.image.clip_draw(self.healer.frame * 100 ,0, 100, 100, self.healer.x, self.healer.y)
-
-class HEAL:
-    def __init__(self, healer):
-        self.healer = healer
-        self.image = load_image('healer heal.png')
-        self.timer = 0.0
-        self.chain_count = 1
-
-    def enter(self,count):
-        self.healer.frame = 0
-        self.timer = 0.0
-        self.chain_count = count if isinstance(count, int) else 1
-
-        scale = 1.0 + (count - 1) * 0.3
-
-        heal_effect = EFFECT(self.healer.x, self.healer.y,'healer_heal', scale)
-        game_world.add_object(heal_effect, 1)
-
-        print(f"힐러 {count}체인 힐 이펙트 발동!")
-
-    def exit(self,e):
-        pass
-
-    def do(self):
-        self.timer += game_framework.frame_time
-        if self.timer >= 0.1:
-            self.healer.frame = (self.healer.frame + 1) % 3
-            self.timer = 0.0
-
-        # 스킬 애니메이션이 끝나면 RUN으로 복귀
-        if self.healer.frame == 2:
-            self.healer.state_machine.cur_state = self.healer.healer_run
-            self.healer.healer_run.enter(None)
-
-    def draw(self):
-        self.image.clip_draw(self.healer.frame * 100 ,0, 100, 100, self.healer.x, self.healer.y)
-
-class healer:
+class archer:
     def __init__(self):
-        self.x, self.y = 100, 210
+        self.x, self.y = 200, 200
         self.frame = 0
-        self.hp = 110
-        self.str = 20
+        self.hp = 200
+        self.str = 45
+        self.speed = 80
 
-        self.healer_idle = IDLE(self)
-        self.healer_heal = HEAL(self)
-        self.healer_run = RUN(self)
+        # archer 에셋으로 변경
+        self.archer_idle = load_image('archer_idle.png')
+        self.archer_attack = load_image('archer_attack.png')
+        self.archer_run = load_image('archer_run.png')
+        self.current_image = self.archer_run
 
-        self.state_machine = StateMachine (
-            self.healer_run,
-            {
-                self.healer_idle: {space_down : self.healer_heal},
-                self.healer_heal: {space_down : self.healer_idle},
-                self.healer_run : {}
-            }
-        )
+        self.skill_queue = 0  # 스킬 사용 대기열
+        self.timer = 0.0
+        self.is_attacking = False # 현재 공격 중인지 여부
+        self.is_use_skill = False # 현재 스킬 사용 중인지 여부
+
+        self.build_behavior_tree()
 
     def get_bb(self):
-        left = self.x - 30
-        right = self.x + 30
-        bottom = self.y - 50
-        top = self.y + 30
-        return left, bottom, right, top
+        return self.x - 30, self.y - 50, self.x + 30, self.y + 30
 
     def update(self):
-        self.state_machine.update()
+        self.bt.run()
 
     def draw(self):
-        self.state_machine.draw()
-        left, bottom, right, top = self.get_bb()
-        draw_rectangle(left, bottom, right, top)
+        if self.current_image == self.archer_run:
+            self.current_image.clip_draw(int(self.frame) * 120, 0 , 120, 100, self.x,self.y)
+        elif self.current_image == self.archer_attack:
+            self.current_image.clip_draw(int(self.frame) * 120, 0 , 120, 100, self.x,self.y)
+        else:
+            self.current_image.clip_draw(int(self.frame) * 120, 0 , 120, 100, self.x,self.y)
+
+        # 바운딩 박스
+        draw_rectangle(*self.get_bb())
 
     def use_skill(self, count):
-        self.state_machine.cur_state.exit(None)
-        self.state_machine.cur_state = self.healer_heal
-        self.healer_heal.enter(count)
+        self.skill_queue = count
 
     def handle_event(self, event):
-        self.state_machine.handle_state_event(('INPUT',event))
+        pass
+
+    # BT
+
+    def get_nearest_enemy(self):
+        enemies = [o for o in game_world.world[1] if isinstance(o, (enemy, boss))]
+        if not enemies: return None
+        return min(enemies, key=lambda e: abs(e.x - self.x))
+
+    def check_skill_trigger(self):
+        if self.skill_queue > 0:
+            return BehaviorTree.SUCCESS
+        return BehaviorTree.FAIL
+
+    # 스킬 사용
+    def do_skill(self):
+        self.is_attacking = True
+        self.current_image = self.archer_attack
+        if not self.is_use_skill:
+            self.frame = 0
+            self.timer = 0.0
+            self.is_use_skill = True
+
+            scale = 1.0 + (self.skill_queue - 1) * 0.25
+            # EFFECT에 올바른 아처 에셋 이름 사용
+            skill_effect = EFFECT(self.x + 100, self.y, 'archer_skill', scale)
+            game_world.add_object(skill_effect, 2)
+            print (f"아처 스킬 사용! (체인: {self.skill_queue})")
+
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.1:
+            self.frame += 1
+            self.timer = 0.0
+
+        # 스킬 끝나고 나면
+        if self.frame >= 3:
+            self.frame = 0
+            self.skill_queue = 0 # 스킬 사용 후 대기열 초기화
+            self.is_attacking = False
+            self.is_use_skill = False
+            return BehaviorTree.SUCCESS
+        return BehaviorTree.RUNNING
+
+    # 적이 사정거리 내에 있는지 확인
+    def is_enemy_in_range(self, r):
+        target = self.get_nearest_enemy()
+        if target and abs(target.x - self.x) <= r:
+            return BehaviorTree.SUCCESS
+        return BehaviorTree.FAIL
+
+    # 일반 공격
+    def do_attack(self):
+        self.is_attacking = True
+        self.current_image = self.archer_attack
+        if int(self.frame) == 0 and self.timer == 0.0:
+            arrow = EFFECT(self.x , self.y, 'archer_attack', 0.5)
+            game_world.add_object(arrow, 2)
+
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.2:
+            self.frame += 1
+            self.timer = 0.0
+
+        if self.frame >= 3:
+            self.frame = 0
+            self.is_attacking = False
+            return BehaviorTree.SUCCESS
+        return BehaviorTree.RUNNING
+
+    def move(self):
+        self.is_attacking = False
+        self.current_image = self.archer_run
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.1:
+            self.frame = (self.frame + 1) % 2
+            self.timer = 0.0
+
+        if self.x < 700:
+            self.x += self.speed * game_framework.frame_time
+        elif self.x >= 700:
+            self.x = 700
+        return BehaviorTree.SUCCESS
+
+    def build_behavior_tree(self):
+        skill_node = Sequence("Skill",
+                              Condition("Trigger",self.check_skill_trigger),
+                              Action("Do Skill",self.do_skill))
+
+        attack = Sequence("Attack",
+                          Condition("In Range", self.is_enemy_in_range, 300),
+                          Action("Do Attack", self.do_attack))
+
+        skill_and_attack = Selector("Skill and Attack", skill_node, attack)
+
+
+        move = Action("Move",self.move)
+
+        root = Selector("Root", skill_and_attack, move)
+
+        self.bt = BehaviorTree(root)
