@@ -40,20 +40,27 @@ class boss:
         self.at_w = data['at_w']
         self.at_h = data['at_h']
 
+        self.idle_frame_count = data.get('idle_frame', 4)
+        self.attack_frame_count = data.get('attack_frame', 4)
+        self.heal_frame_count = data.get('heal_frame', 8)
 
         self.image_idle = load_image(data['idle'])
         self.image_attack = load_image(data['attack'])
-        self.image_heal = load_image(data.get('heal'))
+        if data.get('heal'):
+            self.image_heal = load_image(data.get('heal'))
+        else:
+            self.image_heal = None
+
         self.current_image = self.image_idle
 
         self.build_behavior_tree()
 
 
     def get_bb(self):
-        left = self.x - 170
-        right = self.x + 170
-        bottom = self.y - 200
-        top = self.y + 200
+        left = self.x - self.w//2
+        right = self.x + self.w//2
+        bottom = self.y - self.h//2
+        top = self.y + self.h//2
         return left, bottom, right, top
 
     def update(self):
