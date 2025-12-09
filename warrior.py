@@ -26,6 +26,7 @@ class warrior:
 
         self.skill_queue = 0  # 스킬 사용 대기열
         self.timer = 0.0
+        self.is_attacking = False # 현재 공격 중인지 여부
 
         self.build_behavior_tree()
 
@@ -65,6 +66,7 @@ class warrior:
         return BehaviorTree.FAIL
 
     def do_skill(self):
+        self.is_attacking = True
         self.current_image = self.warrior_attack
 
         if self.frame == 0 and self.timer == 0.0:
@@ -82,6 +84,7 @@ class warrior:
         if self.frame >= 3:
             self.frame = 0
             self.skill_queue = 0 # 스킬 사용 후 대기열 초기화
+            self.is_attacking = False
             return BehaviorTree.SUCCESS
         return BehaviorTree.RUNNING
 
@@ -94,6 +97,7 @@ class warrior:
 
     # 적 일반 공격
     def do_attack(self):
+        self.is_attacking = True
         self.current_image = self.warrior_attack
         self.timer += game_framework.frame_time
         if self.timer >= 0.2:
@@ -102,10 +106,12 @@ class warrior:
 
         if self.frame >= 3:
             self.frame = 0
+            self.is_attacking = False
             return BehaviorTree.SUCCESS
         return BehaviorTree.RUNNING
 
     def move(self):
+        self.is_attacking = False
         self.current_image = self.warrior_run
         self.timer += game_framework.frame_time
         if self.timer >= 0.1:

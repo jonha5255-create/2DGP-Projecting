@@ -19,6 +19,7 @@ class enemy:
 
         self.timer = 0.0
         self.dir = -1
+        self.is_attacking = False
 
         self.build_behavior_tree()
 
@@ -38,7 +39,10 @@ class enemy:
         draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
-        self.state_machine.handle_state_event(('INPUT',event))
+        pass
+
+
+    # BT
 
     def get_nearest_hero(self):
         targets = [h for h in [heroes.warrior, heroes.healer, heroes.archer] if h]
@@ -48,12 +52,13 @@ class enemy:
     def is_hero_nearby(self, r):
         target = self.get_nearest_hero()
         if target:
-            distance = abs(target.x - self.x)
+            distance = target.x - self.x
             if distance <= r:
                 return BehaviorTree.SUCCESS
         return BehaviorTree.FAIL
 
     def move_to_hero(self):
+        self.is_attacking = False
         self.current_image = self.image_run
         self.timer += game_framework.frame_time
         if self.timer >= 0.1:
@@ -64,6 +69,7 @@ class enemy:
         return BehaviorTree.SUCCESS
 
     def attack_hero(self):
+        self.is_attacking = True
         self.current_image = self.image_attack
 
         # 공격 프레임 진행
@@ -81,9 +87,10 @@ class enemy:
                     # 직접 줄 수도 있음.
                     pass
 
-                    # 애니메이션 종료 체크
+        # 애니메이션 종료 체크
         if self.frame >= 7:  # 공격 모션이 7프레임이라고 가정
             self.frame = 0
+            self.is_attacking = False
             return BehaviorTree.SUCCESS  # 공격 완료 -> 다시 판단
 
         return BehaviorTree.RUNNING  # 공격 중 -> 계속 실행
