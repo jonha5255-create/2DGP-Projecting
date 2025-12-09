@@ -6,8 +6,7 @@ import heroes
 from behavior_tree import BehaviorTree, Action, Sequence, Condition, Selector
 
 class boss:
-    def __init__(self, boss):
-        self.boss = boss
+    def __init__(self):
         self.x, self.y = 1100, 320
         self.frame = 0
         self.hp = 1000
@@ -39,9 +38,9 @@ class boss:
         self.bt.run()
 
     def draw(self):
-        frame_x = (self.boss.frame % 3) * 113
-        frame_y = (2 - (self.boss.frame // 3)) * 113
-        idle_frame_y = (self.boss.frame // 2) * 113
+        frame_x = (self.frame % 3) * 113
+        frame_y = (2 - (self.frame // 3)) * 113
+        idle_frame_y = (self.frame // 2) * 113
 
         if self.image_idle:
             self.image_idle.composite_draw(frame_x,idle_frame_y, 113, 113,0,'h', self.boss.x, self.boss.y, 500, 500)
