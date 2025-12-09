@@ -13,7 +13,7 @@ MOB_DATA = {
         'idle_frame': 4, 'attack_frame': 7, 'face_right': False},
     2: {'idle': 'enemy3.png', 'attack': 'enemy3 attack.png',
         'hp': 150, 'speed': 70,'str': 5,
-        'w': 38, 'h': 38, 'at_w': 38, 'at_h': 38,
+        'w': 36, 'h': 38, 'at_w': 36, 'at_h': 38,
         'idle_frame': 4, 'attack_frame': 6, 'face_right': False},
     3: {'idle': 'enemy_magic.png', 'attack': 'enemy_magic attack.png',
         'hp': 90, 'speed': 90,'str': 15,
@@ -77,8 +77,9 @@ class enemy:
 
 
     def get_bb(self):
-        return (self.x -self.w , self.y - self.h ,
-                self.x +self.w, self.y + self.h )
+
+        return (self.x -self.w, self.y - self.h,
+                self.x + self.w ,self.y + self.h)
 
     def update(self):
         self.bt.run()
@@ -94,10 +95,10 @@ class enemy:
 
         if self.current_image == self.image_attack:
             self.current_image.clip_composite_draw(int(self.frame) * self.at_w, 0,
-                                                   self.at_w, self.at_h,0,flip,self.x, self.y, 80, 80)
+                                                   self.at_w, self.at_h,0,flip,self.x, self.y,90, 90)
         else:
             self.current_image.clip_composite_draw(int(self.frame) * self.w, 0,
-                                                   self.w, self.h,0,flip,self.x, self.y, 80, 80)
+                                                   self.w, self.h,0,flip,self.x, self.y, 90, 90)
 
         draw_rectangle(*self.get_bb())
 
