@@ -27,6 +27,7 @@ class warrior:
         self.skill_queue = 0  # 스킬 사용 대기열
         self.timer = 0.0
         self.is_attacking = False # 현재 공격 중인지 여부
+        self.is_use_skill = False # 현재 스킬 사용 중인지 여부
 
         self.build_behavior_tree()
 
@@ -67,11 +68,15 @@ class warrior:
             return BehaviorTree.SUCCESS
         return BehaviorTree.FAIL
 
+    # 스킬 사용
     def do_skill(self):
         self.is_attacking = True
         self.current_image = self.warrior_attack
+        if not self.is_use_skill:
+            self.frame = 0
+            self.timer = 0.0
+            self.is_use_skill = True
 
-        if self.frame == 0 and self.timer == 0.0:
             scale = 1.0 + (self.skill_queue - 1) * 0.5
             skill_effect = EFFECT(self.x + 80, self.y, 'warrior_attack', scale)
             game_world.add_object(skill_effect, 2)
@@ -87,6 +92,7 @@ class warrior:
             self.frame = 0
             self.skill_queue = 0 # 스킬 사용 후 대기열 초기화
             self.is_attacking = False
+            self.is_use_skill = False
             return BehaviorTree.SUCCESS
         return BehaviorTree.RUNNING
 
@@ -97,7 +103,7 @@ class warrior:
             return BehaviorTree.SUCCESS
         return BehaviorTree.FAIL
 
-    # 적 일반 공격
+    # 일반 공격
     def do_attack(self):
         self.is_attacking = True
         self.current_image = self.warrior_attack
@@ -134,6 +140,7 @@ class warrior:
         attack = Sequence("Attack",
                           Condition("In Range", self.is_enemy_in_range, 80),
                           Action("Do Attack", self.do_attack))
+
         skill_and_attack = Selector("Skill and Attack", skill_node, attack)
 
 
