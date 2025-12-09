@@ -20,7 +20,10 @@ class boss:
         self.image_heal = load_image('boss heal.png')
         self.current_image = self.image_idle
 
-
+        self.timer = 0.0
+        self.is_attacking = False
+        
+        self.build_behavior_tree()
 
 
     def get_bb(self):
@@ -46,4 +49,7 @@ class boss:
         draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
+        pass
+
+    def build_behavior_tree(self):
         pass
