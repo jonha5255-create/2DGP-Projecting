@@ -1,194 +1,151 @@
 from pico2d import *
-from sdl2 import SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT, SDL_MOUSEBUTTONDOWN, SDL_KEYDOWN, SDLK_SPACE, SDL_KEYUP
 
 import game_framework
 import game_world
-import play_mode
-from state_machine import StateMachine
 from effect import EFFECT
-import random
+from enemy1 import enemy
+from boss import boss
 
-PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
-RUN_SPEED_KMPH = 10.0  # Km / Hour
-RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
-RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
-RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
-
-ATTACK_RANGE_PIXEL = 3.0 * PIXEL_PER_METER
-
-def space_down(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
-
-def skill_trigger(e):
-    return e[0] == 'SKILL_TRIGGER'
-
-class RUN:
-    def __init__(self, archer):
-        self.archer = archer
-        self.image = load_image('archer_run.png')
-        self.timer = 0.0
-
-    def enter(self, e):
-        self.archer.frame = 0
-
-    def exit(self, e):
-        pass
-
-    def do(self):
-        self.timer += game_framework.frame_time
-
-        self.archer.x += RUN_SPEED_KMPH * game_framework.frame_time * 2.0
-        if self.archer.x > 800:
-            self.archer.x = 800
-
-        if self.timer >= 0.1:
-            self.archer.frame = (self.archer.frame + 1) % 2
-            self.timer = 0.0
-
-        target = self.archer.get_nearest_enemy()
-        if target:
-            distance = target.x - self.archer.x
-            if 0 < distance <= ATTACK_RANGE_PIXEL:
-                self.archer.state_machine.cur_state = self.archer.archer_idle
-                self.archer.archer_idle.enter(None)
-                return
-
-    def draw(self):
-        self.image.clip_draw(self.archer.frame * 120 ,0, 120, 100, self.archer.x, self.archer.y)
-
-class IDLE:
-    def __init__(self, archer):
-        self.archer = archer
-        self.image = load_image('archer_idle.png')
-        self.timer = 0.0
-
-    def enter(self, e):
-        self.archer.frame = 0
-
-    def exit(self, e):
-        pass
-
-    def do(self):
-        self.timer += game_framework.frame_time
-        if self.timer >= 0.1:
-            self.archer.frame = (self.archer.frame + 1) % 2
-            self.timer = 0.0
-
-    def draw(self):
-        self.image.clip_draw(self.archer.frame * 120, 0, 120, 100, self.archer.x, self.archer.y)
-
-
-
-class ATTACK:
-    def __init__(self, archer):
-        self.archer = archer
-        self.image = load_image('archer_attack.png')
-        self.timer = 0.0
-        self.is_skill = False  # 스킬인지 일반 평타인지 구분하는 플래그
-
-    def enter(self, e):
-        self.archer.frame = 0
-        self.timer = 0.0
-
-        # [중요] e가 정수(int)면 스킬 발동, 아니면 일반 공격
-        if isinstance(e, int):
-            self.is_skill = True
-            chain_count = e
-            print(f"아쳐 스킬 발동! (체인: {chain_count})")
-
-            # --- 스킬 이펙트 생성 ---
-            effect_x = self.archer.x + 50
-            effect_y = self.archer.y
-            scale = 1.0 + (chain_count - 1) * 0.25
-
-            # effect.py에 'archer_arrow'가 등록되어 있어야 함
-            arrow = EFFECT(effect_x, effect_y, 'archer_attack', scale)
-            game_world.add_object(arrow, 2)
-
-        else:
-            self.is_skill = False
-            # 일반 공격은 이펙트 없이 화살만 나가거나, 약한 이펙트 추가 가능
-            print("아쳐 일반 공격")
-
-    def exit(self, e):
-        pass
-
-    def do(self):
-        self.timer += game_framework.frame_time
-        if self.timer >= 0.1:
-            self.archer.frame = (self.archer.frame + 1) % 3  # 프레임 수 확인 필요
-            self.timer = 0.0
-
-        if self.archer.frame == 3:
-
-            if self.is_skill:
-                self.archer.state_machine.cur_state = self.archer.archer_run
-                self.archer.archer_run.enter(None)
-
-            else:
-                target = self.archer.get_nearest_enemy()
-                if target and (0 < (target.x - self.archer.x) <= ATTACK_RANGE_PIXEL):
-                    self.archer.frame = 0  # 계속 공격 (루프)
-                else:
-                    # 적이 없으면 RUN으로 복귀
-                    self.archer.state_machine.cur_state = self.archer.archer_run
-                    self.archer.archer_run.enter(None)
-
-    def draw(self):
-        self.image.clip_draw(self.archer.frame * 120, 0, 120, 100, self.archer.x, self.archer.y)
+from behavior_tree import BehaviorTree, Action, Sequence, Condition, Selector
 
 class archer:
     def __init__(self):
-        self.x, self.y = 200, 200
+        self.x, self.y = 300, 200
         self.frame = 0
-        self.hp = 180
-        self.str = 45
+        self.hp = 350
+        self.str = 35
+        self.dir = 1
+        self.speed = 100
 
-        self.archer_idle = IDLE(self)
-        self.archer_attack = ATTACK(self)
-        self.archer_run = RUN(self)
-        self.state_machine = StateMachine(
-            self.archer_run,
-            {
-                self.archer_idle: { skill_trigger : self.archer_attack},
-                self.archer_attack: {skill_trigger : self.archer_attack , space_down : self.archer_idle},
-                self.archer_run : {skill_trigger : self.archer_attack}
-            }
-        )
+        # archer 에셋으로 변경
+        self.archer_idle = load_image('archer_idle.png')
+        self.archer_attack = load_image('archer_attack.png')
+        self.archer_run = load_image('archer_run.png')
+        self.current_image = self.archer_run
+
+        self.skill_queue = 0  # 스킬 사용 대기열
+        self.timer = 0.0
+        self.is_attacking = False # 현재 공격 중인지 여부
+        self.is_use_skill = False # 현재 스킬 사용 중인지 여부
+
+        self.build_behavior_tree()
 
     def get_bb(self):
-        left = self.x - 50
-        right = self.x + 40
-        bottom = self.y - 50
-        top = self.y + 30
-        return left, bottom, right, top
-
-    # 적 찾기 함수
-    def get_nearest_enemy(self):
-        nearest_enemy = None
-        min_dist = 99999
-
-        for obj in game_world.world[1]:
-            if hasattr(obj, 'hp') and obj.__class__.__name__ == 'enemy':
-                dist = obj.x - self.x
-                if dist > 0 and dist < min_dist:
-                    min_dist = dist
-                    nearest_enemy = obj
-        return nearest_enemy
+        if self.current_image == self.archer_attack:
+            return self.x - 50, self.y - 50, self.x + 80, self.y + 50
+        return self.x - 50, self.y - 50, self.x + 20, self.y + 50
 
     def update(self):
-        self.state_machine.update()
+        self.bt.run()
 
     def draw(self):
-        self.state_machine.draw()
-        left, bottom, right, top = self.get_bb()
-        draw_rectangle(left, bottom, right, top)
+        if self.current_image == self.archer_run:
+            self.current_image.clip_draw(int(self.frame) * 128, 0 , 128, 100, self.x,self.y)
+        elif self.current_image == self.archer_attack:
+            self.current_image.clip_draw(int(self.frame) * 128, 0 , 128, 100, self.x,self.y)
+        else:
+            self.current_image.clip_draw(int(self.frame) * 128, 0 , 128, 100, self.x,self.y)
 
-    def use_skill(self,count):
-        self.state_machine.cur_state.exit(None)
-        self.state_machine.cur_state = self.archer_attack
-        self.archer_attack.enter(count)
+        # 바운딩 박스
+        draw_rectangle(*self.get_bb())
 
+    def use_skill(self, count):
+        self.skill_queue = count
 
     def handle_event(self, event):
-        self.state_machine.handle_state_event(('INPUT', event))
+        pass
+
+    # BT
+
+    def get_nearest_enemy(self):
+        enemies = [o for o in game_world.world[1] if isinstance(o, (enemy, boss))]
+        if not enemies: return None
+        return min(enemies, key=lambda e: abs(e.x - self.x))
+
+    def check_skill_trigger(self):
+        if self.skill_queue > 0:
+            return BehaviorTree.SUCCESS
+        return BehaviorTree.FAIL
+
+    # 스킬 사용
+    def do_skill(self):
+        self.is_attacking = True
+        self.current_image = self.archer_attack
+        if not self.is_use_skill:
+            self.frame = 0
+            self.timer = 0.0
+            self.is_use_skill = True
+
+            scale = 1.0 + (self.skill_queue - 1) * 0.5
+            # EFFECT에 올바른 아처 에셋 이름 사용
+            skill_effect = EFFECT(self.x + 80, self.y, 'archer_attack', scale)
+            game_world.add_object(skill_effect, 2)
+            print (f"아처 스킬 사용! (체인: {self.skill_queue})")
+
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.2:
+            self.frame += 1
+            self.timer = 0.0
+
+        # 스킬 끝나고 나면
+        if self.frame >= 3:
+            self.frame = 0
+            self.skill_queue = 0 # 스킬 사용 후 대기열 초기화
+            self.is_attacking = False
+            self.is_use_skill = False
+            return BehaviorTree.SUCCESS
+        return BehaviorTree.RUNNING
+
+    # 적이 사정거리 내에 있는지 확인
+    def is_enemy_in_range(self, r):
+        target = self.get_nearest_enemy()
+        if target and abs(target.x - self.x) <= r:
+            return BehaviorTree.SUCCESS
+        return BehaviorTree.FAIL
+
+    # 일반 공격
+    def do_attack(self):
+        self.is_attacking = True
+        self.current_image = self.archer_attack
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.2:
+            self.frame += 1
+            self.timer = 0.0
+
+        if self.frame >= 3:
+            self.frame = 0
+            self.is_attacking = False
+            return BehaviorTree.SUCCESS
+        return BehaviorTree.RUNNING
+
+    def move(self):
+        self.is_attacking = False
+        self.current_image = self.archer_run
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.1:
+            self.frame = (self.frame + 1) % 2
+            self.timer = 0.0
+
+        if self.x < 1100:
+            self.x += self.dir * self.speed * game_framework.frame_time
+        elif self.x >= 1100:
+            self.x = 1100
+        return BehaviorTree.SUCCESS
+
+    def build_behavior_tree(self):
+        skill_node = Sequence("Skill",
+                              Condition("Trigger",self.check_skill_trigger),
+                              Action("Do Skill",self.do_skill))
+
+        attack = Sequence("Attack",
+                          Condition("In Range", self.is_enemy_in_range, 80),
+                          Action("Do Attack", self.do_attack))
+
+        skill_and_attack = Selector("Skill and Attack", skill_node, attack)
+
+
+        move = Action("Move",self.move)
+
+        root = Selector("Root", skill_and_attack, move)
+
+        self.bt = BehaviorTree(root)
