@@ -48,20 +48,17 @@ class LEVEL_MANAGER:
     def update(self):
         live_enemies = [o for o in game_world.world[1] if isinstance(o, (enemy, boss))]
 
-        if len(live_enemies) == 0:
+        if len(live_enemies) == 0 and not self.wave_cleared:
             self.wave_cleared = True
             self.clear_timer = 0.0
 
-        self.clear_timer += game_framework.frame_time
-        if self.clear_timer > 2.0 and self.wave_cleared:
-            self.next_wave()
-            return True
-
-        return False
+        if self.wave_cleared:
+            self.clear_timer += game_framework.frame_time
+            if self.clear_timer > 2.0:
+                self.next_wave()
 
     def next_wave(self):
         self.wave += 1
-        self.wave_cleared = False
 
         if self.wave > 3:
             self.stage += 1
@@ -73,4 +70,4 @@ class LEVEL_MANAGER:
             return "stage_cleared"
 
         self.spawn_wave()
-        return "Wave started"
+        return "wave_started"
