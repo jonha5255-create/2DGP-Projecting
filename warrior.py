@@ -85,8 +85,12 @@ class warrior:
             return BehaviorTree.SUCCESS
         return BehaviorTree.RUNNING
 
+    # 적이 사정거리 내에 있는지 확인
     def is_enemy_in_range(self, r):
-        pass
+        target = self.get_nearest_enemy()
+        if target and target.x - self.x <= r:
+            return BehaviorTree.SUCCESS
+        return BehaviorTree.FAIL
 
     def do_attack(self):
         pass
