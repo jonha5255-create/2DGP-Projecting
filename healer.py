@@ -75,11 +75,16 @@ class healer:
             self.timer = 0.0
             self.is_use_skill = True
 
-            scale = 1.0 + (self.skill_queue - 1) * 0.25
+            scale = 1.0
+            heal_amount = self.str * self.skill_queue  # 기본 힐량 * 체인 수
             # EFFECT에 올바른 힐러 에셋 이름 사용
-            skill_effect = EFFECT(self.x, self.y, 'healer_heal', scale)
-            game_world.add_object(skill_effect, 2)
-            print (f"힐러 스킬 사용! (체인: {self.skill_queue})")
+            party = [heroes.warrior, heroes.archer, heroes.healer]
+            for member in party:
+                if member:  # 살아있는 멤버만
+                    member.hp += heal_amount
+                    # 이펙트 생성
+                    heal_effect = EFFECT(member.x, member.y, 'healer_heal', scale)
+                    game_world.add_object(heal_effect, 2)
 
         self.timer += game_framework.frame_time
         if self.timer >= 0.1:
