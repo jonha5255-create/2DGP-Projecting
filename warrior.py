@@ -92,10 +92,21 @@ class warrior:
             return BehaviorTree.SUCCESS
         return BehaviorTree.FAIL
 
+    # 적 일반 공격
     def do_attack(self):
-        pass
+        self.current_image = self.warrior_attack
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.2:
+            self.frame += 1
+            self.timer = 0.0
+
+        if self.frame >= 3:
+            self.frame = 0
+            return BehaviorTree.SUCCESS
+        return BehaviorTree.RUNNING
 
     def move(self):
+
         pass
 
     def build_behavior_tree(self):
