@@ -117,7 +117,7 @@ def update():
     game_world.update()
     status = level_mgr.update()
 
-    if status == "Stage Clear":
+    if status == "stage_changed":
         change_stage()
 
 
