@@ -155,7 +155,7 @@ class archer:
                               Action("Do Skill",self.do_skill))
 
         attack = Sequence("Attack",
-                          Condition("In Range", self.is_enemy_in_range, 300),
+                          Condition("In Range", self.is_enemy_in_range, 450),
                           Action("Do Attack", self.do_attack))
 
         skill_and_attack = Selector("Skill and Attack", skill_node, attack)
