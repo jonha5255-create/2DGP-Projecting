@@ -132,20 +132,41 @@ class warrior:
             self.x = 800
         return BehaviorTree.SUCCESS
 
+    def move_back(self):
+        self.is_attacking = False
+        self.current_image = self.warrior_run
+
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.1:
+            self.frame = (self.frame + 1) % 2
+            self.timer = 0.0
+
+        if self.x > 0:
+            self.x -= self.speed * game_framework.frame_time
+        elif self.x <= 0:
+            self.x = 0
+        return BehaviorTree.SUCCESS
+
     def build_behavior_tree(self):
-        skill_node = Sequence("Skill",
-                              Condition("Trigger",self.check_skill_trigger),
-                              Action("Do Skill",self.do_skill))
+        skill_node = Sequence("스킬",
+                              Condition("트리거", self.check_skill_trigger),
+                              Action("스킬발현", self.do_skill))
 
-        attack = Sequence("Attack",
-                          Condition("In Range", self.is_enemy_in_range, 80),
-                          Action("Do Attack", self.do_attack))
+        back_move = Sequence("뒷 무빙",
+                             Condition("적 가까운가", self.is_enemy_in_range, 30),
+                             Action("뒤로 도망", self.move_back))
 
-        skill_and_attack = Selector("Skill and Attack", skill_node, attack)
+        attack = Sequence("공격",
+                          Condition("사거리 내에 있는가", self.is_enemy_in_range, 300),
+                          Action("공격하기", self.do_attack))
+
+        skill_and_attack = Selector("스킬 또는 공격", skill_node, attack)
 
 
-        move = Action("Move",self.move)
+        move = Action("전진",self.move)
 
-        root = Selector("Root", skill_and_attack, move)
+        move_or_back = Sequence("이동 또는 뒷무빙", back_move, move)
+
+        root = Selector("Root", skill_and_attack, move_or_back)
 
         self.bt = BehaviorTree(root)
