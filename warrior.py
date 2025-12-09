@@ -59,7 +59,7 @@ class warrior:
         if not enemies: return None
         return min(enemies, key=lambda e: abs(e.x - self.x))
 
-    def check_skill_available(self):
+    def check_skill_trigger(self):
         if self.skill_queue > 0:
             return BehaviorTree.SUCCESS
         return BehaviorTree.FAIL
@@ -106,8 +106,31 @@ class warrior:
         return BehaviorTree.RUNNING
 
     def move(self):
+        self.current_image = self.warrior_run
+        self.timer += game_framework.frame_time
+        if self.timer >= 0.1:
+            self.frame = (self.frame + 1) % 2
+            self.timer = 0.0
 
-        pass
+        if self.x < 1100:
+            self.x += self.dir * self.speed * game_framework.frame_time
+        elif self.x >= 1100:
+            self.x = 1100
+        return BehaviorTree.SUCCESS
 
     def build_behavior_tree(self):
-        pass
+        skill_node = Sequence("Skill",
+                              Condition("Trigger",self.check_skill_trigger),
+                              Action("Do Skill",self.do_skill))
+
+        attack = Sequence("Attack",
+                          Condition("In Range", self.is_enemy_in_range, 80),
+                          Action("Do Attack", self.do_attack))
+        skill_and_attack = Selector("Skill and Attack", skill_node, attack)
+
+
+        move = Action("Move",self.move)
+
+        root = Selector("Root", skill_and_attack, move)
+
+        self.bt = BehaviorTree(root)
