@@ -10,39 +10,39 @@ MOB_DATA = {
     1: {'idle': 'enemy2.png', 'attack': 'enemy2 attack.png',
         'hp': 100, 'speed': 80,'str': 10,
         'w': 37, 'h': 37,'at_w': 37, 'at_h': 37,
-        'idle_frame': 4, 'attack_frame': 7},
+        'idle_frame': 4, 'attack_frame': 7, 'face_right': False},
     2: {'idle': 'enemy3.png', 'attack': 'enemy3 attack.png',
         'hp': 150, 'speed': 70,'str': 5,
         'w': 38, 'h': 38, 'at_w': 38, 'at_h': 38,
-        'idle_frame': 4, 'attack_frame': 6},
+        'idle_frame': 4, 'attack_frame': 6, 'face_right': False},
     3: {'idle': 'enemy_magic.png', 'attack': 'enemy_magic attack.png',
         'hp': 90, 'speed': 90,'str': 15,
         'w': 40, 'h': 42, 'at_w': 40, 'at_h': 42,
-        'idle_frame': 4, 'attack_frame': 6},
+        'idle_frame': 4, 'attack_frame': 6, 'face_right': False},
 
     # === 스테이지 2 (화산) ===
     4: {'idle': 'stage2_mob.png', 'attack': 'stage2_mob_att.png',
         'hp': 200, 'speed': 60,'str': 15,
         'w': 90, 'h': 90,'at_w': 90, 'at_h': 90,
-        'idle_frame': 12, 'attack_frame': 12},
+        'idle_frame': 12, 'attack_frame': 12, 'face_right': True},
     5: {'idle': 'stage2_mob2.png', 'attack': 'stage2_mob2_att.png',
         'hp': 220, 'speed': 80, 'str': 15,
         'w': 64, 'h': 64, 'at_w': 64, 'at_h': 64,
-        'idle_frame': 4, 'attack_frame': 5},
+        'idle_frame': 4, 'attack_frame': 5, 'face_right': True},
 
     # === 스테이지 3 (성) ===
     6: {'idle': 'stage3_mob.png', 'attack': 'stage3_mob_att.png',
         'hp': 300, 'speed': 90, 'str': 15,
         'w': 60, 'h': 60,'at_w': 60, 'at_h': 60,
-        'idle_frame': 4, 'attack_frame': 5},
+        'idle_frame': 4, 'attack_frame': 5, 'face_right': True},
     7: {'idle': 'stage3_mob2.png', 'attack': 'stage3_mob2_att.png',
         'hp': 250, 'speed': 130, 'str': 15,
         'w': 60, 'h': 60, 'at_w': 60, 'at_h': 60,
-        'idle_frame': 4, 'attack_frame': 5},
+        'idle_frame': 4, 'attack_frame': 5, 'face_right': True},
     8: {'idle': 'stage3_mob2.png', 'attack': 'stage3_mob3_att.png',
         'hp': 250, 'speed': 130, 'str': 15,
         'w': 60, 'h': 60, 'at_w': 60, 'at_h': 60,
-        'idle_frame': 4, 'attack_frame': 5}
+        'idle_frame': 4, 'attack_frame': 5, 'face_right': True}
 }
 
 class enemy:
@@ -65,6 +65,7 @@ class enemy:
         self.at_h = data['at_h']
         self.idle_frame_count = data.get('idle_frame', 4)
         self.attack_frame_count = data.get('attack_frame', 4)
+        self.face = data.get('face_right', False)
 
         self.image_run = load_image(data['idle'])
         self.image_attack = load_image(data['attack'])
@@ -76,19 +77,20 @@ class enemy:
 
 
     def get_bb(self):
-        return (self.x -self.w - 20, self.y - self.h - 30,
-                self.x +self.w + 20, self.y + self.h + 30)
+        return (self.x -self.w , self.y - self.h ,
+                self.x +self.w, self.y + self.h )
 
     def update(self):
         self.bt.run()
 
     def draw(self):
+
         if self.current_image == self.image_attack:
-            self.current_image.clip_draw(int(self.frame) * self.at_w, 0, self.at_w, self.at_h,
-                                         self.x, self.y, 60, 60)
+            self.current_image.clip_composite_draw(int(self.frame) * self.at_w, 0,
+                                                   self.at_w, self.at_h,0,'h',self.x, self.y, 80, 80)
         else:
-            self.current_image.clip_draw(int(self.frame) * self.w, 0, self.w, self.h,
-                                         self.x, self.y, 60, 60)
+            self.current_image.clip_composite_draw(int(self.frame) * self.w, 0,
+                                                   self.w, self.h,0,'h',self.x, self.y, 80, 80)
 
         draw_rectangle(*self.get_bb())
 
