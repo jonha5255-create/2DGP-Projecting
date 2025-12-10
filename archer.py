@@ -14,7 +14,7 @@ class archer:
         self.frame = 0
         self.hp = 280
         self.max_hp = self.hp
-        self.str = 40
+        self.str = 35
         self.speed = 80
 
         # archer 에셋으로 변경

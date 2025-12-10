@@ -4,10 +4,16 @@ import game_framework
 import lobby_mode  # 로비로 돌아가기 위해 필요
 
 image = None
+font = None
 
 def init():
-    global image
+    global image, font
     image = load_image('game_clear.jpg')
+
+    try:
+        font = load_font('arial.TTF', 50)
+    except:
+        print("Font load failed")
 
 def finish():
     global image
@@ -19,6 +25,8 @@ def update():
 def draw():
     clear_canvas()
     image.draw(650, 400,1300,800)
+    if font:
+        font.draw(450, 150, 'Press R to Lobby', (255, 0, 0))
     update_canvas()
 
 def handle_events():

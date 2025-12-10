@@ -1,5 +1,7 @@
 import random
 from pico2d import *
+
+import game_clear_mode
 import game_world
 import game_framework
 import heroes
@@ -71,7 +73,7 @@ class LEVEL_MANAGER:
 
     def next_wave(self):
         if heroes.warrior:
-            heroes.warrior.x -= 300  # 워리어 초기 위치
+            heroes.warrior.x = 300  # 워리어 초기 위치
             heroes.warrior.is_attacking = False  # 공격 상태 해제
             heroes.warrior.current_image = heroes.warrior.warrior_run  # 달리기 모션으로 변경
 
@@ -92,7 +94,7 @@ class LEVEL_MANAGER:
 
             if self.stage > 3:
                 print("모든 스테이지 클리어!")
-                game_framework.quit()
+                game_framework.change_mode(game_clear_mode)  # 게임 종료 또는 엔딩 상태로 전환
                 return "stage_clear"
             print(f"Stage {self.stage} 시작!")
             self.spawn_wave()
