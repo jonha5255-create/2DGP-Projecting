@@ -15,7 +15,7 @@ class healer:
         self.frame = 0
         self.hp = 280
         self.max_hp = self.hp
-        self.str = 30
+        self.str = 28
         self.speed = 80
 
         # healer 에셋으로 변경
