@@ -28,6 +28,9 @@ class archer:
         self.is_attacking = False # 현재 공격 중인지 여부
         self.is_use_skill = False # 현재 스킬 사용 중인지 여부
 
+        self.skill_sound = load_wav('archer_skill_sound.wav')
+        self.skill_sound.set_volume(20)
+
         self.build_behavior_tree()
 
     def get_bb(self):
@@ -81,13 +84,14 @@ class archer:
                 skill_x = target.x
             else:
                 skill_x = self.x + 300
+            self.skill_sound.play()
 
             skill_effect = EFFECT(skill_x, self.y, 'archer_skill', scale)
             game_world.add_object(skill_effect, 2)
             print (f"아처 스킬 사용! (체인: {self.skill_queue})")
 
         self.timer += game_framework.frame_time
-        if self.timer >= 0.1:
+        if self.timer >= 0.2:
             self.frame += 1
             self.timer = 0.0
 

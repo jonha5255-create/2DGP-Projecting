@@ -24,9 +24,27 @@ skill_blocks = []
 MAX_SKILL_BLOCK = 9
 level_mgr = None
 ui = None
+bgm = None
 stage_intro = None
 game_state = 'INTRO'
 
+
+def play_stage_bgm(stage_num):
+    global bgm
+    if bgm:
+        del bgm
+
+    # [수정] 파일명을 .mp3 에서 .wav 로 변경
+    # 업로드하신 파일명: stage1_sound.wav, stage2_sound.wav, stage3_sound.wav
+    file_name = f"stage{stage_num}_sound.wav"
+
+    try:
+        bgm = load_music(file_name)  # wav파일도 load_music으로 재생 가능합니다
+        bgm.set_volume(15)
+        bgm.repeat_play()
+        print(f"BGM 재생: {file_name}")
+    except:
+        print(f"BGM 파일 없음: {file_name}")
 
 def handle_events():
     global skill_blocks
@@ -89,7 +107,7 @@ def collide(a, b):
 
 
 def init():
-    global warrior, Healer, Archer, Boss
+    global warrior, Healer, Archer, Boss, bgm
     global skill_blocks, level_mgr, ui, stage_intro, game_state
 
     skill_blocks = []
@@ -115,6 +133,8 @@ def init():
 
     level_mgr.spawn_wave()
     add_skill_block()
+
+    play_stage_bgm(1)
 
     stage_intro = StageIntro()
     game_state = 'INTRO'
@@ -227,6 +247,7 @@ def change_stage():
     game_world.add_object(new_stage, 0)
 
     print("스테이지 변경됨")
+    play_stage_bgm(level_mgr.stage)
 
 def draw():
     clear_canvas()
@@ -241,12 +262,14 @@ def draw():
     update_canvas()
 
 def finish():
-    global skill_blocks, ui
+    global skill_blocks, ui, bgm
     skill_blocks = []
     heroes.warrior = None
     heroes.healer = None
     heroes.archer = None
     ui = None
+    if bgm:
+        del bgm
     game_world.clear()
 
 def pause(): pass

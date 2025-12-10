@@ -28,6 +28,9 @@ class warrior:
         self.is_attacking = False # 현재 공격 중인지 여부
         self.is_use_skill = False # 현재 스킬 사용 중인지 여부
 
+        self.attack_sound = load_wav('warrior_sound.wav')
+        self.attack_sound.set_volume(32)
+
         self.hit_enemies = []
 
         self.build_behavior_tree()
@@ -77,6 +80,8 @@ class warrior:
             self.frame = 0
             self.timer = 0.0
             self.is_use_skill = True
+
+            self.attack_sound.play()
 
             scale = 1.0 + (self.skill_queue - 1) * 0.5
             skill_effect = EFFECT(self.x + 80, self.y + 250, 'warrior_attack', scale)

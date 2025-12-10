@@ -7,15 +7,28 @@ from sdl2 import SDL_MOUSEMOTION,SDL_MOUSEBUTTONDOWN, SDL_QUIT, SDL_KEYDOWN, SDL
 
 image = None
 button = None
+bgm = None
+buttonsound = None
 
 def init():
     global image, button
     image = load_image('lobby.png')
     button = load_image('start_button.png')
 
+    bgm = load_music('lobby_sound.wav')
+    bgm.set_volume(64)
+    bgm.repeat_play()
+
+    start_sound = load_wav('startbutton_sound.wav')
+    start_sound.set_volume(64)
+
 def finish():
-    global image
+    global image, bgm, buttonsound
     del image
+    del buttonsound  # 메모리 해제
+    if bgm:
+        bgm.stop()
+        del bgm
 
 
 def update():
@@ -42,7 +55,10 @@ def handle_events():
             x, y = event.x, 800 - event.y
             print(f"Mouse clicked at: ({x}, {y})")  # 디버깅용
             if 500 <= x <= 800 and 280 <= y <= 325:
+                if buttonsound:
+                    buttonsound.play()
                 game_framework.change_mode(play_mode)
+    pass
 
 
 
