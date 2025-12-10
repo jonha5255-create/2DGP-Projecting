@@ -123,14 +123,11 @@ class boss:
         # 4. 선을 겹쳐서 두께 만들기 (검정 배경선 + 빨강 체력선)
         for i in range(bar_thick):
             y_pos = bar_y + i  # 한 줄씩 위로 쌓음
-            print(y_pos)
 
             # (1) 배경 (회색/검정) - 전체 길이
-
             draw_line(x_left, y_pos, x_right, y_pos)
 
             # (2) 체력 (빨강) - 남은 체력만큼만
-
             draw_rectangle(x_left, y_pos, x_hp, y_pos)
 
         draw_rectangle(*self.get_bb())
