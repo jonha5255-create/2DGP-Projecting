@@ -1,6 +1,7 @@
 from pico2d import *
 import random
 
+from ui import UI
 from effect import EFFECT
 import lobby_mode
 from level_manager import *
@@ -21,6 +22,7 @@ import game_framework
 skill_blocks = []
 MAX_SKILL_BLOCK = 9
 level_mgr = None
+ui = None
 
 
 def handle_events():
@@ -85,9 +87,10 @@ def collide(a, b):
 
 def init():
     global warrior, Healer, Archer, Boss
-    global skill_blocks, level_mgr
+    global skill_blocks, level_mgr, ui
 
     skill_blocks = []
+    ui = UI()
 
     level_mgr = LEVEL_MANAGER()
     stage = level_mgr.get_current_stage()
@@ -117,6 +120,8 @@ def update():
     game_world.update()
     status = level_mgr.update()
 
+    if ui: ui.update()
+
     if status == "stage_changed":
         change_stage()
 
@@ -143,11 +148,14 @@ def update():
 
     # (3) 워리어 공격 vs 적 충돌
     if heroes.warrior and heroes.warrior.is_attacking:
-        if heroes.warrior.frame == 2:  # 공격 모션 중 타격 프레임
+        if int(heroes.warrior.frame) == 2:  # 공격 타격 프레임 (예: 2)
             for e in enemies:
-                if collide(heroes.warrior, e):
-                    damage = heroes.warrior.str * game_framework.frame_time * 5
-                    e.hp -= damage
+                # 이미 때린 적은 건너뜀 (not in)
+                if e not in heroes.warrior.hit_enemies and collide(heroes.warrior, e):
+
+                    e.hp -= heroes.warrior.str
+                    heroes.warrior.hit_enemies.append(e)
+
                     if e.hp <= 0:
                         game_world.remove_object(e)
 
@@ -155,23 +163,24 @@ def update():
     # (4) 적 vs 영웅 충돌 (적이 공격할 때)
     current_heroes = [h for h in [heroes.warrior, heroes.healer, heroes.archer] if h]
 
-    for e in enemies:
-        if hasattr(e, 'is_attacking') and e.is_attacking:
-            for h in current_heroes:
-                if collide(e, h):
-                    h.hp -= e.str * game_framework.frame_time
-                    if h.hp <= 0:
-                        game_world.remove_object(h)
-                        if h == heroes.warrior:
-                            heroes.warrior = None
-                        elif h == heroes.archer:
-                            heroes.archer = None
-                        elif h == heroes.healer:
-                            heroes.healer = None
+    check_heroes_dead()
 
     if skill_blocks and skill_blocks[-1].has_arrived():
         if len(skill_blocks) < MAX_SKILL_BLOCK:
             add_skill_block()
+
+
+def check_heroes_dead():
+    # 영웅 사망 처리 (enemy.py에서 hp를 깎으므로, 여기서 죽었는지 확인만 함)
+    if heroes.warrior and heroes.warrior.hp <= 0:
+        game_world.remove_object(heroes.warrior)
+        heroes.warrior = None
+    if heroes.archer and heroes.archer.hp <= 0:
+        game_world.remove_object(heroes.archer)
+        heroes.archer = None
+    if heroes.healer and heroes.healer.hp <= 0:
+        game_world.remove_object(heroes.healer)
+        heroes.healer = None
 
 def change_stage():
     game_world.world[0] = []
@@ -185,14 +194,16 @@ def change_stage():
 def draw():
     clear_canvas()
     game_world.render()
+    if ui : ui.draw()
     update_canvas()
 
 def finish():
-    global skill_blocks
+    global skill_blocks, ui
     skill_blocks = []
     heroes.warrior = None
     heroes.healer = None
     heroes.archer = None
+    ui = None
     game_world.clear()
 
 def pause(): pass

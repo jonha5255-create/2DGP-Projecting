@@ -18,7 +18,8 @@ class EFFECT:
         self.effect_type = effect_type # 이펙트 종류 저장
         self.timer = 0.0
 
-        self.velocity = 0.0 # 이동 속도
+        self.velocity_x = 0.0 # 이동 속도
+        self.velocity_y = 0.0
 
         if effect_type == 'healer_heal':
             self.frame_count = 3
@@ -32,20 +33,21 @@ class EFFECT:
             self.frame_width = 228
             self.frame_height = 215
             self.is_animated = False
-            self.velocity = 600
+            self.velocity_x = 600
         elif effect_type == 'warrior_attack':
             self.frame_count = 1
             self.duration = 0.4
             self.frame_width = 54
             self.frame_height = 166
             self.is_animated = True
+            self.velocity_y = -800
         elif effect_type == 'archer_attack':
             self.frame_count = 3
             self.duration = 2.0
             self.frame_width = 120
             self.frame_height = 100
             self.is_animated = True
-            self.velocity = 600  # 화살 이동 속도 설정
+            self.velocity_x = 600  # 화살 이동 속도 설정
         elif effect_type == 'archer_skill':
             self.frame_count = 5
             self.duration = 1.0
@@ -71,9 +73,17 @@ class EFFECT:
     def update(self):
         self.timer += game_framework.frame_time
 
+        self.y += self.velocity_y * game_framework.frame_time
+
+        if self.effect_type == 'warrior_attack':
+            if self.y < 250:
+                self.y = 250
+                self.velocity_y = 0
+                return
+
         # 이동 로직 (아쳐 화살, 힐러 공격)
-        if self.velocity > 0:
-            self.x += self.velocity * game_framework.frame_time
+        if self.velocity_x > 0:
+            self.x += self.velocity_x * game_framework.frame_time
 
         if self.timer >= self.duration:
             game_world.remove_object(self)

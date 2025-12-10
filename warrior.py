@@ -13,6 +13,7 @@ class warrior:
         self.x, self.y = 300, 200
         self.frame = 0
         self.hp = 550
+        self.max_hp = self.hp
         self.str = 35
         self.dir = 1
         self.speed = 80
@@ -26,6 +27,8 @@ class warrior:
         self.timer = 0.0
         self.is_attacking = False # 현재 공격 중인지 여부
         self.is_use_skill = False # 현재 스킬 사용 중인지 여부
+
+        self.hit_enemies = []
 
         self.build_behavior_tree()
 
@@ -76,7 +79,7 @@ class warrior:
             self.is_use_skill = True
 
             scale = 1.0 + (self.skill_queue - 1) * 0.5
-            skill_effect = EFFECT(self.x + 80, self.y, 'warrior_attack', scale)
+            skill_effect = EFFECT(self.x + 80, self.y + 250, 'warrior_attack', scale)
             game_world.add_object(skill_effect, 2)
             print (f"워리어 스킬 사용! (체인: {self.skill_queue})")
 
@@ -105,6 +108,10 @@ class warrior:
     def do_attack(self):
         self.is_attacking = True
         self.current_image = self.warrior_attack
+
+        if int(self.frame) == 0 and self.timer == 0.0:
+            self.hit_enemies = []
+
         self.timer += game_framework.frame_time
         if self.timer >= 0.2:
             self.frame += 1

@@ -14,6 +14,7 @@ class healer:
         self.x, self.y = 100, 205
         self.frame = 0
         self.hp = 250
+        self.max_hp = self.hp
         self.str = 25
         self.speed = 80
 

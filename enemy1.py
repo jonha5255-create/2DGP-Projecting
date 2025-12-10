@@ -36,10 +36,10 @@ MOB_DATA = {
         'w': 60, 'h': 60,'at_w': 60, 'at_h': 60,
         'idle_frame': 4, 'attack_frame': 5, 'face_right': True},
     7: {'idle': 'stage3_mob2.png', 'attack': 'stage3_mob2_att.png',
-        'hp': 250, 'speed': 130, 'str': 15,
+        'hp': 250, 'speed': 130, 'str': 20,
         'w': 60, 'h': 60, 'at_w': 60, 'at_h': 60,
         'idle_frame': 4, 'attack_frame': 5, 'face_right': True},
-    8: {'idle': 'stage3_mob2.png', 'attack': 'stage3_mob3_att.png',
+    8: {'idle': 'stage3_mob3.png', 'attack': 'stage3_mob3_att.png',
         'hp': 250, 'speed': 130, 'str': 15,
         'w': 60, 'h': 60, 'at_w': 60, 'at_h': 60,
         'idle_frame': 4, 'attack_frame': 5, 'face_right': True}
@@ -47,11 +47,13 @@ MOB_DATA = {
 
 class enemy:
     def __init__(self, type_id=1):
-        self.x, self.y = 1200, 180
+        self.x, self.y = 1200, 220
         self.frame = 0
         self.timer = 0.0
         self.dir = -1
         self.is_attacking = False
+        self.attack = False
+        self.attack_cool_time = 0
 
         data = MOB_DATA.get(type_id, MOB_DATA[1])
 
@@ -78,11 +80,13 @@ class enemy:
 
     def get_bb(self):
 
-        return (self.x -self.w, self.y - self.h,
-                self.x + self.w ,self.y + self.h)
+        return (self.x - 30, self.y - 50,
+                self.x + 30 ,self.y + 50)
 
     def update(self):
         self.bt.run()
+        if self.attack_cool_time > 0:
+            self.attack_cool_time -= game_framework.frame_time
 
     def draw(self):
         flip = ''
@@ -95,10 +99,39 @@ class enemy:
 
         if self.current_image == self.image_attack:
             self.current_image.clip_composite_draw(int(self.frame) * self.at_w, 0,
-                                                   self.at_w, self.at_h,0,flip,self.x, self.y,90, 90)
+                                                   self.at_w, self.at_h,0,flip,self.x, self.y,150, 150)
         else:
             self.current_image.clip_composite_draw(int(self.frame) * self.w, 0,
-                                                   self.w, self.h,0,flip,self.x, self.y, 90, 90)
+                                                   self.w, self.h,0,flip,self.x, self.y, 150, 150)
+
+            # 1. 위치 및 크기 설정
+            bar_x = self.x
+            bar_y = self.y + (self.h // 2) + 20  # 머리 위
+            bar_len = 60  # 바 길이
+            bar_thick = 6  # 바 두께 (선의 개수)
+
+            # 2. 비율 계산
+            hp_ratio = self.hp / self.max_hp
+            if hp_ratio < 0: hp_ratio = 0
+            if hp_ratio > 1: hp_ratio = 1
+
+
+            # 3. 좌표 계산
+            x_left = bar_x - (bar_len // 2)
+            x_right = bar_x + (bar_len // 2)
+            x_hp = x_left + (bar_len * hp_ratio)  # 현재 체력 지점
+
+            # 4. 선을 겹쳐서 두께 만들기 (검정 배경선 + 빨강 체력선)
+            for i in range(bar_thick):
+                y_pos = bar_y + i  # 한 줄씩 위로 쌓음
+
+                # (1) 배경 (회색/검정) - 전체 길이
+
+                draw_line(x_left, y_pos, x_right, y_pos)
+
+                # (2) 체력 (빨강) - 남은 체력만큼만
+
+                draw_rectangle(x_left, y_pos, x_hp, y_pos)
 
         draw_rectangle(*self.get_bb())
 
@@ -114,6 +147,8 @@ class enemy:
         return min(targets, key=lambda h: abs(h.x - self.x))
 
     def is_hero_nearby(self, r):
+        if self.is_attacking:
+            return BehaviorTree.SUCCESS
         target = self.get_nearest_hero()
         if target:
             distance = abs(target.x - self.x)
@@ -143,18 +178,21 @@ class enemy:
             self.timer = 0
 
             # 공격 판정 (특정 프레임에서 데미지)
-            if int(self.frame) == 5:
+            if int(self.frame) == 5 and self.attack == False:
                 target = self.get_nearest_hero()
                 if target and abs(target.x - self.x) < 60:
                     target.hp -= self.str
+                    print(f"적 공격 적중! 영웅 HP: {target.hp}")  # 디버깅용
+                    self.attack = True  # [중요] 때렸으니 True로 변경!
+
                     if target.hp < 0:
                         target.hp = 0
-                    pass
 
         # 애니메이션 종료 체크
         if self.frame >= self.attack_frame_count:  # 공격 모션이 7프레임이라고 가정
             self.frame = 0
             self.is_attacking = False
+            self.attack = False
             return BehaviorTree.SUCCESS  # 공격 완료 -> 다시 판단
 
         return BehaviorTree.RUNNING  # 공격 중 -> 계속 실행
