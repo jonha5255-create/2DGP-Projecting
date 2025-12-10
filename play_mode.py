@@ -29,6 +29,7 @@ MAX_SKILL_BLOCK = 9
 level_mgr = None
 ui = None
 bgm = None
+is_game_cleared = False
 stage_intro = None
 game_state = 'INTRO'
 
@@ -145,7 +146,7 @@ def init():
 
 
 def update():
-    global game_state
+    global game_state, is_game_cleared
 
     if game_state == 'INTRO':
         stage_intro.update()
@@ -159,15 +160,18 @@ def update():
     if ui: ui.update()
 
     # 영웅들 다 죽으면 게임 오버
-    if check_heroes_dead() == True:
-        game_framework.change_mode(game_over_mode)
-        return
 
     if status == "stage_changed":
         change_stage()
-    elif status == "game_cleared":
+    elif status == "stage_clear":
+        is_game_cleared = True
         game_framework.change_mode(game_clear_mode)
         return
+
+    if not is_game_cleared:
+        if check_heroes_dead():
+            game_framework.change_mode(game_over_mode)
+            return
 
 
     # 충돌 처리
