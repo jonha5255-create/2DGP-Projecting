@@ -30,6 +30,9 @@ class healer:
         self.is_attacking = False # 현재 공격 중인지 여부
         self.is_use_skill = False # 현재 스킬 사용 중인지 여부
 
+        self.heal_sound = load_wav('heal_sound.wav')
+        self.heal_sound.set_volume(32)
+
         self.build_behavior_tree()
 
     def get_bb(self):
@@ -75,6 +78,8 @@ class healer:
             self.frame = 0
             self.timer = 0.0
             self.is_use_skill = True
+
+            self.heal_sound.play()
 
             scale = 1.0
             heal_amount = self.str * self.skill_queue  # 기본 힐량 * 체인 수
