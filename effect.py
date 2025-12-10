@@ -18,8 +18,11 @@ class EFFECT:
         self.effect_type = effect_type # 이펙트 종류 저장
         self.timer = 0.0
 
+
         self.velocity_x = 0.0 # 이동 속도
         self.velocity_y = 0.0
+
+        self.hit_enemies = []  # 충돌한 적 목록
 
         if effect_type == 'healer_heal':
             self.frame_count = 3
@@ -62,9 +65,9 @@ class EFFECT:
         if self.effect_type == 'archer_attack':
             return self.x -30, self.y -10, self.x +30, self.y +10
         if self.effect_type == 'archer_skill':
-            return self.x, self.y, self.x, self.y
+            return self.x-75, self.y-60, self.x+ 75, self.y +60
         if self.effect_type == 'healer_attack':
-            return self.x, self.y, self.x, self.y
+            return self.x -10, self.y- 10, self.x+ 10, self.y + 10
         if self.effect_type == 'warrior_attack':
             return self.x - 20, self.y - 80, self.x + 20, self.y + 80
 
@@ -106,8 +109,8 @@ class EFFECT:
         if self.effect_type == 'archer_skill':
             self.image.clip_draw(
                 sx, 0, self.frame_width,self.frame_height,
-                self.x ,self.y + 80,
-                (self.frame_width * 3) * self.scale, (self.frame_height * 3) * self.scale)
+                self.x ,self.y + 160,
+                (self.frame_width * 4) * self.scale, (self.frame_height * 4) * self.scale)
         elif self.effect_type == 'healer_attack':
             self.image.clip_draw(
                 sx, 0, self.frame_width,self.frame_height,

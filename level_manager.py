@@ -2,6 +2,7 @@ import random
 from pico2d import *
 import game_world
 import game_framework
+import heroes
 
 from enemy1 import enemy
 from boss import boss
@@ -69,6 +70,20 @@ class LEVEL_MANAGER:
         return None
 
     def next_wave(self):
+        if heroes.warrior:
+            heroes.warrior.x -= 300  # 워리어 초기 위치
+            heroes.warrior.is_attacking = False  # 공격 상태 해제
+            heroes.warrior.current_image = heroes.warrior.warrior_run  # 달리기 모션으로 변경
+
+        if heroes.archer:
+            heroes.archer.x = 200  # 아쳐 초기 위치
+            heroes.archer.is_attacking = False
+            heroes.archer.current_image = heroes.archer.archer_run
+
+        if heroes.healer:
+            heroes.healer.x = 100  # 힐러 초기 위치
+            heroes.healer.is_attacking = False
+            heroes.healer.current_image = heroes.healer.healer_run
         self.wave += 1
 
         if self.wave > 3:

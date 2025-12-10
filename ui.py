@@ -8,7 +8,7 @@ class UI:
         # 없으면 윈도우 폰트 폴더에서 Arial.ttf 등을 복사해오세요.
         # 파일명이 다르면 수정해야 합니다.
         try:
-            self.font = load_font('Consolas.ttf', 16)
+            self.font = load_font('arial.ttf', 12)
         except:
             self.font = None
             # 2. 직업별 UI 이미지 로드
@@ -58,14 +58,14 @@ class UI:
         if self.font:
             level_str = f"LV.{getattr(hero, 'level', 30)}"
             # 그림자
-            self.font.draw(info_x + 1, info_y - 1, level_str, (0, 0, 0))
+            self.font.draw(info_x + 1, info_y - 1, level_str, (1, 1, 1))
             # 본 글씨 (노랑)
-            self.font.draw(info_x, info_y, level_str, (1, 0.9, 0.2))
+            self.font.draw(info_x, info_y, level_str, (1, 1, 1))
 
         # --- 3. HP 바 설정 ---
         # HP 바 위치 (경험치 바가 없으므로 위치를 살짝 조정해도 좋지만, 기존 위치 유지)
         bar_x = x + 30
-        bar_y = y + 10
+        bar_y = y
         bar_w = 100
         bar_h = 10
 

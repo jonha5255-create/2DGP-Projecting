@@ -82,7 +82,10 @@ class healer:
             party = [heroes.warrior, heroes.archer, heroes.healer]
             for member in party:
                 if member:  # 살아있는 멤버만
-                    member.hp += heal_amount
+                    if member.hp < member.max_hp:
+                        member.hp += heal_amount
+                        if member.hp > member.max_hp:
+                            member.hp = member.max_hp
                     # 이펙트 생성
                     heal_effect = EFFECT(member.x, member.y, 'healer_heal', scale)
                     game_world.add_object(heal_effect, 2)

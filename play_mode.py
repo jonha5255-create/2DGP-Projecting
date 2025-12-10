@@ -1,6 +1,7 @@
 from pico2d import *
 import random
 
+from stage_intro import StageIntro
 from ui import UI
 from effect import EFFECT
 import lobby_mode
@@ -23,6 +24,8 @@ skill_blocks = []
 MAX_SKILL_BLOCK = 9
 level_mgr = None
 ui = None
+stage_intro = None
+game_state = 'INTRO'
 
 
 def handle_events():
@@ -87,7 +90,7 @@ def collide(a, b):
 
 def init():
     global warrior, Healer, Archer, Boss
-    global skill_blocks, level_mgr, ui
+    global skill_blocks, level_mgr, ui, stage_intro, game_state
 
     skill_blocks = []
     ui = UI()
@@ -111,12 +114,21 @@ def init():
 
 
     level_mgr.spawn_wave()
-
-
     add_skill_block()
+
+    stage_intro = StageIntro()
+    game_state = 'INTRO'
 
 
 def update():
+    global game_state
+
+    if game_state == 'INTRO':
+        stage_intro.update()
+        if stage_intro.is_finished:
+            game_state = 'PLAY'
+        return
+
     game_world.update()
     status = level_mgr.update()
 
@@ -144,7 +156,35 @@ def update():
                     game_world.remove_object(eff)  # 화살 사라짐
                     if e.hp <= 0:
                         game_world.remove_object(e)
-                    break  # 화살 하나당 적 하나만 맞춤 (관통 원하면 break 제거)
+                    break
+
+        elif eff.effect_type in ['warrior_attack', 'archer_skill']:
+            for e in enemies:
+                # [중요] 'hit_enemies'에 없는 적만 때림 (중복 타격 방지)
+                if e not in eff.hit_enemies and collide(eff, e):
+
+                    damage = 0
+
+                    # 1. 워리어 스킬 데미지 계산
+                    if eff.effect_type == 'warrior_attack' and heroes.warrior:
+                        # 기본 공격력 * 스킬 배율(예: 2배) * 체인 보너스(scale)
+                        damage = heroes.warrior.str * 3.0 * eff.scale
+                        print(f"워리어 스킬 적중! 데미지: {damage}")
+
+                    # 2. 아처 스킬 데미지 계산
+                    elif eff.effect_type == 'archer_skill' and heroes.archer:
+                        # 아처는 여러 발 맞을 수도 있지만 일단은 한 방 강력하게
+                        damage = heroes.archer.str * 2.5 * eff.scale
+                        print(f"아처 스킬 적중! 데미지: {damage}")
+
+                    # 데미지 적용
+                    e.hp -= damage
+
+                    # [중요] 때린 적을 명단에 등록 -> 다시는 안 때림
+                    eff.hit_enemies.append(e)
+
+                    if e.hp <= 0:
+                        game_world.remove_object(e)
 
     # (3) 워리어 공격 vs 적 충돌
     if heroes.warrior and heroes.warrior.is_attacking:
@@ -159,9 +199,6 @@ def update():
                     if e.hp <= 0:
                         game_world.remove_object(e)
 
-
-    # (4) 적 vs 영웅 충돌 (적이 공격할 때)
-    current_heroes = [h for h in [heroes.warrior, heroes.healer, heroes.archer] if h]
 
     check_heroes_dead()
 
@@ -193,8 +230,14 @@ def change_stage():
 
 def draw():
     clear_canvas()
-    game_world.render()
-    if ui : ui.draw()
+
+    if game_state == 'INTRO':
+        stage_intro.draw()  # 인트로 화면(검은 배경+이미지+글씨) 그리기
+    else:
+        # 게임 화면 그리기 (기존 코드)
+        game_world.render()
+        if ui: ui.draw()
+
     update_canvas()
 
 def finish():

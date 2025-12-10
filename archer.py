@@ -76,7 +76,13 @@ class archer:
 
             scale = 1.0 + (self.skill_queue - 1) * 0.25
             # EFFECT에 올바른 아처 에셋 이름 사용
-            skill_effect = EFFECT(self.x + 100, self.y, 'archer_skill', scale)
+            target = self.get_nearest_enemy()
+            if target:
+                skill_x = target.x
+            else:
+                skill_x = self.x + 300
+
+            skill_effect = EFFECT(skill_x, self.y, 'archer_skill', scale)
             game_world.add_object(skill_effect, 2)
             print (f"아처 스킬 사용! (체인: {self.skill_queue})")
 

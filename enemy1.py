@@ -80,8 +80,7 @@ class enemy:
 
     def get_bb(self):
 
-        return (self.x - 30, self.y - 50,
-                self.x + 30 ,self.y + 50)
+        return self.x - 40, self.y - 50, self.x + 30 ,self.y + 50
 
     def update(self):
         self.bt.run()
@@ -180,7 +179,7 @@ class enemy:
             # 공격 판정 (특정 프레임에서 데미지)
             if int(self.frame) == 3 and self.attack == False:
                 target = self.get_nearest_hero()
-                if target and abs(target.x - self.x) < 60:
+                if target and abs(target.x - self.x) < 80:
                     target.hp -= self.str
                     print(f"적 공격 적중! 영웅 HP: {target.hp}")  # 디버깅용
                     self.attack = True  # [중요] 때렸으니 True로 변경!
@@ -200,7 +199,7 @@ class enemy:
     def build_behavior_tree(self):
         # 1. 사거리(50) 안에 영웅이 있으면 -> 공격
         attack_node = Sequence("Attack",
-                               Condition("In Range", self.is_hero_nearby, 60),
+                               Condition("In Range", self.is_hero_nearby, 80),
                                Action("Do Attack", self.attack_hero))
 
         # 2. 아니면 -> 이동

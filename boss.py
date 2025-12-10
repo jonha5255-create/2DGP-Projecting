@@ -63,8 +63,8 @@ class boss:
 
 
     def get_bb(self):
-        left = self.x - self.w *2
-        right = self.x + self.w *2
+        left = self.x - (self.at_w *2)
+        right = self.x + (self.w *2)
         bottom = self.y - (self.h *2)-50
         top = self.y + (self.h *2)
         return left, bottom, right, top
