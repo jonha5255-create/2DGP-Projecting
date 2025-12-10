@@ -42,11 +42,11 @@ def handle_events():
 
                     if count >= 1:
                         # heroes.py의 객체를 사용하여 스킬 발동
-                        if skill_type == 'warrior':
+                        if skill_type == 'warrior' and heroes.warrior:
                             heroes.warrior.use_skill(count)
-                        elif skill_type == 'archer':
+                        elif skill_type == 'archer' and heroes.archer:
                             heroes.archer.use_skill(count)
-                        elif skill_type == 'healer':
+                        elif skill_type == 'healer' and heroes.healer:
                             heroes.healer.use_skill(count)
 
                         # 블록 제거

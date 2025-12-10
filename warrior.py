@@ -100,8 +100,14 @@ class warrior:
     # 적이 사정거리 내에 있는지 확인
     def is_enemy_in_range(self, r):
         target = self.get_nearest_enemy()
-        if target and abs(target.x - self.x) <= r:
-            return BehaviorTree.SUCCESS
+        if target:
+            target_body_size = getattr(target, 'w', 0)
+
+            distance = abs(target.x - self.x) - target_body_size
+
+            # 계산된 거리가 사거리(r)보다 작으면 공격
+            if distance <= r:
+                return BehaviorTree.SUCCESS
         return BehaviorTree.FAIL
 
     # 일반 공격
@@ -158,11 +164,11 @@ class warrior:
                               Action("스킬발현", self.do_skill))
 
         back_move = Sequence("뒷 무빙",
-                             Condition("적 가까운가", self.is_enemy_in_range, 40),
+                             Condition("적 가까운가", self.is_enemy_in_range, 30),
                              Action("뒤로 도망", self.move_back))
 
         attack = Sequence("공격",
-                          Condition("사거리 내에 있는가", self.is_enemy_in_range, 100),
+                          Condition("사거리 내에 있는가", self.is_enemy_in_range, 90),
                           Action("공격하기", self.do_attack))
 
         skill_and_attack = Selector("스킬 또는 공격", skill_node, attack)

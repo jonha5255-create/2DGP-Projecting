@@ -97,8 +97,14 @@ class archer:
     # 적이 사정거리 내에 있는지 확인
     def is_enemy_in_range(self, r):
         target = self.get_nearest_enemy()
-        if target and abs(target.x - self.x) <= r:
-            return BehaviorTree.SUCCESS
+        if target:
+            target_body_size = getattr(target, 'w', 0)
+
+            distance = abs(target.x - self.x) - target_body_size
+
+            # 계산된 거리가 사거리(r)보다 작으면 공격
+            if distance <= r:
+                return BehaviorTree.SUCCESS
         return BehaviorTree.FAIL
 
 

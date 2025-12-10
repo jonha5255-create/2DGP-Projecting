@@ -28,6 +28,7 @@ class boss:
         self.timer = 0.0
         self.dir = -1
         self.is_attacking = False
+        self.attack = False
         self.is_healing = False
 
         data = BOSS_DATA.get(stage_id, BOSS_DATA[1])
@@ -134,14 +135,14 @@ class boss:
     def get_nearest_hero(self):
         target = [h for h in [heroes.warrior, heroes.healer, heroes.archer] if h]
         if not target: return None
-        return min(target, key=lambda h: abs(h.x - self.x - 100))
+        return min(target, key=lambda h: abs(h.x - self.x))
 
     def is_hero_in_range(self, r):
         if self.is_attacking:
             return BehaviorTree.SUCCESS
         target = self.get_nearest_hero()
         if target:
-            if abs(target.x - (self.x - 50)) <= r:
+            if abs(target.x - self.x) <= r:
                 return BehaviorTree.SUCCESS
         return BehaviorTree.FAIL
 
@@ -150,22 +151,24 @@ class boss:
         self.current_image = self.image_attack
 
         self.timer += game_framework.frame_time
-        if self.timer >= 0.1:
+        if self.timer >= 0.2:
             self.frame += 1
             self.timer = 0.0
 
             # 공격 판정 (특정 프레임에서 데미지)
-            if int(self.frame) == 4:
+            if int(self.frame) == 3 and self.attack == False:
                 target = self.get_nearest_hero()
-                if target and abs(target.x - self.x) < 60:
+                # 영웅이 있고 사거리(200) 안에 있다면
+                if target and abs(target.x - self.x) < 200:
                     target.hp -= self.str
                     if target.hp < 0:
                         target.hp = 0
-                    pass
+                    self.attack = True
 
         if self.frame >= self.attack_frame_count:
             self.frame = 0
             self.is_attacking = False
+            self.attack = False
             return BehaviorTree.SUCCESS
 
         return BehaviorTree.RUNNING
@@ -209,7 +212,7 @@ class boss:
 
     def build_behavior_tree(self):
         attack_node = Sequence("공격",
-                        Condition("사거리 내에 영웅들이 있나", self.is_hero_in_range, 70),
+                        Condition("사거리 내에 영웅들이 있나", self.is_hero_in_range, 200),
                                Action("공격해라", self.do_attack))
         if self.current_image == self.image_heal:
             heal_node = Sequence("힐",
