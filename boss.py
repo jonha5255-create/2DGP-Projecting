@@ -59,6 +59,15 @@ class boss:
 
         self.current_image = self.image_idle
 
+        self.attack_sound = None
+        self.heal_sound = None
+
+        if stage_id == 3:
+            self.attack_sound = load_wav('stage3_boss_sound.wav')
+            self.attack_sound.set_volume(40)
+            self.heal_sound = load_wav('boss_heal_sound.wav')
+            self.heal_sound.set_volume(30)
+
         self.build_behavior_tree()
 
 
@@ -150,6 +159,11 @@ class boss:
         self.is_attacking = True
         self.current_image = self.image_attack
 
+        if int(self.frame) == 0 and self.timer == 0.0:
+            # 스테이지 3 보스라면 special_sound(일반공격음) 재생
+            if self.attack_sound:
+                self.attack_sound.play()
+
         self.timer += game_framework.frame_time
         if self.timer >= 0.2:
             self.frame += 1
@@ -197,7 +211,8 @@ class boss:
             print("자가 치유")
             self.hp += 30
             if self.hp > self.max_hp: self.hp = self.max_hp
-
+        if self.heal_sound:
+            self.heal_sound.play()
         self.timer += game_framework.frame_time
         if self.timer >= 0.2:
             self.frame = (self.frame + 1) % self.heal_frame_count
