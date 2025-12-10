@@ -13,9 +13,9 @@ class healer:
     def __init__(self):
         self.x, self.y = 100, 205
         self.frame = 0
-        self.hp = 250
+        self.hp = 280
         self.max_hp = self.hp
-        self.str = 25
+        self.str = 30
         self.speed = 80
 
         # healer 에셋으로 변경

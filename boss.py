@@ -7,15 +7,15 @@ from behavior_tree import BehaviorTree, Action, Sequence, Condition, Selector
 
 BOSS_DATA = {
     1: {'idle': 'stage1_boss.png', 'attack': 'stage1_boss_att.png','heal':None,
-        'hp': 1000, 'speed': 40, 'str': 50,
+        'hp': 800, 'speed': 40, 'str': 45,
         'w': 102, 'h': 106,'at_w':161, 'at_h':196,
         'idle_frame': 4, 'attack_frame': 4,'face_right': True},
     2: {'idle': 'stage2_boss.png', 'attack': 'stage2_boss_att.png','heal':None,
-        'hp': 1500, 'speed': 80, 'str': 70,
+        'hp': 1200, 'speed': 80, 'str': 60,
         'w': 49, 'h': 60,'at_w': 55, 'at_h': 70,
         'idle_frame': 4, 'attack_frame': 6,'face_right': False},
     3: {'idle': 'boss idle.png', 'attack': 'boss attack.png', 'heal': 'boss heal.png',
-        'hp': 2000, 'speed': 100, 'str': 80,
+        'hp': 1600, 'speed': 100, 'str': 70,
         'w': 113, 'h': 113,'at_w': 113, 'at_h': 113,'heal_w':113,'heal_h':113,
         'idle_frame': 4, 'attack_frame': 8, 'heal_frame': 8,'face_right': True
         }

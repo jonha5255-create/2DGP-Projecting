@@ -12,9 +12,9 @@ class warrior:
     def __init__(self):
         self.x, self.y = 300, 200
         self.frame = 0
-        self.hp = 550
+        self.hp = 400
         self.max_hp = self.hp
-        self.str = 35
+        self.str = 40
         self.dir = 1
         self.speed = 80
 

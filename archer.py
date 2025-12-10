@@ -12,9 +12,9 @@ class archer:
     def __init__(self):
         self.x, self.y = 200, 200
         self.frame = 0
-        self.hp = 300
+        self.hp = 280
         self.max_hp = self.hp
-        self.str = 35
+        self.str = 40
         self.speed = 80
 
         # archer 에셋으로 변경
