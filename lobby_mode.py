@@ -2,30 +2,34 @@ from pico2d import *
 import game_framework
 import play_mode
 
-from sdl2 import SDL_MOUSEMOTION,SDL_MOUSEBUTTONDOWN, SDL_QUIT, SDL_KEYDOWN, SDLK_ESCAPE, SDLK_SPACE
+from sdl2 import SDL_BUTTON_LEFT,SDL_MOUSEBUTTONDOWN, SDL_QUIT, SDL_KEYDOWN, SDLK_ESCAPE, SDLK_SPACE
 
 
 image = None
 button = None
 bgm = None
-buttonsound = None
+button_sound = None
 
 def init():
-    global image, button
+    global image, button, bgm, button_sound
     image = load_image('lobby.png')
     button = load_image('start_button.png')
 
     bgm = load_music('lobby_sound.wav')
-    bgm.set_volume(64)
-    bgm.repeat_play()
+    if bgm:
+        bgm.set_volume(45)
+        bgm.repeat_play()
 
-    start_sound = load_wav('startbutton_sound.wav')
-    start_sound.set_volume(64)
+    button_sound = load_wav('start_button_sound.wav')
+    if button_sound:
+        button_sound.set_volume(64)
 
 def finish():
-    global image, bgm, buttonsound
+    global image, bgm, button_sound, button
+    del button
     del image
-    del buttonsound  # 메모리 해제
+    if button_sound:
+        del button_sound  # 메모리 해제
     if bgm:
         bgm.stop()
         del bgm
@@ -53,10 +57,11 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_MOUSEBUTTONDOWN and event.button == SDL_BUTTON_LEFT:
             x, y = event.x, 800 - event.y
-            print(f"Mouse clicked at: ({x}, {y})")  # 디버깅용
             if 500 <= x <= 800 and 280 <= y <= 325:
-                if buttonsound:
-                    buttonsound.play()
+                if button_sound:
+                    button_sound.play()
+
+                delay(2.0)
                 game_framework.change_mode(play_mode)
     pass
 
