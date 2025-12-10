@@ -53,7 +53,7 @@ class EFFECT:
             self.velocity_x = 600  # 화살 이동 속도 설정
         elif effect_type == 'archer_skill':
             self.frame_count = 5
-            self.duration = 1.0
+            self.duration = 2.0
             self.frame_width = 130
             self.frame_height = 120
             self.is_animated = True

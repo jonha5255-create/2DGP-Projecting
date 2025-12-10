@@ -47,8 +47,7 @@ class archer:
         else:
             self.current_image.clip_draw(int(self.frame) * 120, 0 , 120, 100, self.x,self.y)
 
-        # 바운딩 박스
-        draw_rectangle(*self.get_bb())
+
 
     def use_skill(self, count):
         self.skill_queue = count

@@ -10,7 +10,7 @@ class SKILLBLOCK:
     BLOCK_HEIGHT = 90
     START_Y = 50
     SPACING = 5  # 블록 간 간격
-    SPEED = 800.0
+    SPEED = 500.0
     ACTIVATION_DELAY = 0.1
 
     JOB_SKILL = {

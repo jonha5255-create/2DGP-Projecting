@@ -132,8 +132,6 @@ class enemy:
 
                 draw_rectangle(x_left, y_pos, x_hp, y_pos)
 
-        draw_rectangle(*self.get_bb())
-
     def handle_event(self, event):
         pass
 

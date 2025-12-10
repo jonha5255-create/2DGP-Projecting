@@ -130,7 +130,6 @@ class boss:
             # (2) 체력 (빨강) - 남은 체력만큼만
             draw_rectangle(x_left, y_pos, x_hp, y_pos)
 
-        draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
         pass

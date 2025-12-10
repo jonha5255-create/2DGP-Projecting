@@ -49,8 +49,6 @@ class healer:
         else:
             self.current_image.clip_draw(int(self.frame) * 100, 0 , 100, 100, self.x,self.y)
 
-        # 바운딩 박스
-        draw_rectangle(*self.get_bb())
 
     def use_skill(self, count):
         self.skill_queue = count
