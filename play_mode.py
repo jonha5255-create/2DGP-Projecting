@@ -1,6 +1,8 @@
 from pico2d import *
 import random
 
+import game_clear_mode
+import game_over_mode
 from stage_intro import StageIntro
 from ui import UI
 from effect import EFFECT
@@ -18,6 +20,8 @@ from skill_block import SKILLBLOCK
 
 import game_world
 import game_framework
+
+
 
 
 skill_blocks = []
@@ -154,8 +158,16 @@ def update():
 
     if ui: ui.update()
 
+    # 영웅들 다 죽으면 게임 오버
+    if check_heroes_dead() == True:
+        game_framework.change_mode(game_over_mode)
+        return
+
     if status == "stage_changed":
         change_stage()
+    elif status == "game_cleared":
+        game_framework.change_mode(game_clear_mode)
+        return
 
 
     # 충돌 처리
@@ -227,8 +239,10 @@ def update():
             add_skill_block()
 
 
+
+
+
 def check_heroes_dead():
-    # 영웅 사망 처리 (enemy.py에서 hp를 깎으므로, 여기서 죽었는지 확인만 함)
     if heroes.warrior and heroes.warrior.hp <= 0:
         game_world.remove_object(heroes.warrior)
         heroes.warrior = None
@@ -238,6 +252,11 @@ def check_heroes_dead():
     if heroes.healer and heroes.healer.hp <= 0:
         game_world.remove_object(heroes.healer)
         heroes.healer = None
+    # 모두 죽으면 True 반환
+    if heroes.warrior is None and heroes.archer is None and heroes.healer is None:
+        return True
+
+    return False
 
 def change_stage():
     game_world.world[0] = []

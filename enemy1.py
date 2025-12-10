@@ -104,33 +104,33 @@ class enemy:
                                                    self.w, self.h,0,flip,self.x, self.y, 150, 150)
 
             # 1. 위치 및 크기 설정
-            bar_x = self.x
-            bar_y = self.y + (self.h // 2) + 20  # 머리 위
-            bar_len = 60  # 바 길이
-            bar_thick = 6  # 바 두께 (선의 개수)
+        bar_x = self.x
+        bar_y = self.y + (self.h // 2) + 20  # 머리 위
+        bar_len = 60  # 바 길이
+        bar_thick = 6  # 바 두께 (선의 개수)
 
-            # 2. 비율 계산
-            hp_ratio = self.hp / self.max_hp
-            if hp_ratio < 0: hp_ratio = 0
-            if hp_ratio > 1: hp_ratio = 1
+        # 2. 비율 계산
+        hp_ratio = self.hp / self.max_hp
+        if hp_ratio < 0: hp_ratio = 0
+        if hp_ratio > 1: hp_ratio = 1
 
 
-            # 3. 좌표 계산
-            x_left = bar_x - (bar_len // 2)
-            x_right = bar_x + (bar_len // 2)
-            x_hp = x_left + (bar_len * hp_ratio)  # 현재 체력 지점
+        # 3. 좌표 계산
+        x_left = bar_x - (bar_len // 2)
+        x_right = bar_x + (bar_len // 2)
+        x_hp = x_left + (bar_len * hp_ratio)  # 현재 체력 지점
 
-            # 4. 선을 겹쳐서 두께 만들기 (검정 배경선 + 빨강 체력선)
-            for i in range(bar_thick):
-                y_pos = bar_y + i  # 한 줄씩 위로 쌓음
+        # 4. 선을 겹쳐서 두께 만들기 (검정 배경선 + 빨강 체력선)
+        for i in range(bar_thick):
+            y_pos = bar_y + i  # 한 줄씩 위로 쌓음
 
-                # (1) 배경 (회색/검정) - 전체 길이
+            # (1) 배경 (회색/검정) - 전체 길이
 
-                draw_line(x_left, y_pos, x_right, y_pos)
+            draw_line(x_left, y_pos, x_right, y_pos)
 
-                # (2) 체력 (빨강) - 남은 체력만큼만
+            # (2) 체력 (빨강) - 남은 체력만큼만
 
-                draw_rectangle(x_left, y_pos, x_hp, y_pos)
+            draw_rectangle(x_left, y_pos, x_hp, y_pos)
 
     def handle_event(self, event):
         pass
